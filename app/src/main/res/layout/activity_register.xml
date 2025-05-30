@@ -31,34 +31,51 @@
             android:background="@drawable/edittext_background"
             app:layout_constraintBottom_toTopOf="@+id/spinner3"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.495"
+            app:layout_constraintHorizontal_bias="0.476"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/inputBox" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="言語"
+            android:textSize="23dp"
+            app:layout_constraintBottom_toTopOf="@+id/spinner1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.139"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.968" />
+            app:layout_constraintVertical_bias="1.0" />
 
-        <Spinner
-            android:id="@+id/spinner1"
+        <EditText
+            android:id="@+id/inputBox"
             android:layout_width="304dp"
             android:layout_height="80dp"
+            android:layout_gravity="center_horizontal"
             android:background="@drawable/edittext_background"
-            app:layout_constraintBottom_toTopOf="@+id/spinner2"
+            android:hint="郵便番号"
+            android:padding="10dp"
+            android:textColor="#000000"
+            app:layout_constraintBottom_toTopOf="@+id/spinner3"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.495"
+            app:layout_constraintHorizontal_bias="0.476"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.78" />
+            app:layout_constraintTop_toBottomOf="@+id/spinner1"
+            app:layout_constraintVertical_bias="0.409" />
 
-        <Spinner
-            android:id="@+id/spinner2"
-            android:layout_width="304dp"
-            android:layout_height="80dp"
-            android:background="@drawable/edittext_background"
-            app:layout_constraintBottom_toTopOf="@+id/spinner"
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="住所"
+            android:textSize="23dp"
+            app:layout_constraintBottom_toTopOf="@+id/inputBox"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.495"
+            app:layout_constraintHorizontal_bias="0.145"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.953" />
+            app:layout_constraintTop_toBottomOf="@+id/spinner1"
+            app:layout_constraintVertical_bias="1.0" />
 
         <Spinner
             android:id="@+id/spinner3"
@@ -70,20 +87,18 @@
             app:layout_constraintHorizontal_bias="0.495"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.86" />
+            app:layout_constraintVertical_bias="0.807" />
 
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="言語"
-            android:textSize="23dp"
-            app:layout_constraintBottom_toTopOf="@+id/spinner1"
+        <Spinner
+            android:id="@+id/spinner1"
+            android:layout_width="304dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="200dp"
+            android:background="@drawable/edittext_background"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.142"
+            app:layout_constraintHorizontal_bias="0.495"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textView5"
@@ -97,18 +112,17 @@
             app:layout_constraintTop_toBottomOf="@+id/textView4"
             app:layout_constraintVertical_bias="0.215" />
 
-        <TextView
-            android:id="@+id/textView6"
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="住所"
-            android:textSize="23dp"
-            app:layout_constraintBottom_toTopOf="@+id/spinner2"
+            android:backgroundTint="#EDD3BB"
+            android:text="register"
+            android:textColor="#5D5C5C"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.142"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spinner1"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintTop_toBottomOf="@+id/spinner3"
+            app:layout_constraintVertical_bias="0.61" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
