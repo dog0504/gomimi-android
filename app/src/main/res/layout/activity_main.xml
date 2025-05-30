@@ -1,45 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- カメラまたは撮影された画像を表示 -->
+    <!-- 顯示拍照或載入的圖片 -->
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="413dp"
+        android:layout_height="735dp"
         android:background="@android:color/darker_gray"
         android:scaleType="centerCrop"
-
         app:layout_constraintBottom_toTopOf="@id/bottomMenu"
         app:layout_constraintDimensionRatio="9:16"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        app:layout_constraintStart_toStartOf="parent" />
+    <!-- 拍照按鈕 -->
 
-    <!-- 撮影ボタン（丸いボタン） -->
-
-    <!-- 分析結果を表示する Chip -->
-
+    <!-- ChipGroup 顯示分析結果 -->
     <ImageButton
         android:id="@+id/takePhotoButton"
         android:layout_width="122dp"
         android:layout_height="107dp"
         android:layout_margin="-70dp"
-        android:background="#00000000"
+        android:layout_marginBottom="48dp"
+        android:background="@android:color/transparent"
         android:contentDescription="撮影"
         android:src="@drawable/photobtn"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintBottom_toBottomOf="@id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.981" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chipGroup"
+        android:id="@+id/thipGroup"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -49,38 +47,56 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- キャラクターとヒント（オプション） -->
+    <!-- tipsLayout，初始隱藏 -->
     <LinearLayout
         android:id="@+id/tipsLayout"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="170dp"
+        android:background="#DDFFFFFF"
         android:orientation="horizontal"
-        android:visibility="gone"
         android:padding="8dp"
-        app:layout_constraintTop_toBottomOf="@id/chipGroup"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomMenu" >
 
-        <!-- キャラクター画像 -->
-        <ImageView
-            android:id="@+id/characterImage"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:src="@drawable/gomimi"
-        android:contentDescription="キャラクター" />
-
-        <!-- 吹き出し -->
+        <!-- 提示文字 -->
         <TextView
             android:id="@+id/tipsText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="これはペットボトルです。"
             android:layout_marginStart="8dp"
-            android:textSize="14sp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:text="これはペットボトルです。"
+            android:textSize="24sp" />
+
+        <!-- 角色圖片 -->
+        <ImageView
+            android:id="@+id/characterImage"
+            android:layout_width="147dp"
+            android:layout_height="222dp"
+            android:contentDescription="キャラクター"
+            android:src="@drawable/gomimi" />
+
     </LinearLayout>
 
-    <!-- 底部メニュー -->
+    <!-- Thips 按鈕 -->
+
+    <!-- 底部導航欄 -->
+    <Button
+        android:id="@+id/thipsbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="#FFFAE6"
+        android:text="Thips"
+        android:textColor="#7F6B59"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@id/bottomMenu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.108"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomMenu"
         android:layout_width="0dp"
@@ -88,8 +104,8 @@
         android:background="#D9EC85"
         app:itemBackground="@drawable/nav_item_background"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:menu="@menu/bottom_nav_menu" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
