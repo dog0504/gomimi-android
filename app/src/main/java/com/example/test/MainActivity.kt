@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
                 // ImageViewに写真を表示
                 imageView.setImageBitmap(it)
                 // ヒントを表示
-                showTips("撮影が完了しました！")
+                showTips("これはペットボトルです。")
             }
         }
     }
@@ -79,7 +79,15 @@ class MainActivity : AppCompatActivity() {
                 hideTips()
             } else {
                 // ヒントが非表示の場合は表示する
-                showTips("これはペットボトルです。")
+                showTips("中身を出して、さっと水洗いしてください。\n" +
+                        "できるだけつぶしてお出しください。\n" +
+                        "キャップやラベルは必ずはずして、\n" +
+                        "プラスチック資源にお出しください。\n" +
+                        "キャップをはずした後ペットボトルに残る\n" +
+                        "リング状簡単にはずすことができる場合は、\n" +
+                        "はずしてプラスチック資源に、\n" +
+                        "はずせない場合は、\n" +
+                        "そのまま資源ごみでお出しください。")
             }
         }
 
