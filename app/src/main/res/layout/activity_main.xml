@@ -1,40 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFF8E7">
 
     <!-- 顯示拍照或載入的圖片 -->
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="413dp"
-        android:layout_height="735dp"
-        android:background="@android:color/darker_gray"
-        android:scaleType="centerCrop"
-        app:layout_constraintBottom_toTopOf="@id/bottomMenu"
-        app:layout_constraintDimensionRatio="9:16"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- 拍照按鈕 -->
 
     <!-- ChipGroup 顯示分析結果 -->
+
+    <androidx.camera.view.PreviewView
+        android:id="@+id/preview"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:translationZ="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomMenu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.48"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageButton
         android:id="@+id/takePhotoButton"
         android:layout_width="122dp"
         android:layout_height="107dp"
         android:layout_margin="-70dp"
-        android:layout_marginBottom="48dp"
         android:background="@android:color/transparent"
-        android:contentDescription="撮影"
+        android:contentDescription="@string/photo_b"
         android:src="@drawable/photobtn"
-        app:layout_constraintBottom_toBottomOf="@id/imageView"
+        app:layout_constraintBottom_toBottomOf="@+id/preview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.86" />
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/thipGroup"
@@ -55,7 +58,7 @@
         android:background="#DDFFFFFF"
         android:orientation="horizontal"
         android:padding="8dp"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@id/bottomMenu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -84,14 +87,15 @@
 
     <!-- 底部導航欄 -->
     <Button
-        android:id="@+id/thipsbtn"
+        android:id="@+id/tipsbtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:backgroundTint="#FFFAE6"
-        android:text="Thips"
+        android:text="@string/tips"
         android:textColor="#7F6B59"
         android:textSize="20sp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@id/bottomMenu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.108"

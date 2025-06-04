@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">test</string>
+    <string name="photo_b">撮影</string>
+    <string name="tips">Tips</string>
 </resources>
