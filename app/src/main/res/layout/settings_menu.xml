@@ -124,8 +124,8 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomMenu"
-        android:layout_width="match_parent"
-        android:layout_height="79dp"
+        android:layout_width="0dp"
+        android:layout_height="72dp"
         android:background="#D9EC85"
         app:itemBackground="@drawable/nav_item_background"
         app:layout_constraintBottom_toBottomOf="parent"

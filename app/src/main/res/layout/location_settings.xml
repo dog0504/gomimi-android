@@ -24,8 +24,8 @@
     <!-- 主要內容 -->
     <LinearLayout
         android:id="@+id/linearLayoutMain"
-        android:layout_width="402dp"
-        android:layout_height="461dp"
+        android:layout_width="406dp"
+        android:layout_height="458dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="12dp"
         android:gravity="center_horizontal"
@@ -42,43 +42,52 @@
             android:layout_marginBottom="24dp"
             android:gravity="center"
             android:padding="8dp"
-            android:text="通知設定"
+            android:text="所在地設定"
             android:textColor="#000000"
             android:textSize="34sp" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <Switch
-                android:id="@+id/switch1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:text="通知"
-                android:textSize="24sp" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/textView14"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:gravity="center"
-            android:padding="8dp"
-            android:text="いつ通知する？"
+        <EditText
+            android:id="@+id/inputBox"
+            android:layout_width="304dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/edittext_background"
+            android:hint="郵便番号"
+            android:padding="10dp"
             android:textColor="#000000"
-            android:textSize="24sp" />
+            app:layout_constraintBottom_toTopOf="@+id/spinner3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.476"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spinner1"
+            app:layout_constraintVertical_bias="0.409" />
 
         <Spinner
-            android:id="@+id/spinner2"
-            android:layout_width="283dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="12dp"
-            android:gravity="center" />
+            android:id="@+id/spinner3"
+            android:layout_width="304dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/edittext_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.495"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.807" />
+
+        <Spinner
+            android:id="@+id/spinner4"
+            android:layout_width="304dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/edittext_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.495"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.807" />
+
     </LinearLayout>
 
     <!-- 適用按鈕（置底、在 BottomNavigationView 上方） -->
