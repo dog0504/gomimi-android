@@ -33,6 +33,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name="com.example.yourapp.CalendarActivity" />
+        <activity android:name="com.example.yourapp.ManualActivity" />
+        <activity android:name="com.example.yourapp.HistoryActivity" />
+        <activity android:name="com.example.yourapp.SettingsActivity" />
+        <activity android:name="com.example.yourapp.NotifySettingsActivity" />
+        <activity android:name="com.example.yourapp.LanguageSettingsActivity" />
+
+
     </application>
 
 </manifest>

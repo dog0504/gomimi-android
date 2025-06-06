@@ -26,14 +26,16 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.test.R
 import com.example.test.databinding.ActivityMainBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.chip.ChipGroup
+import com.example.yourapp.BaseActivity
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
     private lateinit var viewBinding: ActivityMainBinding
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
@@ -71,7 +73,9 @@ class MainActivity : AppCompatActivity() {
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         // レイアウトの設定
         setContentView(viewBinding.root)
-
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomMenu)
+        bottomNav.selectedItemId =R.id.navigation_camera
+        setupBottomNav(bottomNav)
         // Viewの参照を取得
         constraintLayout = findViewById(R.id.constraintLayout)
 //        imageView = findViewById(R.id.imageView)

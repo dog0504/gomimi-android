@@ -14,7 +14,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textView10"
+            android:id="@+id/history_title"
             android:layout_width="411dp"
             android:layout_height="54dp"
             android:layout_gravity="center"
