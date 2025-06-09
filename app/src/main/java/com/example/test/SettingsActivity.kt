@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.example.test.R
 import android.widget.ImageView
+import android.widget.TextView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class SettingsActivity: BaseActivity() {
@@ -31,6 +32,12 @@ class SettingsActivity: BaseActivity() {
         val buttonImage3 = findViewById<ImageView>(R.id.buttonImage3)
         buttonImage3.setOnClickListener {
             startActivity(Intent(this, LocationSettingsActivity::class.java))
+        }
+
+        // ログアウト
+        val buttonText4 = findViewById<TextView>(R.id.buttonText4)
+        buttonText4.setOnClickListener {
+            startActivity(Intent(this, LoginActivity::class.java))
         }
     }
 }
