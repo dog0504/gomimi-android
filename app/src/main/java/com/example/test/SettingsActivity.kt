@@ -28,9 +28,9 @@ class SettingsActivity: BaseActivity() {
         }
 
         // 所在地
-//        val buttonImage3 = findViewById<ImageView>(R.id.buttonImage3)
-//        buttonImage3.setOnClickListener {
-//            startActivity(Intent(this, LocationSettingsActivity::class.java))
-//        }
+        val buttonImage3 = findViewById<ImageView>(R.id.buttonImage3)
+        buttonImage3.setOnClickListener {
+            startActivity(Intent(this, LocationSettingsActivity::class.java))
+        }
     }
 }

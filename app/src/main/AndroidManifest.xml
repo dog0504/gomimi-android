@@ -40,6 +40,8 @@
         <activity android:name="com.example.yourapp.SettingsActivity" />
         <activity android:name="com.example.yourapp.NotifySettingsActivity" />
         <activity android:name="com.example.yourapp.LanguageSettingsActivity" />
+        <activity android:name="com.example.yourapp.LocationSettingsActivity" />
+
 
 
     </application>

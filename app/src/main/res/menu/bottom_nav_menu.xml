@@ -2,17 +2,17 @@
     <item
         android:id="@+id/navigation_manual"
         android:icon="@drawable/manual"
-        android:title="Manual" />
+        android:title="マニュアル" />
 
     <item
         android:id="@+id/navigation_calendar"
         android:icon="@drawable/calendar"
-        android:title="Calendar" />
+        android:title="カレンダー" />
 
     <item
         android:id="@+id/navigation_camera"
         android:icon="@drawable/camera"
-        android:title="Camera" />
+        android:title="カメラ" />
 
     <item
         android:id="@+id/navigation_history"
