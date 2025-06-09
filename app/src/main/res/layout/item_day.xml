@@ -1,31 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dayItemLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@drawable/day_bg"
-    android:padding="12dp"
     android:layout_marginBottom="12dp"
-    android:elevation="4dp">
+    android:background="@drawable/day_bg"
+    android:elevation="4dp"
+    android:orientation="vertical"
+    android:padding="12dp">
 
-    <!-- 星期名稱 -->
-    <TextView
-        android:id="@+id/dayTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="月"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:drawablePadding="8dp" />
+    <!-- 上部：曜日テキストとゴミアイコンを横並びに表示 -->
+    <LinearLayout
+        android:id="@+id/dayHeaderLayout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
+        <!-- 曜日タイトル（例：月、火、水...） -->
+        <TextView
+            android:id="@+id/dayTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="8dp"
+            android:text="月"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
-    <!-- 垃圾資訊區塊 -->
+        <!-- ゴミの種類に応じたアイコンを表示するコンテナ（動的にImageViewを追加） -->
+        <LinearLayout
+            android:id="@+id/iconContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginStart="40dp"
+            android:gravity="center"
+            android:orientation="horizontal" />
+    </LinearLayout>
+
+    <!-- ゴミ収集の詳細情報（時間帯など）を表示するエリア（タップで表示／非表示） -->
     <LinearLayout
         android:id="@+id/garbageInfoContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:paddingTop="8dp"
         android:visibility="gone"
-        android:paddingTop="8dp" />
+        tools:ignore="MissingConstraints" />
 </LinearLayout>
