@@ -53,8 +53,8 @@
 
             <Switch
                 android:id="@+id/switch1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="109dp"
+                android:layout_height="60dp"
                 android:layout_marginBottom="12dp"
                 android:text="通知"
                 android:textSize="24sp" />
@@ -73,8 +73,8 @@
 
         <Spinner
             android:id="@+id/spinner2"
-            android:layout_width="283dp"
-            android:layout_height="wrap_content"
+            android:layout_width="199dp"
+            android:layout_height="59dp"
             android:layout_gravity="center"
             android:layout_marginBottom="12dp"
             android:gravity="center" />

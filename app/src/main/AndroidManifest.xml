@@ -43,6 +43,7 @@
         <activity android:name="com.example.yourapp.LocationSettingsActivity" />
         <activity android:name="com.example.yourapp.LoginActivity" />
         <activity android:name="com.example.yourapp.RegisterActivity" />
+        <activity android:name=".ManualDetailActivity" />
 
 
 
