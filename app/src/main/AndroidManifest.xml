@@ -41,7 +41,9 @@
         <activity android:name="com.example.yourapp.NotifySettingsActivity" />
         <activity android:name="com.example.yourapp.LanguageSettingsActivity" />
         <activity android:name="com.example.yourapp.LocationSettingsActivity" />
-        <activity android:name="com.example.yourapp.LoginActivity" />
+        <activity
+            android:name="com.example.yourapp.LoginActivity"
+            android:windowSoftInputMode="adjustResize"/>
         <activity android:name="com.example.yourapp.RegisterActivity" />
         <activity android:name=".ManualDetailActivity" />
 
