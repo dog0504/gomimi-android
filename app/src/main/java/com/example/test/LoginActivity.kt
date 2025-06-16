@@ -3,8 +3,8 @@ package com.example.yourapp
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import com.example.test.R
 import com.example.test.databinding.ActivityLoginBinding
 import com.example.test.retrofit.NetworkResult
 import com.example.test.retrofit.UserViewModel
@@ -17,39 +17,58 @@ class LoginActivity: BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = ActivityLoginBinding.inflate(layoutInflater) // bindingの初期化
         setContentView(binding.root)
 
-        val sign_button = findViewById<View>(R.id.sign_in_button)
-        sign_button.setOnClickListener {
+        userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
+
+        // アカウント登録ボタンのクリックリスナー
+        binding.signUpButton.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
 
-        // APIの例
-        userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
+        // ログインボタンのクリックリスナー
+        binding.loginButton.setOnClickListener {
+            val email = binding.emailEditText.text.toString().trim() // 入力値から空白を除去
+            val password = binding.passwordEditText.text.toString().trim() // 入力値から空白を除去
 
-        val userId = intent.getStringExtra("USER_ID") ?: return // インテントからIDを取得
+            if (email.isNotEmpty() && password.isNotEmpty()) {
+                userViewModel.performLogin(email, password)
+            } else {
+                Toast.makeText(this, "メールアドレスとパスワードを入力してください。", Toast.LENGTH_SHORT).show()
+            }
+        }
 
-        userViewModel.fetchUser(userId)
-
-        userViewModel.user.observe(this) { result ->
+        // ログイン結果の監視
+        userViewModel.loginResult.observe(this) { result ->
             when (result) {
                 is NetworkResult.Loading -> {
                     // ローディング表示
-//                    binding.progressBar.visibility = android.view.View.VISIBLE
-//                    binding.userDetailLayout.visibility = android.view.View.GONE
+                    binding.progressBar.visibility = View.VISIBLE
+                    binding.loginButton.isEnabled = false // ボタンを無効化
+                    binding.emailEditText.isEnabled = false // 入力欄を無効化
+                    binding.passwordEditText.isEnabled = false // 入力欄を無効化
                 }
                 is NetworkResult.Success -> {
-                    // 成功時の処理
-//                    binding.progressBar.visibility = android.view.View.GONE
-//                    binding.userDetailLayout.visibility = android.view.View.VISIBLE
-//                    binding.userNameTextView.text = result.data.name
-//                    binding.userEmailTextView.text = result.data.email
+                    // ログイン成功時の処理
+                    binding.progressBar.visibility = View.GONE
+                    binding.loginButton.isEnabled = true
+                    binding.emailEditText.isEnabled = true
+                    binding.passwordEditText.isEnabled = true
+                    val user = result.data
+                    Toast.makeText(this, "ログイン成功！ようこそ ${user.name}！", Toast.LENGTH_LONG).show()
+                    // ★ログイン成功後の画面遷移をここに追加★
+                    // 例: val intent = Intent(this, MainActivity::class.java)
+                    //     startActivity(intent)
+                    //     finish() // LoginActivityを閉じる
                 }
                 is NetworkResult.Error -> {
-                    // エラー時の処理
-//                    binding.progressBar.visibility = android.view.View.GONE
-//                    binding.userDetailLayout.visibility = android.view.View.GONE
-//                    Toast.makeText(this, "Error: ${result.message}", Toast.LENGTH_LONG).show()
+                    // ログイン失敗時の処理
+                    binding.progressBar.visibility = View.GONE
+                    binding.loginButton.isEnabled = true
+                    binding.emailEditText.isEnabled = true
+                    binding.passwordEditText.isEnabled = true
+                    Toast.makeText(this, "エラー: ${result.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }
