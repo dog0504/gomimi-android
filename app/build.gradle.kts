@@ -10,6 +10,10 @@ android {
     namespace = "com.example.test"
     compileSdk = 35
 
+    buildFeatures {
+        buildConfig = true // BuildConfig機能を有効にする
+    }
+
     // local.propertiesから値を読み込むための設定
     val localProperties = Properties()
     val localPropertiesFile = rootProject.file("local.properties") // local.propertiesファイルへの参照を取得
@@ -86,8 +90,9 @@ dependencies {
     implementation ("androidx.camera:camera-view:${cameraxVersion}")
     implementation ("androidx.camera:camera-extensions:${cameraxVersion}")
 
-    implementation("com.squareup.retrofit2:retrofit:3.0.0")
-    implementation("com.squareup.retrofit2:converter-gson:3.0.0")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1:")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.0")
 }

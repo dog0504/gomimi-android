@@ -27,4 +27,15 @@ class UserViewModel(private val userRepository: UserRepository = UserRepository(
             _users.value = userRepository.getUsers()
         }
     }
+
+    // loginのシミュレーション
+    private val _loginResult = MutableLiveData<NetworkResult<User>>()
+    val loginResult: LiveData<NetworkResult<User>> = _loginResult
+
+    fun performLogin(email: String, password: String) {
+        viewModelScope.launch {
+            _loginResult.value = NetworkResult.Loading
+            _loginResult.value = userRepository.login(email, password)
+        }
+    }
 }
