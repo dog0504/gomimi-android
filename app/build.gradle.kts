@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -7,6 +10,13 @@ android {
     namespace = "com.example.test"
     compileSdk = 35
 
+    // local.propertiesから値を読み込むための設定
+    val localProperties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties") // local.propertiesファイルへの参照を取得
+    if (localPropertiesFile.exists()) { // ファイルが存在するか確認
+        localProperties.load(FileInputStream(localPropertiesFile)) // ファイルの内容を読み込む
+    }
+
     defaultConfig {
         applicationId = "com.example.test"
         minSdk = 26
@@ -15,6 +25,20 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // BuildConfigにフィールドを追加
+        // localProperties.getProperty("キー名", "デフォルト値") で値を取得
+        buildConfigField(
+            "String",
+            "API_ENDPOINT",
+            "\"${localProperties.getProperty("API_ENDPOINT", "https://default-api.example.com/")}\"" // デフォルト値も設定
+        )
+        buildConfigField(
+            "String",
+            "MY_API_KEY",
+            "\"${localProperties.getProperty("MY_API_KEY", "default_api_key")}\"" // デフォルト値も設定
+        )
+
     }
 
     buildTypes {
@@ -61,4 +85,9 @@ dependencies {
 
     implementation ("androidx.camera:camera-view:${cameraxVersion}")
     implementation ("androidx.camera:camera-extensions:${cameraxVersion}")
+
+    implementation("com.squareup.retrofit2:retrofit:3.0.0")
+    implementation("com.squareup.retrofit2:converter-gson:3.0.0")
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1:")
 }
