@@ -1,10 +1,8 @@
 package com.example.yourapp
 
 import android.content.Intent
-import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.test.R
-import com.example.yourapp.CalendarActivity
 import com.example.yourapp.MainActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -52,4 +50,5 @@ open class BaseActivity : AppCompatActivity() {
             }
         }
     }
+
 }

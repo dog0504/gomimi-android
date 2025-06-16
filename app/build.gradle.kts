@@ -12,6 +12,7 @@ android {
 
     buildFeatures {
         buildConfig = true // BuildConfig機能を有効にする
+        viewBinding = true
     }
 
     // local.propertiesから値を読み込むための設定
@@ -62,10 +63,6 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
-    }
-
-    buildFeatures {
-        viewBinding = true
     }
 }
 
