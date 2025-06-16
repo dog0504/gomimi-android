@@ -25,6 +25,23 @@ class UserRepository(private val userService: ApiService = RetrofitClient.instan
         }
     }
 
+    // ★登録処理のモックメソッドを追加★
+    suspend fun register(email: String, password: String): NetworkResult<User> {
+        return withContext(Dispatchers.IO) {
+            delay(1500) // 登録はログインより少し時間がかかると仮定
+
+            if (email.endsWith("@example.com") && password.length >= 6) {
+                // 有効なメール形式でパスワードが6文字以上なら成功と仮定
+                NetworkResult.Success(User(id = "newuser_" + System.currentTimeMillis(), name = "新規ユーザー", email = email, token = "new_mock_token"))
+            } else if (email == "duplicate@example.com") {
+                // 特定のメールアドレスで重複エラーをシミュレート
+                NetworkResult.Error("登録エラー: このメールアドレスは既に登録されています。")
+            } else {
+                NetworkResult.Error("登録エラー: 入力情報が無効です。")
+            }
+        }
+    }
+
     suspend fun getUser(id: String): NetworkResult<User> {
         return safeApiCall { userService.getUser(id) }
     }
