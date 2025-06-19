@@ -5,6 +5,8 @@ package com.example.test.retrofit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.HttpException
 import java.io.IOException
 
@@ -48,6 +50,11 @@ class UserRepository(private val userService: ApiService = RetrofitClient.instan
 
     suspend fun getUsers(): NetworkResult<List<User>> {
         return safeApiCall { userService.getUsers() }
+    }
+
+    // 画像アップロード処理の追加
+    suspend fun uploadImage(image: MultipartBody.Part, description: RequestBody? = null): NetworkResult<RecognitionResult> {
+        return safeApiCall { userService.uploadImage(image, description) }
     }
 
     // 汎用的なAPI呼び出しのラッパー関数

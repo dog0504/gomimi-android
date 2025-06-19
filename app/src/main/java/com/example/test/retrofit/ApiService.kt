@@ -1,7 +1,13 @@
 package com.example.test.retrofit
 
+import com.example.test.retrofit.RecognitionResult
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Multipart
+import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface ApiService {
@@ -10,4 +16,11 @@ interface ApiService {
 
     @GET("users")
     suspend fun getUsers(): Response<List<User>>
+
+    @Multipart
+    @POST("upload")
+    suspend fun uploadImage(
+        @Part image: MultipartBody.Part,
+        @Part("description") description: RequestBody? = null
+    ): Response<RecognitionResult>
 }

@@ -32,40 +32,87 @@
         android:background="@android:color/transparent"
         android:contentDescription="@string/photo_b"
         android:src="@drawable/photobtn"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/preview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.86" />
+        app:layout_constraintVertical_bias="0.86"
+        tools:visibility="visible" />
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/thipGroup"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:layout_marginBottom="12dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/takePhotoButton"
         app:singleLine="true" />
 
-    <!-- tipsLayout，初始隱藏 -->
+    <!-- tipsLayout，初期は非表示。ScrollViewでラップし説明が長くてもスクロール可 -->
     <LinearLayout
         android:id="@+id/tipsLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="#DDFFFFFF"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/bottomMenu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="gone">
+
+        <TextView
+            android:id="@+id/garbageNameText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="8dp"
+            android:text="ごみ名"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <ScrollView
+            android:id="@+id/tipsScroll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxHeight="400dp">
+
+            <TextView
+                android:id="@+id/tipsText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="説明文"
+                android:textSize="20sp" />
+        </ScrollView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="72dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/descLayout"
         android:layout_width="0dp"
         android:layout_height="170dp"
         android:background="#DDFFFFFF"
         android:orientation="horizontal"
         android:padding="8dp"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/bottomMenu"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="gone">
 
         <!-- 提示文字 -->
         <TextView
-            android:id="@+id/tipsText"
+            android:id="@+id/descText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -80,26 +127,44 @@
             android:layout_height="222dp"
             android:contentDescription="キャラクター"
             android:src="@drawable/gomimi" />
-
     </LinearLayout>
 
-    <!-- Thips 按鈕 -->
-
     <!-- 底部導航欄 -->
-    <Button
-        android:id="@+id/tipsbtn"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/btnLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:backgroundTint="#FFFAE6"
-        android:text="@string/tips"
-        android:textColor="#7F6B59"
-        android:textSize="20sp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@id/bottomMenu"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/preview"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.108"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="gone">
+
+        <Button
+            android:id="@+id/tipsbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/reshootBtn"
+            android:layout_marginEnd="30dp"
+            android:layout_toStartOf="@+id/reshootBtn"
+            android:backgroundTint="#FFFAE6"
+            android:text="Tips"
+            android:textColor="#7F6B59"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/reshootBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:backgroundTint="#FFFAE6"
+            android:text="再撮影"
+            android:textColor="#7F6B59"
+            android:textSize="20sp" />
+    </RelativeLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomMenu"
