@@ -6,38 +6,32 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import com.example.test.R
 import com.example.test.databinding.ActivityMainBinding
 import com.example.test.retrofit.UserRepository
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.chip.ChipGroup
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
-import androidx.core.view.isVisible
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 
 class MainActivity : BaseActivity() {
@@ -146,13 +140,13 @@ class MainActivity : BaseActivity() {
                 outputOptions,
                 ContextCompat.getMainExecutor(this),
                 object : ImageCapture.OnImageSavedCallback {
-                    override fun onError(exception: ImageCapture.ImageCaptureException) {
+                    override fun onError(exception: ImageCaptureException) {
                         Toast.makeText(this@MainActivity, "撮影に失敗しました", Toast.LENGTH_SHORT).show()
                     }
                     override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                         // 画像ファイルをAPIサーバーに送信
                         lifecycleScope.launch {
-                            val requestFile = RequestBody.create("image/jpeg".toMediaTypeOrNull(), photoFile)
+                            val requestFile = RequestBody.create(MediaType.parse("image/jpeg"), photoFile)
                             val body = MultipartBody.Part.createFormData("image", photoFile.name, requestFile)
                             val result = withContext(Dispatchers.IO) {
                                 userRepository.uploadImage(body)
