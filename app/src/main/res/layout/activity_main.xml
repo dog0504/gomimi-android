@@ -37,7 +37,8 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.86" />
+        app:layout_constraintVertical_bias="0.86"
+        tools:visibility="invisible" />
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/thipGroup"
@@ -61,7 +62,8 @@
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@id/bottomMenu"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible">
 
         <!-- 提示文字 -->
         <TextView
@@ -90,6 +92,7 @@
         android:id="@+id/tipsbtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
         android:backgroundTint="#FFFAE6"
         android:text="@string/tips"
@@ -97,9 +100,24 @@
         android:textSize="20sp"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@id/bottomMenu"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.108"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
+
+    <Button
+        android:id="@+id/closeBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="#FFFAE6"
+        android:text="@string/close"
+        android:textColor="#7F6B59"
+        android:textSize="20sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@id/bottomMenu"
+        app:layout_constraintStart_toEndOf="@+id/tipsbtn"
+        tools:visibility="visible" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomMenu"

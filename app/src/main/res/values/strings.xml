@@ -2,4 +2,5 @@
     <string name="app_name">test</string>
     <string name="photo_b">撮影</string>
     <string name="tips">Tips</string>
+    <string name="close">閉じる</string>
 </resources>

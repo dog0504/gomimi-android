@@ -1,13 +1,11 @@
 package com.example.yourapp
 
 import android.Manifest
-import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.provider.Settings
 import android.util.Log
 import android.view.View
@@ -15,10 +13,8 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -26,11 +22,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.test.R
 import com.example.test.databinding.ActivityMainBinding
+import com.example.test.retrofit.UserRepository
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.chip.ChipGroup
-import com.example.yourapp.BaseActivity
-import java.text.SimpleDateFormat
-import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -48,6 +42,8 @@ class MainActivity : BaseActivity() {
     private lateinit var tipsText: TextView
     private lateinit var characterImage: ImageView
     private lateinit var showTipsButton: Button
+
+    private val userRepository = UserRepository()
 
 //    private val CAMERA_PERMISSION_CODE = 100
 
@@ -160,9 +156,20 @@ class MainActivity : BaseActivity() {
 
     //静止画撮影
     private fun takePhoto() {
-
         val imageCapture = this.imageCapture ?: return
+        // テスト用: ダミーデータを表示
 
+//        CoroutineScope(Dispatchers.Main).launch {
+//            chipGroup.removeAllViews()
+//            val chip = com.google.android.material.chip.Chip(this@MainActivity)
+//            chip.text = "ダミーごみ名"
+//            chipGroup.addView(chip)
+//            tipsText.text = "これはダミーの説明です。実際のAI識別結果がここに表示されます。"
+//            tipsLayout.visibility = View.VISIBLE
+//            Toast.makeText(baseContext, "テスト用ダミーデータを表示", Toast.LENGTH_SHORT).show()
+//        }
+        // 実際の撮影・アップロード処理はコメントアウト
+        /*
         val name = SimpleDateFormat(FILENAME_FORMAT, Locale.ROOT)
             .format(System.currentTimeMillis())
         val contentValues = ContentValues().apply {
@@ -172,27 +179,66 @@ class MainActivity : BaseActivity() {
                 put(MediaStore.Images.Media.RELATIVE_PATH, "DCIM/Image")
             }
         }
-
         val outputOptions = ImageCapture.OutputFileOptions.Builder(
             contentResolver,
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
             contentValues
         ).build()
-
         imageCapture.takePicture(
             outputOptions,
             ContextCompat.getMainExecutor(this),
             object : ImageCapture.OnImageSavedCallback {
                 override fun onError(exception: ImageCaptureException) {
                     Log.d("Camera X sample","撮影エラー（静止画）")
-//                    Toast.makeText(baseContext, "Error", Toast.LENGTH_SHORT).show()
                 }
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                     val msg = "撮影成功（静止画）"
                     Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+                    // 画像アップロード処理
+                    outputFileResults.savedUri?.let { uri ->
+                        CoroutineScope(Dispatchers.IO).launch {
+                            try {
+                                val inputStream: InputStream? = contentResolver.openInputStream(uri)
+                                val tempFile = File.createTempFile("upload_", ".jpg", cacheDir)
+                                val outputStream = FileOutputStream(tempFile)
+                                inputStream?.copyTo(outputStream)
+                                inputStream?.close()
+                                outputStream.close()
+                                val requestFile = RequestBody.create(MediaType.parse("image/jpeg"), tempFile)
+                                val body = MultipartBody.Part.createFormData("image", tempFile.name, requestFile)
+                                val result = userRepository.uploadImage(body, null)
+                                launch(Dispatchers.Main) {
+                                    when (result) {
+                                        is com.example.test.retrofit.NetworkResult.Success -> {
+                                            val recognition = result.data
+                                            // ChipGroupに名前を表示
+                                            chipGroup.removeAllViews()
+                                            val chip = com.google.android.material.chip.Chip(this@MainActivity)
+                                            chip.text = recognition.name
+                                            chipGroup.addView(chip)
+                                            // tipsTextに説明を表示
+                                            tipsText.text = recognition.description
+                                            tipsLayout.visibility = View.VISIBLE
+                                            Toast.makeText(baseContext, "画像アップロード・識別成功", Toast.LENGTH_SHORT).show()
+                                        }
+                                        is com.example.test.retrofit.NetworkResult.Error -> {
+                                            Toast.makeText(baseContext, "アップロード失敗: ${result.message}", Toast.LENGTH_SHORT).show()
+                                        }
+                                        else -> {}
+                                    }
+                                }
+                                tempFile.delete()
+                            } catch (e: Exception) {
+                                launch(Dispatchers.Main) {
+                                    Toast.makeText(baseContext, "アップロード例外: ${e.message}", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
+                    }
                 }
             }
         )
+        */
     }
 
     //プレビュー開始
@@ -243,7 +289,16 @@ class MainActivity : BaseActivity() {
         super.onDestroy()
         cameraExecutor.shutdown()
     }
-//
+
+    private fun showDescription(description: String) {
+        // ヒントのテキストを更新
+        viewBinding.tipsText.text = description // ヒントのテキストを設定
+        viewBinding.tipsLayout.visibility = View.VISIBLE // ヒントレイアウトを表示
+        viewBinding.tipsbtn.visibility = View.VISIBLE // Tipsボタンを表示
+        viewBinding.takePhotoButton.visibility = View.GONE // 撮影ボタンを非表示にする
+        viewBinding.closeBtn.visibility = View.VISIBLE // 閉じるボタンを表示
+    }
+
 //    // ChipをChipGroupに追加するメソッド
 //    private fun addChip(text: String) {
 //        val chip = Chip(this)
@@ -279,7 +334,7 @@ class MainActivity : BaseActivity() {
 //        if (showTips) {
 //            // ヒント表示時はThipsボタンをtipsLayoutの上に配置（マージン8dp）
 //            set.connect(
-//                R.id.thipsbtn,
+//                R.id.tipsbtn,
 //                ConstraintSet.BOTTOM,
 //                R.id.tipsLayout,
 //                ConstraintSet.TOP,
@@ -288,7 +343,7 @@ class MainActivity : BaseActivity() {
 //        } else {
 //            // ヒント非表示時はThipsボタンをbottomMenuの上に配置（マージン16dp）
 //            set.connect(
-//                R.id.thipsbtn,
+//                R.id.tipsbtn,
 //                ConstraintSet.BOTTOM,
 //                R.id.bottomMenu,
 //                ConstraintSet.TOP,
