@@ -97,7 +97,7 @@ class RegisterActivity: BaseActivity() {
                     viewBinding.progressBar.visibility = View.GONE
                     viewBinding.registerBtn.isEnabled = true
                     // 他の入力欄も有効化する
-                    Toast.makeText(this, "登録成功！ようこそ ${result.data.name}！", Toast.LENGTH_LONG).show()
+//                    Toast.makeText(this, "登録成功！ようこそ ${result.data.name}！", Toast.LENGTH_LONG).show()
                     // 登録成功後の画面遷移（例: メイン画面へ）
                     startActivity(Intent(this, MainActivity::class.java))
                     finish() // 登録画面を閉じる
