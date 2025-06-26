@@ -103,6 +103,12 @@ class MainActivity : BaseActivity() {
                 showTips()
             }
         }
+
+        com.example.test.retrofit.TokenManager.getToken()?.let { token ->
+            Log.d(TAG, "トークン: $token")
+        } ?: run {
+            Log.d(TAG, "トークンが保存されていません。")
+        }
     }
 
     //権限チェック(2/3)
