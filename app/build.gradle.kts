@@ -93,5 +93,5 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.0")
 
-    implementation("androidx.security:security-crypto:1.0.0")
+    implementation("com.orhanobut:hawk:2.0.1")
 }
