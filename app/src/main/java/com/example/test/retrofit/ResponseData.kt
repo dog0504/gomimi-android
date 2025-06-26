@@ -1,5 +1,7 @@
 package com.example.test.retrofit
 
+import com.google.gson.annotations.SerializedName
+
 data class User(
     val id: String,
     val name: String,
@@ -13,3 +15,13 @@ data class RecognitionResult(
 )
 
 //data class ResponseData()
+
+data class LoginRequestBody(
+    val email: String,
+    val password: String
+)
+
+data class AuthResponse(
+    @SerializedName("accessToken")
+    val accessToken: String
+)
