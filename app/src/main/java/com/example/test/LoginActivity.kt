@@ -2,6 +2,7 @@ package com.example.yourapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
@@ -40,6 +41,39 @@ class LoginActivity: BaseActivity() {
         }
 
         // ログイン結果の監視
+//        userViewModel.loginResult.observe(this) { result ->
+//            when (result) {
+//                is NetworkResult.Loading -> {
+//                    // ローディング表示
+//                    binding.progressBar.visibility = View.VISIBLE
+//                    binding.loginButton.isEnabled = false // ボタンを無効化
+//                    binding.emailEditText.isEnabled = false // 入力欄を無効化
+//                    binding.passwordEditText.isEnabled = false // 入力欄を無効化
+//                }
+//                is NetworkResult.Success -> {
+//                    // ログイン成功時の処理
+//                    binding.progressBar.visibility = View.GONE
+//                    binding.loginButton.isEnabled = true
+//                    binding.emailEditText.isEnabled = true
+//                    binding.passwordEditText.isEnabled = true
+//                    val user = result.data
+//                    Toast.makeText(this, "ログイン成功！ようこそ ${user.name}！", Toast.LENGTH_LONG).show()
+//                    // ★ログイン成功後の画面遷移をここに追加★
+//                    // 例: val intent = Intent(this, MainActivity::class.java)
+//                    //     startActivity(intent)
+//                    //     finish() // LoginActivityを閉じる
+//                }
+//                is NetworkResult.Error -> {
+//                    // ログイン失敗時の処理
+//                    binding.progressBar.visibility = View.GONE
+//                    binding.loginButton.isEnabled = true
+//                    binding.emailEditText.isEnabled = true
+//                    binding.passwordEditText.isEnabled = true
+//                    Toast.makeText(this, "エラー: ${result.message}", Toast.LENGTH_LONG).show()
+//                }
+//            }
+//        }
+        // ログイン結果の監視  本番
         userViewModel.loginResult.observe(this) { result ->
             when (result) {
                 is NetworkResult.Loading -> {
@@ -55,12 +89,14 @@ class LoginActivity: BaseActivity() {
                     binding.loginButton.isEnabled = true
                     binding.emailEditText.isEnabled = true
                     binding.passwordEditText.isEnabled = true
-                    val user = result.data
-                    Toast.makeText(this, "ログイン成功！ようこそ ${user.name}！", Toast.LENGTH_LONG).show()
-                    // ★ログイン成功後の画面遷移をここに追加★
-                    // 例: val intent = Intent(this, MainActivity::class.java)
-                    //     startActivity(intent)
-                    //     finish() // LoginActivityを閉じる
+
+                    val token = result.data.accessToken
+                    Toast.makeText(this, "ログイン成功！", Toast.LENGTH_LONG).show()
+                    Log.d("LoginActivity", "AccessToken: $token")
+                    com.example.test.retrofit.TokenManager.saveToken(token)
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
+                    finish() // LoginActivityを閉じる
                 }
                 is NetworkResult.Error -> {
                     // ログイン失敗時の処理
@@ -68,7 +104,8 @@ class LoginActivity: BaseActivity() {
                     binding.loginButton.isEnabled = true
                     binding.emailEditText.isEnabled = true
                     binding.passwordEditText.isEnabled = true
-                    Toast.makeText(this, "エラー: ${result.message}", Toast.LENGTH_LONG).show()
+//                    Toast.makeText(this, "エラー: ${result.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "メールアドレスかパスワードが間違っています。", Toast.LENGTH_LONG).show()
                 }
             }
         }
