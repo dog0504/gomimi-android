@@ -93,15 +93,10 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.0")
 
+    implementation("com.orhanobut:hawk:2.0.1")
 
     // kotlinx-coroutines-core: コルーチンを使うための土台・基本機能。
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     // kotlinx-coroutines-android: Androidでコルーチンを安全かつ便利に使うための拡張機能（特にライフサイクル管理）。
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 }
-//=======================================================
-//　アプリの画面を固まらせることなく、安全にネットワーク通信
-//　implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-//　implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
-//　（API呼び出し）を行うため」に必須のライブラリ
-//=======================================================
