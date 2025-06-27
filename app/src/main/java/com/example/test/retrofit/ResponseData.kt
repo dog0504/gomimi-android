@@ -38,3 +38,31 @@ data class GarbageResult(
     val rank: Int,
     val name: String
 )
+
+// GET /languages のレスポンス要素
+data class Language(
+    val id: Int,
+    val name: String,
+    val code: String
+)
+
+// GET /addresses/search のレスポンス要素
+data class Address(
+    val id: Int,
+    @SerializedName("postal-code") // JSONのキーと変数名をマッピング
+    val postalCode: String,
+    val city: String,
+    val ward: String,
+    val town: String, // nullの場合があるため
+    val chom: String?,
+    val street: String?,
+    val inf: String?
+)
+
+// POST /auth/register のリクエストボディ
+data class RegisterRequestBody(
+    val email: String,
+    val password: String,
+    val languageId: Int,
+    val addressId: Int
+)

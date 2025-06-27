@@ -9,6 +9,7 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
     @GET("users/{id}")
@@ -34,4 +35,13 @@ interface ApiService {
         @Part image: MultipartBody.Part,
         @Part("description") description: RequestBody? = null
     ): Response<GarbageIdentificationResponse>
+
+    @GET("languages")
+    suspend fun getLanguages(): Response<List<Language>>
+
+    @GET("addresses/search")
+    suspend fun searchAddress(@Query("postalCode") postalCode: String): Response<List<Address>>
+
+    @POST("auth/register")
+    suspend fun registerUser(@Body requestBody: RegisterRequestBody): Response<AuthResponse>
 }

@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import com.example.test.RegisterActivity
 import com.example.test.databinding.ActivityLoginBinding
 import com.example.test.retrofit.NetworkResult
 import com.example.test.retrofit.UserViewModel

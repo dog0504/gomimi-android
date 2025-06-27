@@ -71,6 +71,18 @@ class UserRepository(private val userService: ApiService = RetrofitClient.instan
         return safeApiCall { userService.uploadImage(image, description) }
     }
 
+    suspend fun getLanguages(): NetworkResult<List<Language>> {
+        return safeApiCall { userService.getLanguages() }
+    }
+
+    suspend fun searchAddress(postalCode: String): NetworkResult<List<Address>> {
+        return safeApiCall { userService.searchAddress(postalCode) }
+    }
+
+    suspend fun registerUser(requestBody: RegisterRequestBody): NetworkResult<AuthResponse> {
+        return safeApiCall { userService.registerUser(requestBody) }
+    }
+
     // 汎用的なAPI呼び出しのラッパー関数
     private suspend fun <T> safeApiCall(apiCall: suspend () -> retrofit2.Response<T>): NetworkResult<T> {
         return withContext(Dispatchers.IO) {
