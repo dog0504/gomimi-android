@@ -17,13 +17,21 @@ interface ApiService {
     @GET("users")
     suspend fun getUsers(): Response<List<User>>
 
-    @Multipart
-    @POST("upload")
-    suspend fun uploadImage(
-        @Part image: MultipartBody.Part,
-        @Part("description") description: RequestBody? = null
-    ): Response<RecognitionResult>
+//    @Multipart
+//    @POST("upload")
+//    suspend fun uploadImage(
+//        @Part image: MultipartBody.Part,
+//        @Part("description") description: RequestBody? = null
+//    ): Response<RecognitionResult>
 
     @POST("auth/login")
     suspend fun login(@Body requestBody: LoginRequestBody): Response<AuthResponse>
+
+    // ゴミ識別APIのエンドポイント
+    @Multipart
+    @POST("garbage/identify")
+    suspend fun uploadImage(
+        @Part image: MultipartBody.Part,
+        @Part("description") description: RequestBody? = null
+    ): Response<GarbageIdentificationResponse>
 }

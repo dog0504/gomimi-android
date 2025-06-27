@@ -21,6 +21,8 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.example.test.R
 import com.example.test.databinding.ActivityMainBinding
+import com.example.test.retrofit.GarbageResult
+import com.example.test.retrofit.NetworkResult
 import com.example.test.retrofit.UserRepository
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.Dispatchers
@@ -139,43 +141,91 @@ class MainActivity : BaseActivity() {
     //静止画撮影
     private fun takePhoto() {
         // 静止画を撮影し、APIサーバーに画像を送信
-        imageCapture?.let { imageCapture ->
-            val photoFile = File.createTempFile("IMG_", ".jpg", cacheDir)
-            val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
-            imageCapture.takePicture(
-                outputOptions,
-                ContextCompat.getMainExecutor(this),
-                object : ImageCapture.OnImageSavedCallback {
-                    override fun onError(exception: ImageCaptureException) {
-                        Toast.makeText(this@MainActivity, "撮影に失敗しました", Toast.LENGTH_SHORT).show()
-                    }
-                    override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                        // 画像ファイルをAPIサーバーに送信
-                        lifecycleScope.launch {
-                            val requestFile = RequestBody.create(MediaType.parse("image/jpeg"), photoFile)
-                            val body = MultipartBody.Part.createFormData("image", photoFile.name, requestFile)
-                            val result = withContext(Dispatchers.IO) {
-                                userRepository.uploadImage(body)
-                            }
-                            when (result) {
-                                is com.example.test.retrofit.NetworkResult.Success -> {
-                                    val recognition = result.data
-                                    garbageName = recognition.name
-                                    garbageTips = recognition.description
-                                    showDescription()
-                                }
-                                is com.example.test.retrofit.NetworkResult.Error -> {
-                                    Toast.makeText(this@MainActivity, "認識失敗: ${result.message}", Toast.LENGTH_SHORT).show()
-                                    showDescription() // ダミー表示
-                                }
-                                else -> {}
-                            }
-                            photoFile.delete()
+        val imageCapture = imageCapture ?: return
+
+        // 一時ファイルの作成
+        val photoFile = File(cacheDir, "temp_${System.currentTimeMillis()}.jpg")
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+
+        imageCapture.takePicture(
+            outputOptions,
+            ContextCompat.getMainExecutor(this),
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onError(exc: ImageCaptureException) {
+                    Log.e(TAG, "撮影に失敗しました: ${exc.message}", exc)
+                    Toast.makeText(baseContext, "撮影に失敗しました", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                    Toast.makeText(baseContext, "画像を解析中...", Toast.LENGTH_SHORT).show()
+                    // UIを解析中状態へ
+                    showLoadingState()
+
+                    // コルーチンで画像アップロードを実行
+                    lifecycleScope.launch {
+                        val requestFile = RequestBody.create(MediaType.parse("image/*"), photoFile)
+                        val body = MultipartBody.Part.createFormData("image", photoFile.name, requestFile)
+                        val result = withContext(Dispatchers.IO) {
+                            userRepository.uploadImage(body)
                         }
+
+                        // 結果に応じてUIを更新
+                        when (result) {
+                            is NetworkResult.Success -> {
+                                Toast.makeText(this@MainActivity, "画像解析成功: ${result.data.queryText}", Toast.LENGTH_SHORT).show()
+                                showResults(result.data.results)
+                            }
+                            is NetworkResult.Error -> {
+                                Toast.makeText(this@MainActivity, "解析失敗: ${result.message}", Toast.LENGTH_LONG).show()
+                                resetToInitialState() // エラー時は初期状態に戻す
+                            }
+                            is NetworkResult.Loading -> {
+                                // ここでは何もしない
+                            }
+                        }
+                        photoFile.delete() // 一時ファイルを削除
                     }
                 }
-            )
-        }
+            }
+        )
+
+//        imageCapture?.let { imageCapture ->
+//            val photoFile = File.createTempFile("IMG_", ".jpg", cacheDir)
+//            val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+//            imageCapture.takePicture(
+//                outputOptions,
+//                ContextCompat.getMainExecutor(this),
+//                object : ImageCapture.OnImageSavedCallback {
+//                    override fun onError(exception: ImageCaptureException) {
+//                        Toast.makeText(this@MainActivity, "撮影に失敗しました", Toast.LENGTH_SHORT).show()
+//                    }
+//                    override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+//                        // 画像ファイルをAPIサーバーに送信
+//                        lifecycleScope.launch {
+//                            val requestFile = RequestBody.create(MediaType.parse("image/jpeg"), photoFile)
+//                            val body = MultipartBody.Part.createFormData("image", photoFile.name, requestFile)
+//                            val result = withContext(Dispatchers.IO) {
+//                                userRepository.uploadImage(body)
+//                            }
+//                            when (result) {
+//                                is com.example.test.retrofit.NetworkResult.Success -> {
+//                                    val recognition = result.data
+//                                    garbageName = recognition.name
+//                                    garbageTips = recognition.description
+//                                    showDescription()
+//                                }
+//                                is com.example.test.retrofit.NetworkResult.Error -> {
+//                                    Toast.makeText(this@MainActivity, "認識失敗: ${result.message}", Toast.LENGTH_SHORT).show()
+//                                    showDescription() // ダミー表示
+//                                }
+//                                else -> {}
+//                            }
+//                            photoFile.delete()
+//                        }
+//                    }
+//                }
+//            )
+//        }
     }
 
     //プレビュー開始
@@ -246,6 +296,42 @@ class MainActivity : BaseActivity() {
         viewBinding.tipsText.text = "" // ヒントのテキストをクリア
         viewBinding.tipsLayout.visibility = View.GONE // ヒントレイアウトを非表示
         viewBinding.descLayout.visibility = View.VISIBLE // 元のレイアウトを表示
+    }
+
+    // 解析結果をChipとして表示する
+    private fun showResults(results: List<GarbageResult>) {
+//        viewBinding.thipGroup.removeAllViews() // 以前の結果をクリア
+//        viewBinding.thipGroup.visibility = View.VISIBLE
+//
+//        results.forEach { garbageItem ->
+//            val chip = Chip(this).apply {
+//                text = garbageItem.name
+//                isClickable = true
+//                isCheckable = true
+//                setOnClickListener {
+//                    // チップクリック時の動作（例：詳細表示など）をここに追加
+//                    Toast.makeText(this@MainActivity, "${garbageItem.name} の情報を表示します", Toast.LENGTH_SHORT).show()
+//                }
+//            }
+//            viewBinding.thipGroup.addView(chip)
+//        }
+
+        // UIの状態を結果表示用に変更
+        viewBinding.takePhotoButton.visibility = View.VISIBLE
+        viewBinding.progressBar.visibility = View.GONE // プログレスバーを非表示
+//        viewBinding.btnLayout.visibility = View.VISIBLE
+    }
+
+    // UIを初期のカメラプレビュー状態に戻す
+    private fun resetToInitialState() {
+        hideDescription()
+        viewBinding.progressBar.visibility = View.GONE // プログレスバーを非表示
+    }
+
+    // UIをロード中（解析中）の状態にする
+    private fun showLoadingState() {
+        viewBinding.takePhotoButton.visibility = View.GONE
+        viewBinding.progressBar.visibility = View.VISIBLE
     }
 
 

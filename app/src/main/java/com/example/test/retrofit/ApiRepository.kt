@@ -60,8 +60,14 @@ class UserRepository(private val userService: ApiService = RetrofitClient.instan
         return safeApiCall { userService.getUsers() }
     }
 
-    // 画像アップロード処理の追加
-    suspend fun uploadImage(image: MultipartBody.Part, description: RequestBody? = null): NetworkResult<RecognitionResult> {
+//    // 画像アップロード処理の追加
+//    suspend fun uploadImage(image: MultipartBody.Part, description: RequestBody? = null): NetworkResult<RecognitionResult> {
+//        return safeApiCall { userService.uploadImage(image, description) }
+//    }
+
+    // ゴミ識別APIの画像アップロード処理
+    suspend fun uploadImage(image: MultipartBody.Part, description: RequestBody? = null): NetworkResult<GarbageIdentificationResponse> {
+        // safeApiCallが新しい型を扱えるようにする
         return safeApiCall { userService.uploadImage(image, description) }
     }
 
