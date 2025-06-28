@@ -21,12 +21,15 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.example.test.R
 import com.example.test.databinding.ActivityMainBinding
+import com.example.test.retrofit.NetworkResult
+import com.example.test.retrofit.TokenManager
 import com.example.test.retrofit.UserRepository
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
@@ -39,16 +42,19 @@ class MainActivity : BaseActivity() {
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
 
-    private var garbageName: String? = "ダミー"
-    private var garbageTips: String? = "中身を出して、さっと水洗いしてください。\n" +
-            "できるだけつぶしてお出しください。\n" +
-            "キャップやラベルは必ずはずして、\n" +
-            "プラスチック資源にお出しください。\n" +
-            "キャップをはずした後ペットボトルに残る\n" +
-            "リング状簡単にはずすことができる場合は、\n" +
-            "はずしてプラスチック資源に、\n" +
-            "はずせない場合は、\n" +
-            "そのまま資源ごみでお出しください。"
+        data class GarbageInfo(val name: String, val description: String)
+    private var garbageList: List<GarbageInfo> = emptyList()
+
+//    private var garbageName: String? = "ダミー"
+//    private var garbageTips: String? = "中身を出して、さっと水洗いしてください。\n" +
+//            "できるだけつぶしてお出しください。\n" +
+//            "キャップやラベルは必ずはずして、\n" +
+//            "プラスチック資源にお出しください。\n" +
+//            "キャップをはずした後ペットボトルに残る\n" +
+//            "リング状簡単にはずすことができる場合は、\n" +
+//            "はずしてプラスチック資源に、\n" +
+//            "はずせない場合は、\n" +
+//            "そのまま資源ごみでお出しください。"
 
     private val userRepository = UserRepository()
 
@@ -58,6 +64,10 @@ class MainActivity : BaseActivity() {
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         // レイアウトの設定
         setContentView(viewBinding.root)
+
+        viewBinding.descLayout.visibility = View.GONE
+        viewBinding.btnLayout.visibility = View.GONE
+        viewBinding.tipsLayout.visibility = View.GONE
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomMenu)
         bottomNav.selectedItemId =R.id.navigation_camera
@@ -85,6 +95,10 @@ class MainActivity : BaseActivity() {
 
         // 閉じるボタンのクリックリスナー
         viewBinding.reshootBtn.setOnClickListener { hideTips();hideDescription() }
+        //Thips戻るボタン
+        viewBinding.backToListBtn.setOnClickListener {
+            hideTips()
+        }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
@@ -93,22 +107,24 @@ class MainActivity : BaseActivity() {
         // Thipsボタンの位置をbottomMenu上に設定
 //        adjustThipsButtonConstraint(showTips = false)
 
-        // Thipsボタンのクリックリスナー設定
-        viewBinding.tipsbtn.setOnClickListener {
-            if (viewBinding.tipsLayout.isVisible) {
-                // ヒントが表示されている場合は非表示にする
-                hideTips()
-            } else {
-                // ヒントが非表示の場合は表示する
-                showTips()
-            }
-        }
+//        // Thipsボタンのクリックリスナー設定
+//        viewBinding.tipsbtn.setOnClickListener {
+//            if (viewBinding.tipsLayout.isVisible) {
+//                // ヒントが表示されている場合は非表示にする
+//                hideTips()
+//            } else {
+//                // ヒントが非表示の場合は表示する
+//                showTips()
+//            }
+//        }
 
-        com.example.test.retrofit.TokenManager.getToken()?.let { token ->
+        TokenManager.getToken()?.let { token ->
             Log.d(TAG, "トークン: $token")
         } ?: run {
             Log.d(TAG, "トークンが保存されていません。")
         }
+
+
     }
 
     //権限チェック(2/3)
@@ -138,6 +154,20 @@ class MainActivity : BaseActivity() {
 
     //静止画撮影
     private fun takePhoto() {
+        // デバッグ用：ダミーデータで UI を確認
+        val dummyList = listOf(
+            GarbageInfo("ペットボトル", "キャップを外して、水で軽くすすいでから資源ゴミに出してください。キャップを外して、水で軽くすすいでから資源ゴミに出してください。キャップを外して、水で軽くすすいでから資源ゴミに出してください。"),
+            GarbageInfo("空き缶", "中を軽く洗ってから資源ゴミへ。プルタブはつけたままでOK。"),
+            GarbageInfo("乾電池", "指定の回収ボックスへ。不燃ごみに出さないでください。"),
+            GarbageInfo("ペットボトル", "キャップを外して、水で軽くすすいでから資源ゴミに出してください。"),
+            GarbageInfo("空き缶", "中を軽く洗ってから資源ゴミへ。プルタブはつけたままでOK。"),
+            GarbageInfo("乾電池", "指定の回収ボックスへ。不燃ごみに出さないでください。"),
+            GarbageInfo("ペットボトル", "キャップを外して、水で軽くすすいでから資源ゴミに出してください。"),
+            GarbageInfo("空き缶", "中を軽く洗ってから資源ゴミへ。プルタブはつけたままでOK。"),
+            GarbageInfo("乾電池", "指定の回収ボックスへ。不燃ごみに出さないでください。")
+        )
+       showDescriptionList(dummyList)
+
         // 静止画を撮影し、APIサーバーに画像を送信
         imageCapture?.let { imageCapture ->
             val photoFile = File.createTempFile("IMG_", ".jpg", cacheDir)
@@ -152,22 +182,33 @@ class MainActivity : BaseActivity() {
                     override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
                         // 画像ファイルをAPIサーバーに送信
                         lifecycleScope.launch {
-                            val requestFile = RequestBody.create(MediaType.parse("image/jpeg"), photoFile)
+                            val requestFile = RequestBody.create("image/jpeg".toMediaTypeOrNull(), photoFile)
                             val body = MultipartBody.Part.createFormData("image", photoFile.name, requestFile)
                             val result = withContext(Dispatchers.IO) {
                                 userRepository.uploadImage(body)
                             }
                             when (result) {
-                                is com.example.test.retrofit.NetworkResult.Success -> {
+                                is NetworkResult.Success -> {
                                     val recognition = result.data
-                                    garbageName = recognition.name
-                                    garbageTips = recognition.description
-                                    showDescription()
+                                    garbageList = listOf(
+
+
+
+
+                                    )
+                                    showDescriptionList(garbageList)
                                 }
-                                is com.example.test.retrofit.NetworkResult.Error -> {
-                                    Toast.makeText(this@MainActivity, "認識失敗: ${result.message}", Toast.LENGTH_SHORT).show()
-                                    showDescription() // ダミー表示
-                                }
+//                                is NetworkResult.Error -> {
+//                                    Toast.makeText(this@MainActivity, "認識失敗: ${result.message}", Toast.LENGTH_SHORT).show()
+//
+//                                    val dummyInfo = GarbageInfo(
+//                                        name = "不明",
+//                                        description = "説明が見つかりませんでした。\nもう一度お試しください。"
+//                                    )
+//                                    garbageList = listOf(dummyInfo)
+//                                    showDescriptionList(garbageList)
+//                                }
+
                                 else -> {}
                             }
                             photoFile.delete()
@@ -220,26 +261,48 @@ class MainActivity : BaseActivity() {
         cameraExecutor.shutdown()
     }
 
-    private fun showDescription() {
-        viewBinding.descText.text = garbageName // テキストを設定
-        viewBinding.descLayout.visibility = View.VISIBLE // レイアウトを表示
-        viewBinding.btnLayout.visibility = View.VISIBLE // ボタンを表示
-        viewBinding.takePhotoButton.visibility = View.GONE // 撮影ボタンを非表示にする
+//    private fun showDescription() {
+//        viewBinding.descChipGroup.removeAllViews() // テキストを設定
+//        viewBinding.descLayout.visibility = View.VISIBLE // レイアウトを表示
+//        viewBinding.btnLayout.visibility = View.VISIBLE // ボタンを表示
+//        viewBinding.takePhotoButton.visibility = View.GONE // 撮影ボタンを非表示にする
+//    }
+    private fun showDescriptionList(garbageList: List<GarbageInfo>) {
+        val chipGroup = viewBinding.descChipGroup
+        chipGroup.removeAllViews()
+        viewBinding.descLayout.visibility = View.VISIBLE
+        viewBinding.btnLayout.visibility = View.VISIBLE
+        viewBinding.takePhotoButton.visibility = View.GONE
+
+        for (info in garbageList) {
+            val chip = com.google.android.material.chip.Chip(this).apply {
+                text = info.name
+                isClickable = true
+                isCheckable = false
+                setOnClickListener {
+                    showTips(info)
+                }
+            }
+            chipGroup.addView(chip)
+        }
     }
 
+
+
     private fun hideDescription() {
-        viewBinding.descText.text = "" // テキストをクリア
+        viewBinding.descChipGroup.removeAllViews() // テキストをクリア
         viewBinding.descLayout.visibility = View.GONE // レイアウトを非表示
         viewBinding.btnLayout.visibility = View.GONE // ボタンを非表示
         viewBinding.takePhotoButton.visibility = View.VISIBLE // 撮影ボタンを表示
     }
 
-    private fun showTips() {
-        viewBinding.garbageNameText.text = garbageName // ごみの名前を設定
-        viewBinding.tipsText.text = garbageTips // ヒントのテキストを設定
-        viewBinding.descLayout.visibility = View.GONE // レイアウトを非表示
-        viewBinding.tipsLayout.visibility = View.VISIBLE // ヒントレイアウトを表示
+    private fun showTips(info: GarbageInfo) {
+        viewBinding.garbageNameText.text = info.name
+        viewBinding.tipsText.text = info.description
+        viewBinding.descLayout.visibility = View.GONE
+        viewBinding.tipsLayout.visibility = View.VISIBLE
     }
+
 
     private fun hideTips() {
         viewBinding.garbageNameText.text = "" // ごみの名前をクリア
