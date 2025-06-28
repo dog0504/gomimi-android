@@ -96,4 +96,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.0")
 
     implementation("com.orhanobut:hawk:2.0.1")
+
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 }
