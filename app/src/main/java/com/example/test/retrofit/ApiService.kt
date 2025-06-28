@@ -44,4 +44,7 @@ interface ApiService {
 
     @POST("auth/register")
     suspend fun registerUser(@Body requestBody: RegisterRequestBody): Response<AuthResponse>
+
+    @GET("users/me/bin-days")
+    suspend fun getBinDays(): Response<List<BinDay>>
 }
