@@ -62,28 +62,29 @@
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/bottomMenu"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:visibility="gone">
+        app:layout_constraintStart_toStartOf="parent">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="8dp">
 
-            <ImageView
-                android:id="@+id/backToListBtn"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/return_b"
-                android:contentDescription="戻る"
-                android:layout_marginStart="8dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="?android:attr/selectableItemBackground"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                />
+            <FrameLayout
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp">
+
+                <ImageView
+                    android:id="@+id/backToListBtn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:contentDescription="戻る"
+                    android:focusable="true"
+                    android:src="@drawable/return_b" />
+            </FrameLayout>
 
             <!-- ごみ名（置中） -->
             <TextView
@@ -91,18 +92,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="ごみ名"
-                android:textSize="22sp"
-                android:textStyle="bold"
-
+                android:background="?android:attr/selectableItemBackground"
                 android:focusable="true"
-                android:background="?android:attr/selectableItemBackground" />
+                android:text="ごみ名"
+
+                android:textSize="22sp"
+                android:textStyle="bold" />
         </RelativeLayout>
 
         <ScrollView
             android:id="@+id/tipsScroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:scrollbars="vertical"
             android:maxHeight="400dp">
 
             <TextView
@@ -125,46 +127,55 @@
         android:id="@+id/descLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:minHeight="170dp"
-
         android:background="#DDFFFFFF"
+
+        android:minHeight="300dp"
         android:orientation="horizontal"
         android:padding="8dp"
+        android:paddingBottom="100dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/bottomMenu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:visibility="gone"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <!-- 左側：可捲動 Chip 區塊 -->
-        <ScrollView
-            android:id="@+id/chipScroll"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="30dp"
-            android:scrollbars="none"
-            android:fillViewport="false">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="250dp"
+            android:layout_height="match_parent">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <ScrollView
+                android:id="@+id/chipScroll"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="8dp">
+                android:layout_marginBottom="100dp"
+                android:layout_weight="1"
+                android:fillViewport="false"
+                android:scrollbars="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <!-- Chip Group -->
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/descChipGroup"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_margin="1dp"
-                    app:singleLine="false"
-                    app:singleSelection="false"
-                    app:chipSpacing="1dp" />
-            </LinearLayout>
-        </ScrollView>
+                    android:padding="8dp">
+
+                    <!-- Chip Group -->
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/descChipGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="1dp"
+                        android:orientation="vertical"
+                        app:chipSpacing="1dp"
+                        app:singleLine="false"
+                        app:singleSelection="false" />
+                </LinearLayout>
+            </ScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- 右側：角色圖片 -->
         <ImageView
@@ -185,11 +196,10 @@
         android:layout_marginBottom="8dp"
         android:gravity="bottom"
         android:orientation="horizontal"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/preview"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:visibility="gone">
+        app:layout_constraintStart_toStartOf="parent">
 
         <!--        <Button-->
         <!--            android:id="@+id/tipsbtn"-->
@@ -211,8 +221,7 @@
             android:backgroundTint="#FFFAE6"
             android:text="再撮影"
             android:textColor="#7F6B59"
-            android:textSize="20sp"
-            android:visibility="visible" />
+            android:textSize="20sp" />
     </RelativeLayout>
 
     <ProgressBar
