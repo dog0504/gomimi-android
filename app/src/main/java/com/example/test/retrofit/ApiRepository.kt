@@ -2,6 +2,7 @@ package com.example.test.retrofit
 
 // 例: UserRepository.kt
 
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -71,6 +72,15 @@ class UserRepository(private val userService: ApiService = RetrofitClient.instan
         return safeApiCall { userService.uploadImage(image, description) }
     }
 
+    // マニュアル検索APIの実装
+//    suspend fun searchManuals(keyword: String): NetworkResult<List<Manual>> {
+//        return safeApiCall { userService.searchManuals(keyword) }
+//    }
+    // 新しい完全一致検索のメソッドを追加
+    suspend fun searchManualExact(name: String): NetworkResult<Manual> { // List<>を外す
+        return safeApiCall { userService.searchManualExact(name) }
+    }
+
     // 汎用的なAPI呼び出しのラッパー関数
     private suspend fun <T> safeApiCall(apiCall: suspend () -> retrofit2.Response<T>): NetworkResult<T> {
         return withContext(Dispatchers.IO) {
@@ -82,13 +92,17 @@ class UserRepository(private val userService: ApiService = RetrofitClient.instan
                     } ?: NetworkResult.Error("API response body is null")
                 } else {
                     val errorBody = response.errorBody()?.string() ?: "Unknown error"
+                    Log.e("ApiRepository", "API Error: ${response.code()} - $errorBody")
                     NetworkResult.Error("API Error: ${response.code()} - $errorBody")
                 }
             } catch (e: HttpException) {
+                Log.e("ApiRepository", "Network Error: ${e.code()} - ${e.message()}")
                 NetworkResult.Error("Network Error: ${e.code()} - ${e.message()}")
             } catch (e: IOException) {
+                Log.e("ApiRepository", "Network Connection Error: ${e.message}")
                 NetworkResult.Error("Network Connection Error: ${e.message}")
             } catch (e: Exception) {
+                Log.e("ApiRepository", "An unexpected error occurred: ${e.message}")
                 NetworkResult.Error("An unexpected error occurred: ${e.message}")
             }
         }
