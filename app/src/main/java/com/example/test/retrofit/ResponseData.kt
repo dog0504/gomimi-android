@@ -66,3 +66,11 @@ data class RegisterRequestBody(
     val languageId: Int,
     val addressId: Int
 )
+
+// API仕様 /users/me/bin-days のレスポンスに対応
+data class BinDay(
+    val id: Int,
+    val type: String,
+    val dayOfWeek: String,
+    val time: String
+)
