@@ -1,12 +1,9 @@
 package com.example.yourapp
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -17,20 +14,13 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.ViewModelProvider
+import com.example.test.MainViewModel
 import com.example.test.R
 import com.example.test.databinding.ActivityMainBinding
 import com.example.test.retrofit.GarbageResult
 import com.example.test.retrofit.NetworkResult
-import com.example.test.retrofit.UserRepository
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okhttp3.MediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
+import com.google.android.material.chip.Chip
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -38,22 +28,9 @@ import java.util.concurrent.Executors
 
 class MainActivity : BaseActivity() {
     private lateinit var viewBinding: ActivityMainBinding
+    private lateinit var viewModel: MainViewModel
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
-
-    private var garbageName: String? = "ダミー"
-    private var garbageTips: String? = "中身を出して、さっと水洗いしてください。\n" +
-            "できるだけつぶしてお出しください。\n" +
-            "キャップやラベルは必ずはずして、\n" +
-            "プラスチック資源にお出しください。\n" +
-            "キャップをはずした後ペットボトルに残る\n" +
-            "リング状簡単にはずすことができる場合は、\n" +
-            "はずしてプラスチック資源に、\n" +
-            "はずせない場合は、\n" +
-            "そのまま資源ごみでお出しください。"
-
-    private val userRepository = UserRepository()
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,55 +38,15 @@ class MainActivity : BaseActivity() {
         // レイアウトの設定
         setContentView(viewBinding.root)
 
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomMenu)
-        bottomNav.selectedItemId =R.id.navigation_camera
-        setupBottomNav(bottomNav)
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
-        //権限チェック(1/3)
+        setupUI()
+        observeViewModel()
+
         if (allPermissionsGranted()) {
-            startPreview()   //プレビュー開始
+            startPreview()
         } else {
-            ActivityCompat.requestPermissions(
-                this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS
-            )
-        }
-
-        if (!allPermissionsGranted()) {
-            Toast.makeText(this, "権限が必要です。設定から許可してください。", Toast.LENGTH_LONG).show()
-            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-            val uri = Uri.fromParts("package", packageName, null)
-            intent.data = uri
-            startActivity(intent)
-        }
-
-        //静止画撮影ボタン（クリックリスナー）
-        viewBinding.takePhotoButton.setOnClickListener { takePhoto() }
-
-        // 閉じるボタンのクリックリスナー
-        viewBinding.reshootBtn.setOnClickListener { hideTips();hideDescription() }
-
-        cameraExecutor = Executors.newSingleThreadExecutor()
-
-        // 初期状態ではヒントレイアウトを非表示に設定
-        viewBinding.tipsLayout.visibility = View.GONE
-        // Thipsボタンの位置をbottomMenu上に設定
-//        adjustThipsButtonConstraint(showTips = false)
-
-        // Thipsボタンのクリックリスナー設定
-        viewBinding.tipsbtn.setOnClickListener {
-            if (viewBinding.tipsLayout.isVisible) {
-                // ヒントが表示されている場合は非表示にする
-                hideTips()
-            } else {
-                // ヒントが非表示の場合は表示する
-                showTips()
-            }
-        }
-
-        com.example.test.retrofit.TokenManager.getToken()?.let { token ->
-            Log.d(TAG, "トークン: $token")
-        } ?: run {
-            Log.d(TAG, "トークンが保存されていません。")
+            ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
     }
 
@@ -147,96 +84,26 @@ class MainActivity : BaseActivity() {
         val photoFile = File(cacheDir, "temp_${System.currentTimeMillis()}.jpg")
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
-        imageCapture.takePicture(
-            outputOptions,
-            ContextCompat.getMainExecutor(this),
+        imageCapture.takePicture(outputOptions, ContextCompat.getMainExecutor(this),
             object : ImageCapture.OnImageSavedCallback {
+                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                    viewModel.identifyGarbage(photoFile)
+                }
+
                 override fun onError(exc: ImageCaptureException) {
                     Log.e(TAG, "撮影に失敗しました: ${exc.message}", exc)
                     Toast.makeText(baseContext, "撮影に失敗しました", Toast.LENGTH_SHORT).show()
-                }
-
-                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    Toast.makeText(baseContext, "画像を解析中...", Toast.LENGTH_SHORT).show()
-                    // UIを解析中状態へ
-                    showLoadingState()
-
-                    // コルーチンで画像アップロードを実行
-                    lifecycleScope.launch {
-                        val requestFile = RequestBody.create(MediaType.parse("image/*"), photoFile)
-                        val body = MultipartBody.Part.createFormData("image", photoFile.name, requestFile)
-                        val result = withContext(Dispatchers.IO) {
-                            userRepository.uploadImage(body)
-                        }
-
-                        // 結果に応じてUIを更新
-                        when (result) {
-                            is NetworkResult.Success -> {
-                                Toast.makeText(this@MainActivity, "画像解析成功: ${result.data.queryText}", Toast.LENGTH_SHORT).show()
-                                showResults(result.data.results)
-                            }
-                            is NetworkResult.Error -> {
-                                Toast.makeText(this@MainActivity, "解析失敗: ${result.message}", Toast.LENGTH_LONG).show()
-                                resetToInitialState() // エラー時は初期状態に戻す
-                            }
-                            is NetworkResult.Loading -> {
-                                // ここでは何もしない
-                            }
-                        }
-                        photoFile.delete() // 一時ファイルを削除
-                    }
+                    photoFile.delete() // エラー発生時もファイルを削除
                 }
             }
         )
-
-//        imageCapture?.let { imageCapture ->
-//            val photoFile = File.createTempFile("IMG_", ".jpg", cacheDir)
-//            val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
-//            imageCapture.takePicture(
-//                outputOptions,
-//                ContextCompat.getMainExecutor(this),
-//                object : ImageCapture.OnImageSavedCallback {
-//                    override fun onError(exception: ImageCaptureException) {
-//                        Toast.makeText(this@MainActivity, "撮影に失敗しました", Toast.LENGTH_SHORT).show()
-//                    }
-//                    override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-//                        // 画像ファイルをAPIサーバーに送信
-//                        lifecycleScope.launch {
-//                            val requestFile = RequestBody.create(MediaType.parse("image/jpeg"), photoFile)
-//                            val body = MultipartBody.Part.createFormData("image", photoFile.name, requestFile)
-//                            val result = withContext(Dispatchers.IO) {
-//                                userRepository.uploadImage(body)
-//                            }
-//                            when (result) {
-//                                is com.example.test.retrofit.NetworkResult.Success -> {
-//                                    val recognition = result.data
-//                                    garbageName = recognition.name
-//                                    garbageTips = recognition.description
-//                                    showDescription()
-//                                }
-//                                is com.example.test.retrofit.NetworkResult.Error -> {
-//                                    Toast.makeText(this@MainActivity, "認識失敗: ${result.message}", Toast.LENGTH_SHORT).show()
-//                                    showDescription() // ダミー表示
-//                                }
-//                                else -> {}
-//                            }
-//                            photoFile.delete()
-//                        }
-//                    }
-//                }
-//            )
-//        }
     }
 
     //プレビュー開始
     private fun startPreview() {
-
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
-
         cameraProviderFuture.addListener({
-
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-
             //プレビュー
             val preview = Preview.Builder()
                 .build()
@@ -246,23 +113,64 @@ class MainActivity : BaseActivity() {
 
             //静止画撮影
             imageCapture = ImageCapture.Builder().build()
-
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-
             try {
                 cameraProvider.unbindAll()
-
                 cameraProvider.bindToLifecycle(
                     this,
                     cameraSelector,
                     preview,
                     imageCapture
                 )
-
             } catch (e: Exception) {
                 Log.d("Camera X sample","エラーが発生しました", e)
             }
         }, ContextCompat.getMainExecutor(this))
+    }
+
+    // UIの初期設定とイベントリスナー
+    private fun setupUI() {
+        // BottomNav
+        setupBottomNav(viewBinding.bottomMenu)
+        viewBinding.bottomMenu.selectedItemId = R.id.navigation_camera
+
+        // Click Listeners
+        viewBinding.takePhotoButton.setOnClickListener { takePhoto() }
+        viewBinding.reshootBtn.setOnClickListener { resetToInitialState() }
+        viewBinding.backToListBtn.setOnClickListener { showResultList() }
+
+        cameraExecutor = Executors.newSingleThreadExecutor()
+    }
+
+    // ViewModelのLiveDataを監視
+    private fun observeViewModel() {
+        // 画像認識APIの結果を監視
+        viewModel.identificationResult.observe(this) { result ->
+            viewBinding.progressBar.visibility = if (result is NetworkResult.Loading) View.VISIBLE else View.GONE
+
+            when (result) {
+                is NetworkResult.Success -> showResultList(result.data.results)
+                is NetworkResult.Error -> {
+                    Toast.makeText(this, "解析失敗: ${result.message}", Toast.LENGTH_LONG).show()
+                    resetToInitialState()
+                }
+                else -> {}
+            }
+        }
+
+        // ごみマニュアル検索APIの結果を監視
+        viewModel.manualDetail.observe(this) { result ->
+            if (result is NetworkResult.Success) {
+                val manual = result.data
+                if (manual != null) {
+                    showTips(manual.name, manual.remarks ?: "詳細情報はありません。")
+                } else {
+                    Toast.makeText(this, "詳細情報の取得に失敗しました。", Toast.LENGTH_SHORT).show()
+                }
+            } else if (result is NetworkResult.Error) {
+                Toast.makeText(this, "詳細情報の取得エラー: ${result.message}", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     override fun onDestroy() {
@@ -270,70 +178,43 @@ class MainActivity : BaseActivity() {
         cameraExecutor.shutdown()
     }
 
-    private fun showDescription() {
-        viewBinding.descText.text = garbageName // テキストを設定
-        viewBinding.descLayout.visibility = View.VISIBLE // レイアウトを表示
-        viewBinding.btnLayout.visibility = View.VISIBLE // ボタンを表示
-        viewBinding.takePhotoButton.visibility = View.GONE // 撮影ボタンを非表示にする
-    }
-
-    private fun hideDescription() {
-        viewBinding.descText.text = "" // テキストをクリア
-        viewBinding.descLayout.visibility = View.GONE // レイアウトを非表示
-        viewBinding.btnLayout.visibility = View.GONE // ボタンを非表示
-        viewBinding.takePhotoButton.visibility = View.VISIBLE // 撮影ボタンを表示
-    }
-
-    private fun showTips() {
-        viewBinding.garbageNameText.text = garbageName // ごみの名前を設定
-        viewBinding.tipsText.text = garbageTips // ヒントのテキストを設定
-        viewBinding.descLayout.visibility = View.GONE // レイアウトを非表示
-        viewBinding.tipsLayout.visibility = View.VISIBLE // ヒントレイアウトを表示
-    }
-
-    private fun hideTips() {
-        viewBinding.garbageNameText.text = "" // ごみの名前をクリア
-        viewBinding.tipsText.text = "" // ヒントのテキストをクリア
-        viewBinding.tipsLayout.visibility = View.GONE // ヒントレイアウトを非表示
-        viewBinding.descLayout.visibility = View.VISIBLE // 元のレイアウトを表示
-    }
-
-    // 解析結果をChipとして表示する
-    private fun showResults(results: List<GarbageResult>) {
-//        viewBinding.thipGroup.removeAllViews() // 以前の結果をクリア
-//        viewBinding.thipGroup.visibility = View.VISIBLE
-//
-//        results.forEach { garbageItem ->
-//            val chip = Chip(this).apply {
-//                text = garbageItem.name
-//                isClickable = true
-//                isCheckable = true
-//                setOnClickListener {
-//                    // チップクリック時の動作（例：詳細表示など）をここに追加
-//                    Toast.makeText(this@MainActivity, "${garbageItem.name} の情報を表示します", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//            viewBinding.thipGroup.addView(chip)
-//        }
-
-        // UIの状態を結果表示用に変更
-        viewBinding.takePhotoButton.visibility = View.VISIBLE
-        viewBinding.progressBar.visibility = View.GONE // プログレスバーを非表示
-//        viewBinding.btnLayout.visibility = View.VISIBLE
-    }
-
-    // UIを初期のカメラプレビュー状態に戻す
     private fun resetToInitialState() {
-        hideDescription()
-        viewBinding.progressBar.visibility = View.GONE // プログレスバーを非表示
+        viewBinding.takePhotoButton.visibility = View.VISIBLE
+        viewBinding.descLayout.visibility = View.GONE
+        viewBinding.tipsLayout.visibility = View.GONE
+        viewBinding.btnLayout.visibility = View.GONE
     }
 
-    // UIをロード中（解析中）の状態にする
-    private fun showLoadingState() {
+    private fun showResultList(results: List<GarbageResult>? = null) {
         viewBinding.takePhotoButton.visibility = View.GONE
-        viewBinding.progressBar.visibility = View.VISIBLE
+        viewBinding.descLayout.visibility = View.VISIBLE
+        viewBinding.tipsLayout.visibility = View.GONE
+        viewBinding.btnLayout.visibility = View.VISIBLE
+
+        if (results != null) {
+            viewBinding.descChipGroup.removeAllViews()
+            results.forEach { garbageItem ->
+                val chip = Chip(this).apply {
+                    text = garbageItem.name
+                    isClickable = true
+                    setOnClickListener {
+                        // チップがクリックされたら、その名前で詳細情報を検索
+                        viewModel.fetchManualDetail(garbageItem.name)
+                    }
+                }
+                viewBinding.descChipGroup.addView(chip)
+            }
+        }
     }
 
+    private fun showTips(name: String, description: String) {
+        viewBinding.descLayout.visibility = View.GONE
+        viewBinding.tipsLayout.visibility = View.VISIBLE
+        viewBinding.btnLayout.visibility = View.VISIBLE // 再撮影ボタンは表示したまま
+
+        viewBinding.garbageNameText.text = name
+        viewBinding.tipsText.text = description
+    }
 
     companion object {
         private const val TAG = "CameraXApp"
