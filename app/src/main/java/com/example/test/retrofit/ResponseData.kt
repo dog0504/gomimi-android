@@ -38,3 +38,11 @@ data class GarbageResult(
     val rank: Int,
     val name: String
 )
+
+// API仕様 /manuals/{manualId} や /manuals/search のレスポンスに対応
+data class Manual(
+    val id: Int,
+    val name: String,
+    val category: String,
+    val remarks: String? // nullの可能性があるため
+)
