@@ -46,7 +46,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/takePhotoButton"
@@ -66,15 +65,39 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:visibility="gone">
 
-        <TextView
-            android:id="@+id/garbageNameText"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingBottom="8dp"
-            android:text="ごみ名"
-            android:textSize="22sp"
-            android:textStyle="bold" />
+            android:paddingBottom="8dp">
+
+            <ImageView
+                android:id="@+id/backToListBtn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/return_b"
+                android:contentDescription="戻る"
+                android:layout_marginStart="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?android:attr/selectableItemBackground"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+            <!-- ごみ名（置中） -->
+            <TextView
+                android:id="@+id/garbageNameText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="ごみ名"
+                android:textSize="22sp"
+                android:textStyle="bold"
+
+                android:focusable="true"
+                android:background="?android:attr/selectableItemBackground" />
+        </RelativeLayout>
 
         <ScrollView
             android:id="@+id/tipsScroll"
@@ -91,6 +114,7 @@
                 android:textSize="20sp" />
         </ScrollView>
 
+
         <View
             android:layout_width="match_parent"
             android:layout_height="72dp" />
@@ -100,34 +124,58 @@
     <LinearLayout
         android:id="@+id/descLayout"
         android:layout_width="0dp"
-        android:layout_height="170dp"
+        android:layout_height="wrap_content"
+        android:minHeight="170dp"
+
         android:background="#DDFFFFFF"
         android:orientation="horizontal"
         android:padding="8dp"
-        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/bottomMenu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
         tools:visibility="gone">
 
-        <!-- 提示文字 -->
-        <TextView
-            android:id="@+id/descText"
+        <!-- 左側：可捲動 Chip 區塊 -->
+        <ScrollView
+            android:id="@+id/chipScroll"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="これはペットボトルです。"
-            android:textSize="24sp" />
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="30dp"
+            android:scrollbars="none"
+            android:fillViewport="false">
 
-        <!-- 角色圖片 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <!-- Chip Group -->
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/descChipGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_margin="1dp"
+                    app:singleLine="false"
+                    app:singleSelection="false"
+                    app:chipSpacing="1dp" />
+            </LinearLayout>
+        </ScrollView>
+
+        <!-- 右側：角色圖片 -->
         <ImageView
             android:id="@+id/characterImage"
             android:layout_width="147dp"
-            android:layout_height="222dp"
+            android:layout_height="224dp"
             android:contentDescription="キャラクター"
             android:src="@drawable/gomimi" />
+
     </LinearLayout>
+
 
     <!-- 底部導航欄 -->
     <RelativeLayout
@@ -137,23 +185,23 @@
         android:layout_marginBottom="8dp"
         android:gravity="bottom"
         android:orientation="horizontal"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/preview"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:visibility="gone">
 
-        <Button
-            android:id="@+id/tipsbtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/reshootBtn"
-            android:layout_marginEnd="30dp"
-            android:layout_toStartOf="@+id/reshootBtn"
-            android:backgroundTint="#FFFAE6"
-            android:text="Tips"
-            android:textColor="#7F6B59"
-            android:textSize="20sp" />
+        <!--        <Button-->
+        <!--            android:id="@+id/tipsbtn"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_alignTop="@+id/reshootBtn"-->
+        <!--            android:layout_marginEnd="30dp"-->
+        <!--            android:layout_toStartOf="@+id/reshootBtn"-->
+        <!--            android:backgroundTint="#FFFAE6"-->
+        <!--            android:text="Tips"-->
+        <!--            android:textColor="#7F6B59"-->
+        <!--            android:textSize="20sp" />-->
 
         <Button
             android:id="@+id/reshootBtn"
@@ -163,7 +211,8 @@
             android:backgroundTint="#FFFAE6"
             android:text="再撮影"
             android:textColor="#7F6B59"
-            android:textSize="20sp" />
+            android:textSize="20sp"
+            android:visibility="visible" />
     </RelativeLayout>
 
     <ProgressBar
