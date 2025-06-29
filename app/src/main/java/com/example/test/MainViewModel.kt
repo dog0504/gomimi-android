@@ -1,5 +1,6 @@
 package com.example.test
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -35,6 +36,7 @@ class MainViewModel(private val repository: UserRepository = UserRepository()) :
             val body = MultipartBody.Part.createFormData("image", photoFile.name, requestFile)
 
             val result = repository.uploadImage(body)
+            Log.d("MainViewModel", "identifyGarbage result: $result")
             _identificationResult.value = result
         }
     }
