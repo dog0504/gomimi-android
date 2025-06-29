@@ -149,7 +149,7 @@ class MainActivity : BaseActivity() {
             viewBinding.progressBar.visibility = if (result is NetworkResult.Loading) View.VISIBLE else View.GONE
 
             when (result) {
-                is NetworkResult.Success -> showResultList(result.data.results)
+                is NetworkResult.Success -> showResultList(result.data.query, result.data.results) // 画像認識結果を表示
                 is NetworkResult.Error -> {
                     Toast.makeText(this, "解析失敗: ${result.message}", Toast.LENGTH_LONG).show()
                     resetToInitialState()
@@ -183,15 +183,18 @@ class MainActivity : BaseActivity() {
         viewBinding.descLayout.visibility = View.GONE
         viewBinding.tipsLayout.visibility = View.GONE
         viewBinding.btnLayout.visibility = View.GONE
+        viewBinding.queryTextView.visibility = View.GONE
     }
 
-    private fun showResultList(results: List<GarbageResult>? = null) {
+    private fun showResultList(query: String = null.toString(), results: List<GarbageResult>? = null) {
         viewBinding.takePhotoButton.visibility = View.GONE
         viewBinding.descLayout.visibility = View.VISIBLE
         viewBinding.tipsLayout.visibility = View.GONE
         viewBinding.btnLayout.visibility = View.VISIBLE
+        viewBinding.queryTextView.visibility = View.VISIBLE
 
         if (results != null) {
+            viewBinding.queryTextView.text = query
             viewBinding.descChipGroup.removeAllViews()
             results.forEach { garbageItem ->
                 val chip = Chip(this).apply {
@@ -209,6 +212,7 @@ class MainActivity : BaseActivity() {
 
     private fun showTips(name: String, description: String) {
         viewBinding.descLayout.visibility = View.GONE
+        viewBinding.queryTextView.visibility = View.GONE
         viewBinding.tipsLayout.visibility = View.VISIBLE
         viewBinding.btnLayout.visibility = View.VISIBLE // 再撮影ボタンは表示したまま
 
