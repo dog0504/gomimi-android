@@ -28,8 +28,7 @@ data class AuthResponse(
 
 // ゴミ識別APIのレスポンスデータ
 data class GarbageIdentificationResponse(
-    @SerializedName("query_text")
-    val queryText: String,
+    val query: String,
     val results: List<GarbageResult>
 )
 
@@ -39,6 +38,13 @@ data class GarbageResult(
     val name: String
 )
 
+// API仕様 /manuals/{manualId} や /manuals/search のレスポンスに対応
+data class Manual(
+    val id: Int,
+    val name: String,
+    val category: String,
+    val remarks: String? // nullの可能性があるため
+)
 // GET /languages のレスポンス要素
 data class Language(
     val id: Int,
