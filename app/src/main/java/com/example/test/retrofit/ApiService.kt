@@ -50,4 +50,15 @@ interface ApiService {
     @GET("manuals/search/exact")
     suspend fun searchManualExact(@Query("name") name: String): Response<Manual> // List<>を外し、単一のManualオブジェクトを受け取る
 
+    @GET("languages")
+    suspend fun getLanguages(): Response<List<Language>>
+
+    @GET("addresses/search")
+    suspend fun searchAddress(@Query("postalCode") postalCode: String): Response<List<Address>>
+
+    @POST("auth/register")
+    suspend fun registerUser(@Body requestBody: RegisterRequestBody): Response<AuthResponse>
+
+    @GET("users/me/bin-days")
+    suspend fun getBinDays(): Response<List<BinDay>>
 }

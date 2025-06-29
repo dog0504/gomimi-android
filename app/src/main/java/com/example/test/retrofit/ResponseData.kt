@@ -45,3 +45,38 @@ data class Manual(
     val category: String,
     val remarks: String? // nullの可能性があるため
 )
+// GET /languages のレスポンス要素
+data class Language(
+    val id: Int,
+    val name: String,
+    val code: String
+)
+
+// GET /addresses/search のレスポンス要素
+data class Address(
+    val id: Int,
+    @SerializedName("postal-code") // JSONのキーと変数名をマッピング
+    val postalCode: String,
+    val city: String,
+    val ward: String,
+    val town: String, // nullの場合があるため
+    val chom: String?,
+    val street: String?,
+    val inf: String?
+)
+
+// POST /auth/register のリクエストボディ
+data class RegisterRequestBody(
+    val email: String,
+    val password: String,
+    val languageId: Int,
+    val addressId: Int
+)
+
+// API仕様 /users/me/bin-days のレスポンスに対応
+data class BinDay(
+    val id: Int,
+    val type: String,
+    val dayOfWeek: String,
+    val time: String
+)

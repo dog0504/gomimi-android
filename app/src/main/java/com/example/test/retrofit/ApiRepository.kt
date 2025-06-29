@@ -72,6 +72,7 @@ class UserRepository(private val userService: ApiService = RetrofitClient.instan
         return safeApiCall { userService.uploadImage(image, description) }
     }
 
+
     // マニュアル検索APIの実装
 //    suspend fun searchManuals(keyword: String): NetworkResult<List<Manual>> {
 //        return safeApiCall { userService.searchManuals(keyword) }
@@ -79,6 +80,22 @@ class UserRepository(private val userService: ApiService = RetrofitClient.instan
     // 新しい完全一致検索のメソッドを追加
     suspend fun searchManualExact(name: String): NetworkResult<Manual> { // List<>を外す
         return safeApiCall { userService.searchManualExact(name) }
+    }
+
+    suspend fun getLanguages(): NetworkResult<List<Language>> {
+        return safeApiCall { userService.getLanguages() }
+    }
+
+    suspend fun searchAddress(postalCode: String): NetworkResult<List<Address>> {
+        return safeApiCall { userService.searchAddress(postalCode) }
+    }
+
+    suspend fun registerUser(requestBody: RegisterRequestBody): NetworkResult<AuthResponse> {
+        return safeApiCall { userService.registerUser(requestBody) }
+    }
+
+    suspend fun getBinDays(): NetworkResult<List<BinDay>> {
+        return safeApiCall { userService.getBinDays() }
     }
 
     // 汎用的なAPI呼び出しのラッパー関数

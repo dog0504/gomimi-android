@@ -46,7 +46,7 @@
         <activity
             android:name="com.example.yourapp.LoginActivity"
             android:windowSoftInputMode="adjustResize"/>
-        <activity android:name="com.example.yourapp.RegisterActivity" />
+        <activity android:name=".RegisterActivity" />
         <activity android:name=".ManualDetailActivity" />
 
 
