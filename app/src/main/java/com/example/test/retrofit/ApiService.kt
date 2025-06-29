@@ -61,4 +61,10 @@ interface ApiService {
 
     @GET("users/me/bin-days")
     suspend fun getBinDays(): Response<List<BinDay>>
+
+    @GET("users/me/histories")
+    suspend fun getHistories(
+        @Query("limit") limit: Int = 20,
+        @Query("offset") offset: Int = 0
+    ): Response<List<History>>
 }
