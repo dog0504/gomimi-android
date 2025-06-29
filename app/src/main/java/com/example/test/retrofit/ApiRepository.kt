@@ -13,17 +13,25 @@ import java.io.IOException
 class UserRepository(private val userService: ApiService = RetrofitClient.instance.create(ApiService::class.java)) {
 
     // loginのシミュレーション
-    suspend fun login(email: String, password: String): NetworkResult<User> {
-        return withContext(Dispatchers.IO) {
-            delay(1000) // 1秒の遅延（ネットワーク遅延のシミュレーション）
+//    suspend fun login(email: String, password: String): NetworkResult<User> {
+//        return withContext(Dispatchers.IO) {
+//            delay(1000) // 1秒の遅延（ネットワーク遅延のシミュレーション）
+//
+//            if (email == "test@test.com" && password == "123") {
+//                NetworkResult.Success(User(id = "user123", name = "テストユーザー", email = "test@example.com", token = "mock_jwt_token_12345"))
+//            } else if (email == "error@example.com") {
+//                NetworkResult.Error("ログインに失敗しました: 不明なエラーが発生しました。")
+//            } else {
+//                NetworkResult.Error("ログインに失敗しました: メールアドレスまたはパスワードが違います")
+//            }
+//        }
+//    }
 
-            if (email == "test@test.com" && password == "123") {
-                NetworkResult.Success(User(id = "user123", name = "テストユーザー", email = "test@example.com", token = "mock_jwt_token_12345"))
-            } else if (email == "error@example.com") {
-                NetworkResult.Error("ログインに失敗しました: 不明なエラーが発生しました。")
-            } else {
-                NetworkResult.Error("ログインに失敗しました: メールアドレスまたはパスワードが違います")
-            }
+    // 本番仕様
+    suspend fun login(email: String, password: String): NetworkResult<AuthResponse> {
+        return safeApiCall {
+            val requestBody = LoginRequestBody(email, password)
+            userService.login(requestBody)
         }
     }
 
@@ -52,9 +60,31 @@ class UserRepository(private val userService: ApiService = RetrofitClient.instan
         return safeApiCall { userService.getUsers() }
     }
 
-    // 画像アップロード処理の追加
-    suspend fun uploadImage(image: MultipartBody.Part, description: RequestBody? = null): NetworkResult<RecognitionResult> {
+//    // 画像アップロード処理の追加
+//    suspend fun uploadImage(image: MultipartBody.Part, description: RequestBody? = null): NetworkResult<RecognitionResult> {
+//        return safeApiCall { userService.uploadImage(image, description) }
+//    }
+
+    // ゴミ識別APIの画像アップロード処理
+    suspend fun uploadImage(image: MultipartBody.Part, description: RequestBody? = null): NetworkResult<GarbageIdentificationResponse> {
+        // safeApiCallが新しい型を扱えるようにする
         return safeApiCall { userService.uploadImage(image, description) }
+    }
+
+    suspend fun getLanguages(): NetworkResult<List<Language>> {
+        return safeApiCall { userService.getLanguages() }
+    }
+
+    suspend fun searchAddress(postalCode: String): NetworkResult<List<Address>> {
+        return safeApiCall { userService.searchAddress(postalCode) }
+    }
+
+    suspend fun registerUser(requestBody: RegisterRequestBody): NetworkResult<AuthResponse> {
+        return safeApiCall { userService.registerUser(requestBody) }
+    }
+
+    suspend fun getBinDays(): NetworkResult<List<BinDay>> {
+        return safeApiCall { userService.getBinDays() }
     }
 
     // 汎用的なAPI呼び出しのラッパー関数

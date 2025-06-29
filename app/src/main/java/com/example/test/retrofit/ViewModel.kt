@@ -29,9 +29,19 @@ class UserViewModel(private val userRepository: UserRepository = UserRepository(
     }
 
     // loginのシミュレーション
-    private val _loginResult = MutableLiveData<NetworkResult<User>>()
-    val loginResult: LiveData<NetworkResult<User>> = _loginResult
+//    private val _loginResult = MutableLiveData<NetworkResult<User>>()
+//    val loginResult: LiveData<NetworkResult<User>> = _loginResult
+//
+//    fun performLogin(email: String, password: String) {
+//        viewModelScope.launch {
+//            _loginResult.value = NetworkResult.Loading
+//            _loginResult.value = userRepository.login(email, password)
+//        }
+//    }
 
+    // 本番仕様
+    private val _loginResult = MutableLiveData<NetworkResult<AuthResponse>>()
+    val loginResult: LiveData<NetworkResult<AuthResponse>> = _loginResult
     fun performLogin(email: String, password: String) {
         viewModelScope.launch {
             _loginResult.value = NetworkResult.Loading
@@ -43,9 +53,9 @@ class UserViewModel(private val userRepository: UserRepository = UserRepository(
     // 今回はモックのため、引数をすべて使用する必要はありませんが、実際のAPIに合わせて定義
     fun register(email: String, password: String, language: String, zipCode: String, prefecture: String, city: String) {
         viewModelScope.launch {
-            _loginResult.value = NetworkResult.Loading // 登録もローディング状態から開始
-            // UserRepositoryのregisterメソッドを呼び出す（次のステップで実装）
-            _loginResult.value = userRepository.register(email, password) // 仮にメールとパスワードのみ渡す
+//            _loginResult.value = NetworkResult.Loading // 登録もローディング状態から開始
+//            // UserRepositoryのregisterメソッドを呼び出す（次のステップで実装）
+//            _loginResult.value = userRepository.register(email, password) // 仮にメールとパスワードのみ渡す
         }
     }
 }
