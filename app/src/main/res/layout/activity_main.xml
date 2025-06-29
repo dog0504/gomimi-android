@@ -46,7 +46,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/takePhotoButton"
@@ -63,23 +62,49 @@
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/bottomMenu"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:visibility="gone">
+        app:layout_constraintStart_toStartOf="parent">
 
-        <TextView
-            android:id="@+id/garbageNameText"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingBottom="8dp"
-            android:text="ごみ名"
-            android:textSize="22sp"
-            android:textStyle="bold" />
+            android:paddingBottom="8dp">
+
+            <FrameLayout
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp">
+
+                <ImageView
+                    android:id="@+id/backToListBtn"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:contentDescription="戻る"
+                    android:focusable="true"
+                    android:src="@drawable/return_b" />
+            </FrameLayout>
+
+            <!-- ごみ名（置中） -->
+            <TextView
+                android:id="@+id/garbageNameText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="?android:attr/selectableItemBackground"
+                android:focusable="true"
+                android:text="ごみ名"
+
+                android:textSize="22sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
 
         <ScrollView
             android:id="@+id/tipsScroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:scrollbars="vertical"
             android:maxHeight="400dp">
 
             <TextView
@@ -91,43 +116,92 @@
                 android:textSize="20sp" />
         </ScrollView>
 
+
         <View
             android:layout_width="match_parent"
             android:layout_height="72dp" />
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/queryTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#DDFFFFFF"
+        android:gravity="center"
+        android:text="query"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/descLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible" />
+
     <LinearLayout
         android:id="@+id/descLayout"
         android:layout_width="0dp"
-        android:layout_height="170dp"
+        android:layout_height="wrap_content"
         android:background="#DDFFFFFF"
+
+        android:minHeight="300dp"
         android:orientation="horizontal"
         android:padding="8dp"
+        android:paddingBottom="100dp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/bottomMenu"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
-        <!-- 提示文字 -->
-        <TextView
-            android:id="@+id/descText"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:text="これはペットボトルです。"
-            android:textSize="24sp" />
+        <!-- 左側：可捲動 Chip 區塊 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="250dp"
+            android:layout_height="222dp">
 
-        <!-- 角色圖片 -->
+            <ScrollView
+                android:id="@+id/chipScroll"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fillViewport="false"
+                android:scrollbars="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                    <!-- Chip Group -->
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/descChipGroup"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="1dp"
+                        android:orientation="vertical"
+                        app:chipSpacing="1dp"
+                        app:singleLine="false"
+                        app:singleSelection="false" />
+                </LinearLayout>
+            </ScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- 右側：角色圖片 -->
         <ImageView
             android:id="@+id/characterImage"
             android:layout_width="147dp"
-            android:layout_height="222dp"
+            android:layout_height="224dp"
             android:contentDescription="キャラクター"
             android:src="@drawable/gomimi" />
+
     </LinearLayout>
+
 
     <!-- 底部導航欄 -->
     <RelativeLayout
@@ -140,20 +214,19 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/preview"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:visibility="gone">
+        app:layout_constraintStart_toStartOf="parent">
 
-        <Button
-            android:id="@+id/tipsbtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/reshootBtn"
-            android:layout_marginEnd="30dp"
-            android:layout_toStartOf="@+id/reshootBtn"
-            android:backgroundTint="#FFFAE6"
-            android:text="Tips"
-            android:textColor="#7F6B59"
-            android:textSize="20sp" />
+        <!--        <Button-->
+        <!--            android:id="@+id/tipsbtn"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_alignTop="@+id/reshootBtn"-->
+        <!--            android:layout_marginEnd="30dp"-->
+        <!--            android:layout_toStartOf="@+id/reshootBtn"-->
+        <!--            android:backgroundTint="#FFFAE6"-->
+        <!--            android:text="Tips"-->
+        <!--            android:textColor="#7F6B59"-->
+        <!--            android:textSize="20sp" />-->
 
         <Button
             android:id="@+id/reshootBtn"
