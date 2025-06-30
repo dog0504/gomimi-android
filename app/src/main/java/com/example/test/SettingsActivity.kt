@@ -1,43 +1,91 @@
 package com.example.yourapp
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.ViewModelProvider
 import com.example.test.R
-import android.widget.ImageView
-import android.widget.TextView
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.test.databinding.SettingsMenuBinding
+import com.example.test.retrofit.NetworkResult
+import com.example.test.viewModel.SettingsViewModel
 
 class SettingsActivity: BaseActivity() {
+
+    private lateinit var binding: SettingsMenuBinding // ★ View Bindingプロパティ
+    private lateinit var viewModel: SettingsViewModel
+
+    private val settingsLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        // 子画面から RESULT_OK が返ってきた場合（＝変更が適用された場合）
+        if (result.resultCode == Activity.RESULT_OK) {
+            // ユーザー情報を再取得してUIを更新する
+            viewModel.fetchUserProfile()
+            Toast.makeText(this, "設定を更新しました", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.settings_menu)
+        binding = SettingsMenuBinding.inflate(layoutInflater) // ★ View Bindingでレイアウトをセット
+        setContentView(binding.root)
 
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomMenu)
-        bottomNav.selectedItemId = R.id.navigation_settings
-        setupBottomNav(bottomNav)
+        viewModel = ViewModelProvider(this).get(SettingsViewModel::class.java)
 
+        // Bottom Navの設定
+        setupBottomNav(binding.bottomMenu)
+        binding.bottomMenu.selectedItemId = R.id.navigation_settings
+
+        // 各画面への遷移リスナーを設定
+        setupNavigation()
+
+        // ユーザー情報の監視を開始
+        observeUserProfile()
+
+        // ユーザー情報を取得
+        viewModel.fetchUserProfile()
+    }
+
+    private fun observeUserProfile() {
+        viewModel.userProfile.observe(this) { result ->
+            if (result is NetworkResult.Success) {
+                // ★ 取得したデータをTextViewに設定
+                binding.emailTextView.text = result.data.email
+                binding.languageTextView.text = result.data.language.name
+                binding.addressTextView.text = result.data.address?.let {
+                    "${it.zip}\n${it.city}${it.ward}${it.town ?: ""}${it.chom ?: ""}${it.street ?: ""}${it.inf ?: ""}"
+                } ?: "未設定"
+            } else if (result is NetworkResult.Error) {
+                Toast.makeText(this, "ユーザー情報の取得に失敗しました", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun setupNavigation() {
         // 通知
-        val buttonImage1 = findViewById<ImageView>(R.id.buttonImage1)
-        buttonImage1.setOnClickListener {
+        binding.buttonImage1.setOnClickListener {
             startActivity(Intent(this, NotifySettingsActivity::class.java))
         }
 
         // 言語
-        val buttonImage2 = findViewById<ImageView>(R.id.buttonImage2)
-        buttonImage2.setOnClickListener {
-            startActivity(Intent(this, LanguageSettingsActivity::class.java))
+        binding.buttonImage2.setOnClickListener {
+            val intent = Intent(this, LanguageSettingsActivity::class.java)
+            settingsLauncher.launch(intent) // startActivityではなく、ランチャーで起動
         }
 
         // 所在地
-        val buttonImage3 = findViewById<ImageView>(R.id.buttonImage3)
-        buttonImage3.setOnClickListener {
-            startActivity(Intent(this, LocationSettingsActivity::class.java))
+        binding.languageBtn.setOnClickListener {
+            val intent = Intent(this, LocationSettingsActivity::class.java)
+            settingsLauncher.launch(intent) // startActivityではなく、ランチャーで起動
         }
 
         // ログアウト
-        val buttonText4 = findViewById<TextView>(R.id.buttonText4)
-        buttonText4.setOnClickListener {
+        binding.buttonText4.setOnClickListener {
+            // TODO: ログアウト処理（トークン削除など）を追加
             startActivity(Intent(this, LoginActivity::class.java))
+            finishAffinity() // 全てのアクティビティを終了
         }
     }
 }

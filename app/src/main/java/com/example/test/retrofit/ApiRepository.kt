@@ -102,6 +102,10 @@ class UserRepository(private val userService: ApiService = RetrofitClient.instan
         return safeApiCall { userService.getHistories(limit, offset) }
     }
 
+    suspend fun updateUserProfile(requestBody: UpdateRequestBody): NetworkResult<UserResponseBody> {
+        return safeApiCall { userService.updateUserProfile(requestBody) }
+    }
+
     // 汎用的なAPI呼び出しのラッパー関数
     private suspend fun <T> safeApiCall(apiCall: suspend () -> retrofit2.Response<T>): NetworkResult<T> {
         return withContext(Dispatchers.IO) {
@@ -127,5 +131,9 @@ class UserRepository(private val userService: ApiService = RetrofitClient.instan
                 NetworkResult.Error("An unexpected error occurred: ${e.message}")
             }
         }
+    }
+
+    suspend fun getMyProfile(): NetworkResult<UserResponseBody> {
+        return safeApiCall { userService.getMyProfile() }
     }
 }
