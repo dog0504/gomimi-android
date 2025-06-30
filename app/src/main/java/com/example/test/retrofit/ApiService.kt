@@ -38,7 +38,7 @@ interface ApiService {
 //    ): Response<GarbageIdentificationResponse>
     // テスト用ゴミ識別APIのエンドポイント
     @Multipart
-    @POST("garbage/identify/test")
+    @POST("garbage/identify")
     suspend fun uploadImage(
         @Part image: MultipartBody.Part,
         @Part("description") description: RequestBody? = null
