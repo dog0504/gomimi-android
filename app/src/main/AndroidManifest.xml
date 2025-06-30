@@ -48,6 +48,9 @@
             android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".RegisterActivity" />
         <activity android:name=".ManualDetailActivity" />
+        <activity
+            android:name=".HistoryDetailActivity"
+            android:exported="false" />
 
 
 
