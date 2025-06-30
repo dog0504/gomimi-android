@@ -149,7 +149,7 @@ class MainActivity : BaseActivity() {
             viewBinding.progressBar.visibility = if (result is NetworkResult.Loading) View.VISIBLE else View.GONE
 
             when (result) {
-                is NetworkResult.Success -> showResultList(result.data.query, result.data.results) // 画像認識結果を表示
+                is NetworkResult.Success -> showResultList(result.data.query_text, result.data.results) // 画像認識結果を表示
                 is NetworkResult.Error -> {
                     Toast.makeText(this, "解析失敗: ${result.message}", Toast.LENGTH_LONG).show()
                     resetToInitialState()
@@ -163,7 +163,7 @@ class MainActivity : BaseActivity() {
             if (result is NetworkResult.Success) {
                 val manual = result.data
                 if (manual != null) {
-                    showTips(manual.name, manual.remarks ?: "詳細情報はありません。")
+                    showTips(manual.name, manual.remarks ?: "詳細情報はありません。", manual.category)
                 } else {
                     Toast.makeText(this, "詳細情報の取得に失敗しました。", Toast.LENGTH_SHORT).show()
                 }
@@ -210,7 +210,7 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    private fun showTips(name: String, description: String) {
+    private fun showTips(name: String, description: String, category: String) {
         viewBinding.descLayout.visibility = View.GONE
         viewBinding.queryTextView.visibility = View.GONE
         viewBinding.tipsLayout.visibility = View.VISIBLE
@@ -218,6 +218,7 @@ class MainActivity : BaseActivity() {
 
         viewBinding.garbageNameText.text = name
         viewBinding.tipsText.text = description
+        viewBinding.categoryTextView.text = category
     }
 
     companion object {
