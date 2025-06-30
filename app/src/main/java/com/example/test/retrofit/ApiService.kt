@@ -75,4 +75,15 @@ interface ApiService {
     @PUT("users/me")
     suspend fun updateUserProfile(@Body requestBody: UpdateRequestBody): Response<UserResponseBody>
 
+    @GET("manuals")
+    suspend fun getAllManuals(): Response<List<ManualInfo>>
+
+    @GET("manuals/search")
+    suspend fun searchManualsByKeyword(@Query("keyword") keyword: String): Response<List<ManualInfo>>
+
+    @GET("manuals/search/initials")
+    suspend fun searchManualsByInitial(@Query("initial") initial: String): Response<List<ManualInfo>>
+
+
+
 }
