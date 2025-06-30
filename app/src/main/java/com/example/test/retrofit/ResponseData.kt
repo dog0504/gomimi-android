@@ -80,3 +80,11 @@ data class BinDay(
     val dayOfWeek: String,
     val time: String
 )
+
+// API仕様 /users/me/histories のレスポンスに対応
+data class History(
+    val id: Int,
+    val name: String,
+    val type: String,
+    val createdAt: String // 日付は文字列として受け取る
+)
