@@ -1,5 +1,6 @@
 package com.example.yourapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -7,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.test.HistoryAdapter
+import com.example.test.HistoryDetailActivity
 import com.example.test.HistoryViewModel
 import com.example.test.R
 import com.example.test.databinding.ActivityHistoryBinding
@@ -42,7 +44,12 @@ class HistoryActivity : BaseActivity() {
     }
 
     private fun setupRecyclerView() {
-        historyAdapter = HistoryAdapter(emptyList()) // 最初は空のリストで初期化
+        historyAdapter = HistoryAdapter(emptyList()) { historyItem ->
+            val intent = Intent(this, HistoryDetailActivity::class.java).apply {
+                putExtra(HistoryDetailActivity.EXTRA_GARBAGE_NAME, historyItem.name)
+            }
+            startActivity(intent)
+        }
         binding.recyclerView.apply {
             adapter = historyAdapter
             layoutManager = LinearLayoutManager(this@HistoryActivity)
