@@ -98,6 +98,10 @@ class UserRepository(private val userService: ApiService = RetrofitClient.instan
         return safeApiCall { userService.getBinDays() }
     }
 
+    suspend fun getHistories(limit: Int = 20, offset: Int = 0): NetworkResult<List<History>> {
+        return safeApiCall { userService.getHistories(limit, offset) }
+    }
+
     // 汎用的なAPI呼び出しのラッパー関数
     private suspend fun <T> safeApiCall(apiCall: suspend () -> retrofit2.Response<T>): NetworkResult<T> {
         return withContext(Dispatchers.IO) {
