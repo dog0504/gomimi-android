@@ -1,42 +1,69 @@
 package com.example.yourapp
 
-import HistoryAdapter
 import android.os.Bundle
+import android.view.View
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.test.HistoryAdapter
+import com.example.test.HistoryViewModel
 import com.example.test.R
-import com.example.test.HistoryItem
-
-
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.test.databinding.ActivityHistoryBinding
+import com.example.test.retrofit.NetworkResult
 
 class HistoryActivity : BaseActivity() {
 
+    private lateinit var binding: ActivityHistoryBinding
+    private lateinit var viewModel: HistoryViewModel
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: HistoryAdapter
+    private lateinit var historyAdapter: HistoryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_history)
+        binding = ActivityHistoryBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        // 資料
-        val dummyData = listOf(
-            HistoryItem("ペットボトル", "2025/5/23 10:21"),
-            HistoryItem("缶", "2025/5/24 14:35"),
-            HistoryItem("紙パック", "2025/5/25 09:50"),
-            HistoryItem("段ボール", "2025/5/26 11:05"),
-            HistoryItem("ガラス瓶", "2025/5/27 13:45")
-        )
+        // ViewModelを初期化
+        viewModel = ViewModelProvider(this).get(HistoryViewModel::class.java)
 
-        // RecyclerView 設定
-        recyclerView = findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = HistoryAdapter(dummyData)
-        recyclerView.adapter = adapter
+        // AdapterとRecyclerViewを初期化
+        setupRecyclerView()
 
-        // 底部導覽
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomMenu)
-        bottomNav.selectedItemId = R.id.navigation_history
-        setupBottomNav(bottomNav)
+        // LiveDataの監視を開始
+        observeHistories()
+
+        // データを取得開始
+        viewModel.fetchHistories()
+
+        // Bottom Navigationの設定
+        setupBottomNav(binding.bottomMenu)
+        binding.bottomMenu.selectedItemId = R.id.navigation_history
+    }
+
+    private fun setupRecyclerView() {
+        historyAdapter = HistoryAdapter(emptyList()) // 最初は空のリストで初期化
+        binding.recyclerView.apply {
+            adapter = historyAdapter
+            layoutManager = LinearLayoutManager(this@HistoryActivity)
+        }
+    }
+
+    private fun observeHistories() {
+        viewModel.histories.observe(this) { result ->
+            // ローディング表示を制御
+            binding.progressBar.visibility = if (result is NetworkResult.Loading) View.VISIBLE else View.GONE
+            when (result) {
+                is NetworkResult.Success -> {
+                    // 成功したらAdapterのデータを更新
+                    historyAdapter.updateData(result.data)
+                }
+                is NetworkResult.Error -> {
+                    // エラーメッセージを表示
+                    Toast.makeText(this, "履歴の取得に失敗: ${result.message}", Toast.LENGTH_LONG).show()
+                }
+                else -> {} // Loading
+            }
+        }
     }
 }
