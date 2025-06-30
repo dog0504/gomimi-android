@@ -17,7 +17,7 @@ class HistoryViewModel(private val repository: UserRepository = UserRepository()
     fun fetchHistories() {
         viewModelScope.launch {
             _histories.value = NetworkResult.Loading
-            _histories.value = repository.getHistories()
+            _histories.value = repository.getHistories(limit = 100)
         }
     }
 }
