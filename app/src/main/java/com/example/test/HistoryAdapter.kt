@@ -9,7 +9,7 @@ import com.example.test.retrofit.History
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 
-class HistoryAdapter(private var historyList: List<History>) :
+class HistoryAdapter(private var historyList: List<History>, private val onItemClicked: (History) -> Unit) :
     RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() {
 
     class HistoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -28,6 +28,10 @@ class HistoryAdapter(private var historyList: List<History>) :
         // ★ Historyオブジェクトのプロパティをバインド
         holder.itemNameTextView.text = item.name
         holder.timestampTextView.text = formatTimestamp(item.createdAt)
+
+        holder.itemView.setOnClickListener {
+            onItemClicked(item)
+        }
     }
 
     override fun getItemCount() = historyList.size
