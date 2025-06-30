@@ -101,3 +101,8 @@ data class UpdateRequestBody(
     val languageId: Int? = null, // 更新しない場合はnull
     val addressId: Int? = null   // 更新しない場合はnull
 )
+
+data class ManualInfo(
+    val id: Int,
+    val name: String
+)
