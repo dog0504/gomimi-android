@@ -2,7 +2,6 @@ package com.example.yourapp
 
 import android.os.Bundle
 import android.widget.ArrayAdapter
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.Spinner
 import com.example.test.R
@@ -21,7 +20,7 @@ class NotifySettingsActivity: BaseActivity() {
         backButton.setOnClickListener {
             finish() // 現在のActivityを終了して前の画面に戻る
         }
-        val spinner: Spinner = findViewById(R.id.spinner2)
+        val spinner: Spinner = findViewById(R.id.languageSpinner)
 
 
         val notifyOptions = listOf("前日", "1時間前", "30分前", "15分前")

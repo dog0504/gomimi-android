@@ -72,7 +72,7 @@
             android:textSize="24sp" />
 
         <Spinner
-            android:id="@+id/spinner2"
+            android:id="@+id/languageSpinner"
             android:layout_width="199dp"
             android:layout_height="59dp"
             android:layout_gravity="center"
@@ -91,7 +91,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <ImageView
-            android:id="@+id/buttonImage3"
+            android:id="@+id/applyBtn"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="20dp"
