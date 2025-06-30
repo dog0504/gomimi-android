@@ -106,6 +106,18 @@ class UserRepository(private val userService: ApiService = RetrofitClient.instan
         return safeApiCall { userService.updateUserProfile(requestBody) }
     }
 
+    suspend fun getAllManuals(): NetworkResult<List<ManualInfo>> {
+        return safeApiCall { userService.getAllManuals() }
+    }
+
+    suspend fun searchManualsByKeyword(keyword: String): NetworkResult<List<ManualInfo>> {
+        return safeApiCall { userService.searchManualsByKeyword(keyword) }
+    }
+
+    suspend fun searchManualsByInitial(initial: String): NetworkResult<List<ManualInfo>> {
+        return safeApiCall { userService.searchManualsByInitial(initial) }
+    }
+
     // 汎用的なAPI呼び出しのラッパー関数
     private suspend fun <T> safeApiCall(apiCall: suspend () -> retrofit2.Response<T>): NetworkResult<T> {
         return withContext(Dispatchers.IO) {
