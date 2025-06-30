@@ -55,8 +55,8 @@ data class Language(
 // GET /addresses/search のレスポンス要素
 data class Address(
     val id: Int,
-    @SerializedName("postal-code") // JSONのキーと変数名をマッピング
-    val postalCode: String,
+    @SerializedName("zip") // JSONのキーと変数名をマッピング
+    val zip: String,
     val city: String,
     val ward: String,
     val town: String, // nullの場合があるため
@@ -87,4 +87,17 @@ data class History(
     val name: String,
     val type: String,
     val createdAt: String // 日付は文字列として受け取る
+)
+
+// API仕様 GET /users/me のレスポンスに対応
+data class UserResponseBody(
+    val email: String,
+    val address: Address, // 住所情報
+    val language: Language  // 言語情報
+)
+
+// API仕様 PUT /users/me のリクエストボディに対応
+data class UpdateRequestBody(
+    val languageId: Int? = null, // 更新しない場合はnull
+    val addressId: Int? = null   // 更新しない場合はnull
 )
