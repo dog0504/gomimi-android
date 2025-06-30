@@ -7,6 +7,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -67,4 +68,11 @@ interface ApiService {
         @Query("limit") limit: Int = 20,
         @Query("offset") offset: Int = 0
     ): Response<List<History>>
+
+    @GET("users/me")
+    suspend fun getMyProfile(): Response<UserResponseBody>
+
+    @PUT("users/me")
+    suspend fun updateUserProfile(@Body requestBody: UpdateRequestBody): Response<UserResponseBody>
+
 }
