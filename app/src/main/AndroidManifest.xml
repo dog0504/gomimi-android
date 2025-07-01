@@ -14,7 +14,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <application
-        android:name=".MyApplication"
+        android:name=".activity.MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -27,7 +27,7 @@
 
 
         <activity
-            android:name="com.example.yourapp.MainActivity"
+            android:name=".activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,20 +36,20 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.example.yourapp.CalendarActivity" />
-        <activity android:name="com.example.yourapp.ManualActivity" />
-        <activity android:name="com.example.yourapp.HistoryActivity" />
-        <activity android:name="com.example.yourapp.SettingsActivity" />
-        <activity android:name="com.example.yourapp.NotifySettingsActivity" />
-        <activity android:name="com.example.yourapp.LanguageSettingsActivity" />
-        <activity android:name="com.example.yourapp.LocationSettingsActivity" />
+        <activity android:name=".activity.CalendarActivity" />
+        <activity android:name=".activity.ManualActivity" />
+        <activity android:name=".activity.HistoryActivity" />
+        <activity android:name=".activity.SettingsActivity" />
+        <activity android:name=".activity.NotifySettingsActivity" />
+        <activity android:name=".activity.LanguageSettingsActivity" />
+        <activity android:name=".activity.LocationSettingsActivity" />
         <activity
-            android:name="com.example.yourapp.LoginActivity"
+            android:name=".activity.LoginActivity"
             android:windowSoftInputMode="adjustResize"/>
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".ManualDetailActivity" />
+        <activity android:name=".activity.RegisterActivity" />
+        <activity android:name=".activity.ManualDetailActivity" />
         <activity
-            android:name=".HistoryDetailActivity"
+            android:name=".activity.HistoryDetailActivity"
             android:exported="false" />
 
 

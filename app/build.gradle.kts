@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.test"
+    namespace = "com.example.gomimi"
     compileSdk = 35
 
     buildFeatures {
@@ -23,7 +23,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.test"
+        applicationId = "com.example.gomimi"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
