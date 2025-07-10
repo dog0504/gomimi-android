@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -46,6 +47,37 @@ class MainActivity : BaseActivity() {
             startPreview()
         } else {
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+        }
+        requestNotificationPermission()
+        //補足説明：androidのOSのバージョンが13未満の場合は
+        //「デフォルトで有効」になって、別に権限許可設定を別にする必要はない。
+        //但し、以上の場合は「デフォルトで無効」の状態になっているため、権限許可設定が要る。
+
+    }
+
+    //権限チェック(1/3)
+    private val notificationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()){
+        isGranted: Boolean ->
+        if (isGranted) {
+            // 通知権限が許可された時の処理
+            Log.d("msg", "通知権限が許可されました。")
+        } else {
+            // 通知権限が拒否された時の処理
+            Log.d("msg", "通知権限が許可されませんでした。")
+        }
+    }
+
+    private fun requestNotificationPermission(){
+        //「androidが13以上なのか？」をチェック
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            //通知権限が許可されたのんかチェック
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                // 通知権限が許可されている場合の処理
+                Log.d("msg", "通知権限が許可されています。")
+            } else {
+                // 通知権限がまだ許可されていない場合、リクエストする
+                notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+            }
         }
     }
 
