@@ -1,6 +1,9 @@
 package com.example.gomimi.activity
 
+import android.app.NotificationChannel // 通知チャンネル初期設定のためインポート
 import android.Manifest
+import android.app.NotificationManager
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -15,6 +18,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
 import androidx.lifecycle.ViewModelProvider
 import com.example.gomimi.R
 import com.example.gomimi.dataClass.GarbageResult
@@ -31,6 +35,8 @@ class MainActivity : BaseActivity() {
     private lateinit var viewModel: MainViewModel
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
+    private val CHANNEL_ID_GARBAGE = "garbage_channel" //通知チャネルID（任意で可能）
+    private val NOTIFY_ID = 54.304//通知ID（任意で可能）
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,6 +109,27 @@ class MainActivity : BaseActivity() {
 //                finish()
                 Log.d("msg", "権限が取得できませんでした。")
             }
+        }
+    }
+
+    //通知チャンネル
+    private fun createNotificationChannel(){
+        // Build.VERSION.SDK_INTは、Android開発における定数で、
+        // デバイスのオペレーティング・システムのAPIレベルを表す。
+        // Build.VERSION_CODES.OはAndroid開発における定数で、
+        // Android 8.0（APIレベル26）を表し、Oreoとしても知られている。
+        // 通知チャネルという仕組みは、Android 8.0で初めて導入されました。
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            val name = "ゴミミちゃん"
+            val descriptionText = "ゴミミちゃんの通知"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(CHANNEL_ID_GARBAGE, name, importance).apply {
+                description = descriptionText
+            }
+            //　チャンネルをシステムに登録
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
         }
     }
 
