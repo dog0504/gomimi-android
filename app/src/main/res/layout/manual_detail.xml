@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="12dp"
             android:layout_marginRight="8dp"
-            android:text="の捨て方"
+            android:text="@string/dispose"
             android:textSize="24sp" />
 
         <LinearLayout

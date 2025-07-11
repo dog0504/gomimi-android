@@ -5,6 +5,7 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.Spinner
 import com.example.gomimi.R
+import com.example.test.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class NotifySettingsActivity: BaseActivity() {
@@ -22,7 +23,7 @@ class NotifySettingsActivity: BaseActivity() {
         }
         val spinner: Spinner = findViewById(R.id.languageSpinner)
 
-        val notifyOptions = listOf("前日", "1時間前", "30分前", "15分前")
+        val notifyOptions = listOf("@string/beforeyesterday", "@string/hourago", "@string/thirtyminago", "@string/fifteenminago")
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, notifyOptions)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)

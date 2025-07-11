@@ -51,7 +51,7 @@ class RegisterActivity: BaseActivity() {
             if (postalCode.length == 7) {
                 viewModel.searchAddress(postalCode)
             } else {
-                Toast.makeText(this, "郵便番号を7桁で入力してください", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "@string/ziperror", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -67,7 +67,7 @@ class RegisterActivity: BaseActivity() {
                 languageList = result.data
                 setupSpinner(viewBinding.languageSpinner, languageList.map { it.name })
             } else if (result is NetworkResult.Error) {
-                Toast.makeText(this, "言語の取得に失敗", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "@string/language_error", Toast.LENGTH_LONG).show()
             }
         }
 
@@ -80,11 +80,11 @@ class RegisterActivity: BaseActivity() {
                     // ★ 住所特定後のUIセットアップを呼び出す
                     setupAddressSelection()
                 } else {
-                    Toast.makeText(this, "該当する住所が見つかりませんでした", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "@string/noaddress", Toast.LENGTH_SHORT).show()
                     setAddressFieldsVisibility(View.GONE)
                 }
             } else if (result is NetworkResult.Error) {
-                Toast.makeText(this, "該当する住所が見つかりませんでした", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "@string/noaddress", Toast.LENGTH_LONG).show()
                 setAddressFieldsVisibility(View.GONE)
             } else if (result is NetworkResult.Loading) {
                 // 検索中は住所フィールドを隠す
@@ -97,7 +97,7 @@ class RegisterActivity: BaseActivity() {
             viewBinding.registerBtn.isEnabled = result !is NetworkResult.Loading
 
             if (result is NetworkResult.Success) {
-                Toast.makeText(this, "登録成功！", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "@string/register_success", Toast.LENGTH_LONG).show()
                 val token = (result.data as? AuthResponse)?.accessToken
                 if (token != null) TokenManager.saveToken(token)
 
@@ -106,7 +106,7 @@ class RegisterActivity: BaseActivity() {
                 })
                 finish()
             } else if (result is NetworkResult.Error) {
-                Toast.makeText(this, "登録エラー", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "@string/register_error", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -126,7 +126,7 @@ class RegisterActivity: BaseActivity() {
 
         // 1.「丁目」スピナーのセットアップ
         val choms = addressList.mapNotNull { it.chom }.distinct()
-        setupSpinner(viewBinding.chomSpinner, listOf("丁目を選択") + choms) { chomPos ->
+        setupSpinner(viewBinding.chomSpinner, listOf("@string/chome") + choms) { chomPos ->
             val selectedChom = choms.getOrNull(chomPos - 1)
             // 丁目が選択されたら、それに基づいて番地の選択肢を更新
             updateStreetSpinner(selectedChom)
@@ -140,7 +140,7 @@ class RegisterActivity: BaseActivity() {
         val filteredByChom = addressList.filter { selectedChom == null || it.chom == selectedChom }
         val streets = filteredByChom.mapNotNull { it.street }.distinct()
 
-        setupSpinner(viewBinding.streetSpinner, listOf("番地を選択") + streets) { streetPos ->
+        setupSpinner(viewBinding.streetSpinner, listOf("@string/street") + streets) { streetPos ->
             val selectedStreet = streets.getOrNull(streetPos - 1)
             // 番地が選択されたら、それに基づいて詳細の選択肢を更新
             updateInfSpinner(selectedChom, selectedStreet)
@@ -154,7 +154,7 @@ class RegisterActivity: BaseActivity() {
         val filtered = addressList.filter { (selectedChom == null || it.chom == selectedChom) && (selectedStreet == null || it.street == selectedStreet) }
         val infs = filtered.mapNotNull { it.inf }.distinct()
 
-        setupSpinner(viewBinding.infSpinner, listOf("詳細を選択") + infs) { infPos ->
+        setupSpinner(viewBinding.infSpinner, listOf("@string/inf") + infs) { infPos ->
             val selectedInf = infs.getOrNull(infPos - 1)
             // 全ての条件で絞り込んだ結果、候補が1つに確定すればIDを保存
             val finalAddress = filtered.find { it.inf == selectedInf }

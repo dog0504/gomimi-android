@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFBEF"
-    tools:context=".YourActivity">
-
+    >
+<!--    tools:context=".YourActivity"-->
     <!-- 左上角返回鍵 -->
     <ImageView
         android:id="@+id/back_button"
@@ -16,7 +16,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/return_b"
-        android:contentDescription="戻る"
+        android:contentDescription="@string/back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -43,7 +43,7 @@
             android:layout_marginBottom="12dp"
             android:gravity="center"
             android:padding="8dp"
-            android:text="所在地設定"
+            android:text="@string/address_setting"
             android:textColor="#000000"
             android:textSize="34sp" />
 
@@ -51,7 +51,7 @@
             android:id="@+id/currentAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="現在の所在地："
+            android:text="@string/currentAddress"
             android:textSize="20sp" />
 
         <TextView
@@ -73,7 +73,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/edittext_background"
-                android:hint="郵便番号"
+                android:hint="@string/zipCode"
                 android:minHeight="48dp"
                 android:padding="10dp"
                 android:textColor="#000000"
@@ -88,7 +88,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:backgroundTint="#EDD3BB"
-                android:text="検索"
+                android:text="@string/search"
                 android:textColor="#5D5C5C"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -197,7 +197,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="適用"
+            android:text="@string/apply"
             android:textColor="#5D5042"
             android:textSize="24sp" />
     </FrameLayout>

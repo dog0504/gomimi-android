@@ -29,7 +29,7 @@ class HistoryDetailActivity : AppCompatActivity() {
         val garbageName = intent.getStringExtra(EXTRA_GARBAGE_NAME)
 
         if (garbageName == null) {
-            Toast.makeText(this, "情報の取得に失敗しました", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "@string/intelligence_not_found", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
@@ -49,7 +49,7 @@ class HistoryDetailActivity : AppCompatActivity() {
             if (result is NetworkResult.Success) {
                 val manual = result.data
                 binding.textView.text = manual.name
-                binding.textView2.text = "カテゴリ: ${manual.category}\n\n${manual.remarks ?: "詳細情報はありません。"}"
+                binding.textView2.text = "@string/category ${manual.category}\n\n${manual.remarks ?: "@string/noinformation"}"
             } else if (result is NetworkResult.Error) {
                 Toast.makeText(this, "詳細情報の取得エラー: ${result.message}", Toast.LENGTH_LONG).show()
             }

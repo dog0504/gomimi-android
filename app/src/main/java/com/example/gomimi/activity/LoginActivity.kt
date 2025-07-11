@@ -58,7 +58,7 @@ class LoginActivity: BaseActivity() {
                     binding.passwordEditText.isEnabled = true
 
                     val token = result.data.accessToken
-                    Toast.makeText(this, "ログイン成功！", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "@string/login_successful", Toast.LENGTH_LONG).show()
                     Log.d("LoginActivity", "AccessToken: $token")
                     TokenManager.saveToken(token)
                     val intent = Intent(this, MainActivity::class.java)
@@ -72,7 +72,7 @@ class LoginActivity: BaseActivity() {
                     binding.emailEditText.isEnabled = true
                     binding.passwordEditText.isEnabled = true
 //                    Toast.makeText(this, "エラー: ${result.message}", Toast.LENGTH_LONG).show()
-                    Toast.makeText(this, "メールアドレスかパスワードが間違っています。", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "@string/incorrect", Toast.LENGTH_LONG).show()
                 }
             }
         }

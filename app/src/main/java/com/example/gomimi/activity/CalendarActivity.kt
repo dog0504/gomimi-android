@@ -56,7 +56,7 @@ class CalendarActivity : BaseActivity() {
                 }
 
                 is NetworkResult.Error -> {
-                    Toast.makeText(this, "データ取得エラー: ${result.message}", Toast.LENGTH_LONG)
+                    Toast.makeText(this, "@string/date_not_found ${result.message}", Toast.LENGTH_LONG)
                         .show()
                 }
 
@@ -82,7 +82,7 @@ class CalendarActivity : BaseActivity() {
     private fun populateCalendar(garbageInfoList: List<GarbageInfo>) {
         // ★ calendarLayoutへのアクセスをbinding経由に変更
         viewBinding.calendarLayout.removeAllViews() // 表示をリセット
-        val daysOfWeek = listOf("日", "月", "火", "水", "木", "金", "土")
+        val daysOfWeek = listOf("@string/Mon", "@string/Tue", "@string/Wed", "@string/Thu", "@string/Fri", "@string/Sat", "@string/Sun")
 
         for (day in daysOfWeek) {
             val view = LayoutInflater.from(this)
@@ -124,10 +124,10 @@ class CalendarActivity : BaseActivity() {
     // カテゴリ名から画像リソースIDを取得
     private fun getImageResourceForCategory(category: String): Int {
         return when (category) {
-            "普通ごみ" -> R.drawable.normal_gomi
-            "資源ごみ" -> R.drawable.recyclable_gomi
-            "古紙衣類" -> R.drawable.paper_gomi
-            "プラスチック資源" -> R.drawable.plastic
+            "@string/normal_gomi" -> R.drawable.normal_gomi
+            "@string/recyclable_gomi" -> R.drawable.recyclable_gomi
+            "@string/paper_gomi" -> R.drawable.paper_gomi
+            "@string/plastic" -> R.drawable.plastic
             else -> R.drawable.default_gomi
         }
     }
@@ -135,8 +135,8 @@ class CalendarActivity : BaseActivity() {
     // "月曜日" -> "月" のように変換
     private fun convertToShortDay(fullName: String): String {
         return when (fullName) {
-            "日曜日" -> "日"; "月曜日" -> "月"; "火曜日" -> "火"; "水曜日" -> "水";
-            "木曜日" -> "木"; "金曜日" -> "金"; "土曜日" -> "土"
+            "日曜日" -> "@string/Sun"; "月曜日" -> "@string/Mon"; "火曜日" -> "@string/Tue"; "水曜日" -> "@string/Wed";
+            "木曜日" -> "@string/Thu"; "金曜日" -> "@string/Fri"; "土曜日" -> "@string/Sat"
             else -> fullName.take(1)
         }
     }
