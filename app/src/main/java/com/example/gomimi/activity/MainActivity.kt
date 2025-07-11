@@ -2,6 +2,7 @@ package com.example.gomimi.activity
 
 import android.app.NotificationChannel // 通知チャンネル初期設定のためインポート
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
@@ -35,8 +36,9 @@ class MainActivity : BaseActivity() {
     private lateinit var viewModel: MainViewModel
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
-    private val CHANNEL_ID_GARBAGE = "garbage_channel" //通知チャネルID（任意で可能）
-    private val NOTIFY_ID = 54.304//通知ID（任意で可能）
+
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,6 +115,7 @@ class MainActivity : BaseActivity() {
     }
 
     //通知チャンネル
+    @SuppressLint("ObsoleteSdkInt")
     private fun createNotificationChannel(){
         // Build.VERSION.SDK_INTは、Android開発における定数で、
         // デバイスのオペレーティング・システムのAPIレベルを表す。
@@ -280,6 +283,8 @@ class MainActivity : BaseActivity() {
     }
 
     companion object {
+        const val CHANNEL_ID_GARBAGE = "garbage_channel" //通知チャネルID（任意で可能）NotifySettingActivity.ktで使用
+        const val NOTIFY_ID = 54304//通知ID（任意で可能）NotifySettingActivity.ktで使用
         private const val TAG = "CameraXApp"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val REQUEST_CODE_PERMISSIONS = 10
