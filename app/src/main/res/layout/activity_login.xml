@@ -16,7 +16,7 @@
         android:id="@+id/rrm9ec9vx88d"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" android:adjustViewBounds="true" android:scaleType="fitXY"
-        android:src="@drawable/Vector" />
+        android:src="@drawable/vector" />
 
     <View
         android:layout_width="match_parent"

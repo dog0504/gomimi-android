@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import com.example.gomimi.R
 import com.example.gomimi.databinding.ActivityLoginBinding
 import com.example.gomimi.retrofit.NetworkResult
 import com.example.gomimi.retrofit.TokenManager
@@ -58,7 +59,7 @@ class LoginActivity: BaseActivity() {
                     binding.passwordEditText.isEnabled = true
 
                     val token = result.data.accessToken
-                    Toast.makeText(this, "@string/login_successful", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.login_successful), Toast.LENGTH_LONG).show()
                     Log.d("LoginActivity", "AccessToken: $token")
                     TokenManager.saveToken(token)
                     val intent = Intent(this, MainActivity::class.java)

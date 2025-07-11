@@ -23,7 +23,7 @@ class SettingsActivity: BaseActivity() {
         if (result.resultCode == Activity.RESULT_OK) {
             // ユーザー情報を再取得してUIを更新する
             viewModel.fetchUserProfile()
-            Toast.makeText(this, "@string/settingupdete", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.settingupdete), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -58,7 +58,7 @@ class SettingsActivity: BaseActivity() {
                     "${it.zip}\n${it.city}${it.ward}${it.town ?: ""}${it.chom ?: ""}${it.street ?: ""}${it.inf ?: ""}"
                 } ?: "未設定"
             } else if (result is NetworkResult.Error) {
-                Toast.makeText(this, "@string/user_not_found", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.user_not_found), Toast.LENGTH_SHORT).show()
             }
         }
     }

@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import com.example.gomimi.R
 import com.example.gomimi.dataClass.Address
 import com.example.gomimi.dataClass.AuthResponse
 import com.example.gomimi.dataClass.Language
@@ -51,7 +52,7 @@ class RegisterActivity: BaseActivity() {
             if (postalCode.length == 7) {
                 viewModel.searchAddress(postalCode)
             } else {
-                Toast.makeText(this, "@string/ziperror", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.ziperror), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -67,7 +68,7 @@ class RegisterActivity: BaseActivity() {
                 languageList = result.data
                 setupSpinner(viewBinding.languageSpinner, languageList.map { it.name })
             } else if (result is NetworkResult.Error) {
-                Toast.makeText(this, "@string/language_error", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.language_error), Toast.LENGTH_LONG).show()
             }
         }
 
@@ -84,7 +85,7 @@ class RegisterActivity: BaseActivity() {
                     setAddressFieldsVisibility(View.GONE)
                 }
             } else if (result is NetworkResult.Error) {
-                Toast.makeText(this, "@string/noaddress", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.noaddress), Toast.LENGTH_LONG).show()
                 setAddressFieldsVisibility(View.GONE)
             } else if (result is NetworkResult.Loading) {
                 // 検索中は住所フィールドを隠す
@@ -126,7 +127,7 @@ class RegisterActivity: BaseActivity() {
 
         // 1.「丁目」スピナーのセットアップ
         val choms = addressList.mapNotNull { it.chom }.distinct()
-        setupSpinner(viewBinding.chomSpinner, listOf("@string/chome") + choms) { chomPos ->
+        setupSpinner(viewBinding.chomSpinner, listOf(getString(R.string.chome)) + choms) { chomPos ->
             val selectedChom = choms.getOrNull(chomPos - 1)
             // 丁目が選択されたら、それに基づいて番地の選択肢を更新
             updateStreetSpinner(selectedChom)
@@ -140,7 +141,7 @@ class RegisterActivity: BaseActivity() {
         val filteredByChom = addressList.filter { selectedChom == null || it.chom == selectedChom }
         val streets = filteredByChom.mapNotNull { it.street }.distinct()
 
-        setupSpinner(viewBinding.streetSpinner, listOf("@string/street") + streets) { streetPos ->
+        setupSpinner(viewBinding.streetSpinner, listOf(getString(R.string.street)) + streets) { streetPos ->
             val selectedStreet = streets.getOrNull(streetPos - 1)
             // 番地が選択されたら、それに基づいて詳細の選択肢を更新
             updateInfSpinner(selectedChom, selectedStreet)
@@ -154,7 +155,7 @@ class RegisterActivity: BaseActivity() {
         val filtered = addressList.filter { (selectedChom == null || it.chom == selectedChom) && (selectedStreet == null || it.street == selectedStreet) }
         val infs = filtered.mapNotNull { it.inf }.distinct()
 
-        setupSpinner(viewBinding.infSpinner, listOf("@string/inf") + infs) { infPos ->
+        setupSpinner(viewBinding.infSpinner, listOf(getString(R.string.inf)) + infs) { infPos ->
             val selectedInf = infs.getOrNull(infPos - 1)
             // 全ての条件で絞り込んだ結果、候補が1つに確定すればIDを保存
             val finalAddress = filtered.find { it.inf == selectedInf }

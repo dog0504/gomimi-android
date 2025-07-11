@@ -22,7 +22,7 @@ class NotifySettingsActivity: BaseActivity() {
         }
         val spinner: Spinner = findViewById(R.id.languageSpinner)
 
-        val notifyOptions = listOf("@string/beforeyesterday", "@string/hourago", "@string/thirtyminago", "@string/fifteenminago")
+        val notifyOptions = listOf(getString(R.string.beforeyesterday), getString(R.string.hourago), getString(R.string.thirtyminago), getString(R.string.fifteenminago))
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, notifyOptions)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)

@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gomimi.dataClass.Address
 import com.example.gomimi.dataClass.AuthResponse
+import com.example.gomimi.dataClass.Language
 import com.example.gomimi.dataClass.RegisterRequestBody
 import com.example.gomimi.retrofit.NetworkResult
 import com.example.gomimi.retrofit.UserRepository
