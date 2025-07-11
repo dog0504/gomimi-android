@@ -81,7 +81,7 @@ class RegisterActivity: BaseActivity() {
                     // ★ 住所特定後のUIセットアップを呼び出す
                     setupAddressSelection()
                 } else {
-                    Toast.makeText(this, "@string/noaddress", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.noaddress), Toast.LENGTH_SHORT).show()
                     setAddressFieldsVisibility(View.GONE)
                 }
             } else if (result is NetworkResult.Error) {
@@ -98,7 +98,7 @@ class RegisterActivity: BaseActivity() {
             viewBinding.registerBtn.isEnabled = result !is NetworkResult.Loading
 
             if (result is NetworkResult.Success) {
-                Toast.makeText(this, "@string/register_success", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.register_success), Toast.LENGTH_LONG).show()
                 val token = (result.data as? AuthResponse)?.accessToken
                 if (token != null) TokenManager.saveToken(token)
 
@@ -107,7 +107,7 @@ class RegisterActivity: BaseActivity() {
                 })
                 finish()
             } else if (result is NetworkResult.Error) {
-                Toast.makeText(this, "@string/register_error", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.register_error), Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -173,16 +173,16 @@ class RegisterActivity: BaseActivity() {
         val selectedLanguageId = if (languageList.isNotEmpty()) languageList.getOrNull(selectedLangPosition)?.id else null
 
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(this, "有効なメールアドレスを入力してください", Toast.LENGTH_SHORT).show(); return
+            Toast.makeText(this, getString(R.string.noemail), Toast.LENGTH_SHORT).show(); return
         }
         if (password.length < 6 || password != confirmPassword) {
-            Toast.makeText(this, "6文字以上のパスワードを入力し、確認用と一致させてください", Toast.LENGTH_SHORT).show(); return
+            Toast.makeText(this, getString(R.string.nopassword), Toast.LENGTH_SHORT).show(); return
         }
         if (selectedLanguageId == null) {
-            Toast.makeText(this, "言語を選択してください", Toast.LENGTH_SHORT).show(); return
+                Toast.makeText(this, getString(R.string.Select_language), Toast.LENGTH_SHORT).show(); return
         }
         if (selectedAddressId == null) {
-            Toast.makeText(this, "住所を最後まで選択してください", Toast.LENGTH_SHORT).show(); return
+            Toast.makeText(this, getString(R.string.Select_address), Toast.LENGTH_SHORT).show(); return
         }
         viewModel.registerUser(email, password, selectedLanguageId, selectedAddressId!!)
     }

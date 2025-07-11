@@ -13,6 +13,7 @@
     <string name="login_successful">Login successful!</string>
     <string name="login_error">Login failed</string>
     <string name="incorrect">Incorrect email or password.</string>
+    <string name="enter">Please enter your email and password.</string>
     <string name="register_success">Registration completed</string>
     <string name="register_error">Registration failed</string>
     <string name="user_not_found">Failed to retrieve user info</string>
@@ -27,6 +28,13 @@
     <string name="input_password">Enter your password</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="input_confirm_password">Re-enter your password</string>
+    <string name="noemail">"Please enter a valid email address"</string>
+    <string name="nopassword">"Please enter a password of at least 6 characters"</string>
+    <string name="password_not_match">"Passwords do not match"</string>
+    <string name="Select_language">Please select a language</string>
+    <string name="Select_address">Please complete the address selection</string>
+
+
 
     <!-- ⚙️ 設定・オプション -->
     <string name="setting">Settings</string>

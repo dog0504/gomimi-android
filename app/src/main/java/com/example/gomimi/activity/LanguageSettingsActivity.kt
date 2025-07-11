@@ -73,7 +73,7 @@ class LanguageSettingsActivity: BaseActivity() {
                 setResult(Activity.RESULT_OK)
                 finish() // 更新成功したら画面を閉じる
             } else if (result is NetworkResult.Error) {
-                Toast.makeText(this, "@string/update_failed ${result.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "${getString(R.string.update_failed)} ${result.message}", Toast.LENGTH_LONG).show()
             }
         }
     }

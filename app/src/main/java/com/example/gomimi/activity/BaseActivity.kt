@@ -11,7 +11,7 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun attachBaseContext(newBase: Context) {
         val prefs = newBase.getSharedPreferences("app_settings", Context.MODE_PRIVATE)
-        val langCode = prefs.getString("lang_code", "ja") ?: "ja" // 預設日文
+        val langCode = prefs.getString("lang_code", "ja") ?: "ja" //日文
         val context = LocaleHelper.setAppLocale(newBase, langCode)
         super.attachBaseContext(context)
     }

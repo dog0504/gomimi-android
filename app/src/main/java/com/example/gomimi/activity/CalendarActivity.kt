@@ -21,7 +21,7 @@ class CalendarActivity : BaseActivity() {
     private lateinit var viewBinding: ActivityCalendarBinding
     private lateinit var viewModel: CalendarViewModel
 
-    // key (短英文) -> 多語言字串對應
+    // key
     private val dayKeyToLabel by lazy {
         mapOf(
             "Sun" to getString(R.string.Sun),

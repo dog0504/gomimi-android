@@ -37,7 +37,7 @@ class LoginActivity: BaseActivity() {
             if (email.isNotEmpty() && password.isNotEmpty()) {
                 userViewModel.performLogin(email, password)
             } else {
-                Toast.makeText(this, "メールアドレスとパスワードを入力してください。", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.enter), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -73,7 +73,7 @@ class LoginActivity: BaseActivity() {
                     binding.emailEditText.isEnabled = true
                     binding.passwordEditText.isEnabled = true
 //                    Toast.makeText(this, "エラー: ${result.message}", Toast.LENGTH_LONG).show()
-                    Toast.makeText(this, "@string/incorrect", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.incorrect), Toast.LENGTH_LONG).show()
                 }
             }
         }
