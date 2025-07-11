@@ -5,7 +5,6 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.Spinner
 import com.example.gomimi.R
-import com.example.test.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class NotifySettingsActivity: BaseActivity() {
