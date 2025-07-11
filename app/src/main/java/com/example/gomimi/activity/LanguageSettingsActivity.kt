@@ -1,14 +1,17 @@
 package com.example.gomimi.activity
 
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import com.example.gomimi.R
 import com.example.gomimi.dataClass.Language
 import com.example.gomimi.databinding.LanguageSettingsBinding
 import com.example.gomimi.retrofit.NetworkResult
+import com.example.gomimi.utils.LocaleHelper
 import com.example.gomimi.viewModel.LanguageSettingsViewModel
 
 class LanguageSettingsActivity: BaseActivity() {
@@ -40,9 +43,19 @@ class LanguageSettingsActivity: BaseActivity() {
 
         // 適用ボタン
         binding.applyBtn.setOnClickListener {
-            selectedLanguageId?.let {
-                viewModel.updateLanguage(it)
-            } ?: Toast.makeText(this, "@string/language_setting_error", Toast.LENGTH_SHORT).show()
+            selectedLanguageId?.let { langId ->
+                val selectedLang = allLanguages.find { it.id == langId }
+                if (selectedLang != null) {
+                    LocaleHelper.setAppLocale(this, selectedLang.code)
+
+                    val prefs = getSharedPreferences("app_settings", Context.MODE_PRIVATE)
+                    prefs.edit().putString("lang_code", selectedLang.code).apply()
+
+                    recreate()
+
+                    viewModel.updateLanguage(langId)
+                }
+            } ?: Toast.makeText(this, getString(R.string.language_setting_error), Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -8,7 +8,6 @@ import com.example.gomimi.dataClass.AuthResponse
 import com.example.gomimi.dataClass.BinDay
 import com.example.gomimi.dataClass.GarbageIdentificationResponse
 import com.example.gomimi.dataClass.History
-import com.example.gomimi.dataClass.Language
 import com.example.gomimi.dataClass.LoginRequestBody
 import com.example.gomimi.dataClass.Manual
 import com.example.gomimi.dataClass.ManualInfo
