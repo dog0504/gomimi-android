@@ -1,5 +1,6 @@
 package com.example.gomimi.activity
 
+import androidx.appcompat.app.AlertDialog
 import android.app.NotificationChannel // 通知チャンネル初期設定のためインポート
 import android.Manifest
 import android.annotation.SuppressLint
@@ -46,6 +47,9 @@ class MainActivity : BaseActivity() {
         // レイアウトの設定
         setContentView(viewBinding.root)
 
+        //通知チャンネル生成
+        createNotificationChannel()
+
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
         setupUI()
@@ -61,6 +65,7 @@ class MainActivity : BaseActivity() {
         //「デフォルトで有効」になって、別に権限許可設定を別にする必要はない。
         //但し、以上の場合は「デフォルトで無効」の状態になっているため、権限許可設定が要る。
 
+
     }
 
     //権限チェック(1/3)
@@ -75,19 +80,39 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    private fun requestNotificationPermission(){
-        //「androidが13以上なのか？」をチェック
+    //権限チェック(2/3) - 通知権限をリクエストする関数
+    private fun requestNotificationPermission() {
+        // Android 13以上でのみ実行
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            //通知権限が許可されたのんかチェック
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-                // 通知権限が許可されている場合の処理
-                Log.d("msg", "通知権限が許可されています。")
-            } else {
-                // 通知権限がまだ許可されていない場合、リクエストする
-                notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+            when {
+                // 権限がすでに許可されている場合
+                ContextCompat.checkSelfPermission(
+                    this, Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    Log.d("msg", "通知権限はすでに許可されています。")
+                }
+
+                // 権限が必要な理由を説明すべき場合 (一度拒否されたなど)
+                shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> {
+                    AlertDialog.Builder(this)
+                        .setTitle("権限に関するお知らせ")
+                        .setMessage("今後のゴミ収集日をお知らせするために、通知の権限が必要です。")
+                        .setPositiveButton("OK") { _, _ ->
+                            // 説明後、再度権限リクエストを行う
+                            notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        }
+                        .setNegativeButton("キャンセル", null)
+                        .show()
+                }
+
+                // それ以外の場合 (初回リクエストなど)
+                else -> {
+                    notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
             }
         }
     }
+
 
     //権限チェック(2/3)
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
