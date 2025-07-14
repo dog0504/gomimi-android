@@ -1,5 +1,6 @@
 package com.example.gomimi.activity
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -15,7 +16,9 @@ import com.example.gomimi.dataClass.Language
 import com.example.gomimi.databinding.ActivityRegisterBinding
 import com.example.gomimi.retrofit.NetworkResult
 import com.example.gomimi.retrofit.TokenManager
+import com.example.gomimi.utils.LocaleHelper
 import com.example.gomimi.viewModel.RegisterViewModel
+
 
 class RegisterActivity: BaseActivity() {
     private lateinit var viewBinding: ActivityRegisterBinding
@@ -165,27 +168,52 @@ class RegisterActivity: BaseActivity() {
 
     // 登録処理の実行
     private fun performRegistration() {
-        // ... (このメソッドの中身は前回のままでOK)
         val email = viewBinding.emailInput.text.toString().trim()
         val password = viewBinding.passwordInput.text.toString().trim()
         val confirmPassword = viewBinding.confirmPasswordInput.text.toString().trim()
         val selectedLangPosition = viewBinding.languageSpinner.selectedItemPosition
-        val selectedLanguageId = if (languageList.isNotEmpty()) languageList.getOrNull(selectedLangPosition)?.id else null
 
+        val selectedLanguage = languageList.getOrNull(selectedLangPosition)
+        val selectedLanguageId = selectedLanguage?.id
+        val selectedLangCode = selectedLanguage?.code
+
+        //  Email
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(this, getString(R.string.noemail), Toast.LENGTH_SHORT).show(); return
+            Toast.makeText(this, getString(R.string.noemail), Toast.LENGTH_SHORT).show()
+            return
         }
-        if (password.length < 6 || password != confirmPassword) {
-            Toast.makeText(this, getString(R.string.nopassword), Toast.LENGTH_SHORT).show(); return
+
+        // pw
+        if (password.length < 6) {
+            Toast.makeText(this, getString(R.string.nopassword), Toast.LENGTH_SHORT).show()
+            return
         }
-        if (selectedLanguageId == null) {
-                Toast.makeText(this, getString(R.string.Select_language), Toast.LENGTH_SHORT).show(); return
+        if (password != confirmPassword) {
+            Toast.makeText(this, getString(R.string.password_not_match), Toast.LENGTH_SHORT).show()
+            return
         }
+
+        // languages
+        if (selectedLanguageId == null || selectedLangCode.isNullOrBlank()) {
+            Toast.makeText(this, getString(R.string.Select_language), Toast.LENGTH_SHORT).show()
+            return
+        }
+
+
         if (selectedAddressId == null) {
-            Toast.makeText(this, getString(R.string.Select_address), Toast.LENGTH_SHORT).show(); return
+            Toast.makeText(this, getString(R.string.Select_address), Toast.LENGTH_SHORT).show()
+            return
         }
+
+
+        val prefs = getSharedPreferences("app_settings", Context.MODE_PRIVATE)
+        prefs.edit().putString("lang_code", selectedLangCode).apply()
+        LocaleHelper.setAppLocale(this, selectedLangCode)
+
+
         viewModel.registerUser(email, password, selectedLanguageId, selectedAddressId!!)
     }
+
 
     private fun setAddressFieldsVisibility(visibility: Int) {
         viewBinding.addressContaint.visibility = visibility

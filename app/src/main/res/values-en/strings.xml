@@ -49,6 +49,7 @@
     <string name="settingupdete">Settings updated</string>
     <string name="setting_not_found">Failed to get settings</string>
     <string name="update_failed">Update failed</string>
+    <string name="language_loading">Loading language settings...</string>
 
     <!-- 🏠 所在地・住所関連 -->
     <string name="address">Address</string>
@@ -120,5 +121,7 @@
     <!-- 🌐 言語選択肢 -->
     <string name="japanese">日本語</string>
     <string name="english">English</string>
+    <string name="chinese">中文</string>
+    <string name="korean">한국어</string>
 
 </resources>

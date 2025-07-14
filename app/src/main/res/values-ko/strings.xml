@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 🏠 앱 기본 정보 -->
+    <string name="app_name">test</string>
+
+    <!-- 🔐 사용자 인증 / 계정 관련 -->
+    <string name="login">로그인</string>
+    <string name="register">회원가입</string>
+    <string name="toregister">가입하기</string>
+    <string name="newuser">계정이 없으신가요?</string>
+    <string name="login_success">로그인 완료</string>
+    <string name="login_successful">성공적으로 로그인되었습니다!</string>
+    <string name="login_error">로그인 실패</string>
+    <string name="incorrect">이메일 또는 비밀번호가 잘못되었습니다.</string>
+    <string name="enter">이메일과 비밀번호를 입력해주세요.</string>
+    <string name="register_success">회원가입 완료</string>
+    <string name="register_error">회원가입 실패</string>
+    <string name="user_not_found">사용자 정보를 가져오지 못했습니다</string>
+    <string name="logout">로그아웃</string>
+    <string name="logout_success">로그아웃 완료</string>
+    <string name="logout_error">로그아웃 실패</string>
+
+    <!-- ✉️ 이메일 / 비밀번호 입력 -->
+    <string name="email">이메일</string>
+    <string name="input_email">이메일을 입력하세요</string>
+    <string name="password">비밀번호</string>
+    <string name="input_password">비밀번호를 입력하세요</string>
+    <string name="confirm_password">비밀번호 확인</string>
+    <string name="input_confirm_password">비밀번호를 다시 입력하세요</string>
+    <string name="noemail">유효한 이메일 주소를 입력해주세요</string>
+    <string name="nopassword">6자 이상 비밀번호를 입력해주세요</string>
+    <string name="password_not_match">비밀번호가 일치하지 않습니다</string>
+    <string name="Select_language">언어를 선택해주세요</string>
+    <string name="Select_address">주소를 선택해주세요</string>
+
+    <!-- ⚙️ 설정 -->
+    <string name="setting">설정</string>
+    <string name="notify_setting">알림 설정</string>
+    <string name="language_setting">언어 설정</string>
+    <string name="address_setting">주소 설정</string>
+    <string name="notify">알림</string>
+    <string name="notify_time">언제 알림을 받을까요?</string>
+    <string name="language">언어</string>
+    <string name="language_setting_error">언어를 선택하지 않았습니다</string>
+    <string name="language_error">언어 정보를 불러오지 못했습니다</string>
+    <string name="settingupdete">설정이 업데이트되었습니다</string>
+    <string name="setting_not_found">설정을 불러오지 못했습니다</string>
+    <string name="update_failed">업데이트 실패</string>
+    <string name="language_loading">언어 설정을 불러오는 중...</string>
+
+    <!-- 🏠 주소 관련 -->
+    <string name="address">주소</string>
+    <string name="zipCode">우편번호 (하이픈 없이)</string>
+    <string name="input_zipCode">우편번호를 입력하세요</string>
+    <string name="currentAddress">현재 위치:</string>
+    <string name="ziperror">7자리 우편번호를 입력하세요</string>
+    <string name="address_error">주소를 완성해주세요</string>
+    <string name="noaddress">주소를 찾을 수 없습니다</string>
+    <string name="addressnotfeind">주소 검색 실패</string>
+    <string name="address_not_found">주소 정보를 불러오지 못했습니다</string>
+    <string name="chome">초메(丁目) 선택</string>
+    <string name="street">블록 선택</string>
+    <string name="inf">상세 선택</string>
+
+    <!-- 📸 카메라 관련 -->
+    <string name="photo_b">사진 촬영</string>
+    <string name="reshoot">다시 찍기</string>
+    <string name="camera">카메라</string>
+
+    <!-- 📑 UI 요소 -->
+    <string name="tips">팁</string>
+    <string name="close">닫기</string>
+    <string name="category">카테고리:</string>
+    <string name="account">계정:</string>
+    <string name="search">검색</string>
+    <string name="manual">매뉴얼</string>
+    <string name="calendar">달력</string>
+    <string name="history">기록</string>
+    <string name="back">뒤로</string>
+    <string name="apply">적용</string>
+    <string name="dispose">처리 방법</string>
+    <string name="confirm">확인</string>
+    <string name="delete">삭제</string>
+    <string name="delete_confirm">정말 삭제하시겠습니까?</string>
+    <string name="delete_success">삭제되었습니다</string>
+
+    <!-- ⏰ 알림 타이밍 -->
+    <string name="beforeyesterday">전날</string>
+    <string name="hourago">1시간 전</string>
+    <string name="thirtyminago">30분 전</string>
+    <string name="fifteenminago">15분 전</string>
+
+    <!-- 📅 요일 -->
+    <string name="Mon">월</string>
+    <string name="Tue">화</string>
+    <string name="Wed">수</string>
+    <string name="Thu">목</string>
+    <string name="Fri">금</string>
+    <string name="Sat">토</string>
+    <string name="Sun">일</string>
+
+    <!-- ♻️ 쓰레기 분류 -->
+    <string name="normal_gomi">일반 쓰레기</string>
+    <string name="recyclable_gomi">재활용</string>
+    <string name="paper_gomi">종이/의류</string>
+    <string name="plastic">플라스틱 재활용</string>
+
+    <!-- ⚠️ 오류 메시지 -->
+    <string name="manual_not_found">매뉴얼 로드 오류:</string>
+    <string name="garbage_not_found">쓰레기 데이터 로드 오류:</string>
+    <string name="intelligence_not_found">정보를 불러오지 못했습니다:</string>
+    <string name="calendar_not_found">달력 데이터 로드 오류:</string>
+    <string name="history_not_found">기록 데이터 로드 오류:</string>
+    <string name="date_not_found">데이터를 불러오지 못했습니다:</string>
+    <string name="noinformation">상세 정보가 없습니다.</string>
+    <string name="delete_error">삭제 실패</string>
+
+    <!-- 🌐 언어 이름 -->
+    <string name="japanese">日本語</string>
+    <string name="english">English</string>
+    <string name="chinese">中文</string>
+    <string name="korean">한국어</string>
+
+</resources>
