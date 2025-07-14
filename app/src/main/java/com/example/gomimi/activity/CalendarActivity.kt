@@ -1,6 +1,7 @@
 package com.example.gomimi.activity
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
@@ -17,29 +18,15 @@ import com.example.gomimi.retrofit.NetworkResult
 import com.example.gomimi.viewModel.CalendarViewModel
 
 class CalendarActivity : BaseActivity() {
-
     private lateinit var viewBinding: ActivityCalendarBinding
     private lateinit var viewModel: CalendarViewModel
-
-    // key
-    private val dayKeyToLabel by lazy {
-        mapOf(
-            "Sun" to getString(R.string.Sun),
-            "Mon" to getString(R.string.Mon),
-            "Tue" to getString(R.string.Tue),
-            "Wed" to getString(R.string.Wed),
-            "Thu" to getString(R.string.Thu),
-            "Fri" to getString(R.string.Fri),
-            "Sat" to getString(R.string.Sat)
-        )
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityCalendarBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        viewModel = ViewModelProvider(this).get(CalendarViewModel::class.java)
+        viewModel = ViewModelProvider(this)[CalendarViewModel::class.java]
 
         setupBottomNav(viewBinding.bottomMenu)
         viewBinding.bottomMenu.selectedItemId = R.id.navigation_calendar
@@ -50,16 +37,24 @@ class CalendarActivity : BaseActivity() {
 
     private fun observeBinDays() {
         viewModel.binDays.observe(this) { result ->
-            viewBinding.progressBar.visibility = if (result is NetworkResult.Loading) View.VISIBLE else View.GONE
+            viewBinding.progressBar.visibility =
+                if (result is NetworkResult.Loading) View.VISIBLE else View.GONE
 
             when (result) {
                 is NetworkResult.Success -> {
                     val uiData = transformToUiData(result.data)
                     populateCalendar(uiData)
                 }
+
                 is NetworkResult.Error -> {
-                    Toast.makeText(this, "${getString(R.string.date_not_found)} ${result.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        this,
+                        getString(R.string.date_not_found) + " : " + result.message,
+                        Toast.LENGTH_LONG
+                    ).show()
+                    Log.e("CalendarActivity", "API Error: ${result.message}")
                 }
+
                 is NetworkResult.Loading -> {
                     // do nothing
                 }
@@ -67,45 +62,36 @@ class CalendarActivity : BaseActivity() {
         }
     }
 
-    // 將API回傳日文星期轉為英文key，再groupBy
-    private fun convertToShortDay(fullName: String): String {
-        return when (fullName) {
-            "日曜日" -> "Sun"
-            "月曜日" -> "Mon"
-            "火曜日" -> "Tue"
-            "水曜日" -> "Wed"
-            "木曜日" -> "Thu"
-            "金曜日" -> "Fri"
-            "土曜日" -> "Sat"
-            else -> fullName.take(3)
-        }
-    }
-
     private fun transformToUiData(apiData: List<BinDay>): List<GarbageInfo> {
         return apiData
             .groupBy { convertToShortDay(it.dayOfWeek) }
-            .map { (dayKey, items) ->
+            .map { (day, items) ->
                 GarbageInfo(
-                    dayKey,
-                    items.map { GarbageItem(it.type, it.time) }
-                )
+                    day,
+                    items.map { GarbageItem(it.type, it.time ?: "") })
             }
     }
 
     private fun populateCalendar(garbageInfoList: List<GarbageInfo>) {
         viewBinding.calendarLayout.removeAllViews()
+        val daysOfWeek = listOf(
+            "Mon" to getString(R.string.Mon),
+            "Tue" to getString(R.string.Tue),
+            "Wed" to getString(R.string.Wed),
+            "Thu" to getString(R.string.Thu),
+            "Fri" to getString(R.string.Fri),
+            "Sat" to getString(R.string.Sat),
+            "Sun" to getString(R.string.Sun)
+        )
 
-        val dayKeys = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
-
-        for (dayKey in dayKeys) {
-            val view = LayoutInflater.from(this).inflate(R.layout.item_day, viewBinding.calendarLayout, false)
+        for ((dayKey, label) in daysOfWeek) {
+            val view = LayoutInflater.from(this)
+                .inflate(R.layout.item_day, viewBinding.calendarLayout, false)
             val title = view.findViewById<TextView>(R.id.dayTitle)
             val iconContainer = view.findViewById<LinearLayout>(R.id.iconContainer)
             val infoContainer = view.findViewById<LinearLayout>(R.id.garbageInfoContainer)
 
-            // 用多語言字串顯示星期標題
-            title.text = dayKeyToLabel[dayKey] ?: dayKey
-
+            title.text = label
             val todayInfo = garbageInfoList.find { it.dayOfWeek == dayKey }
 
             todayInfo?.items?.forEach { item ->
@@ -117,14 +103,16 @@ class CalendarActivity : BaseActivity() {
                 iconContainer.addView(icon)
 
                 val infoText = TextView(this)
-                infoText.text = if (item.time.isNotEmpty()) "${item.type}　${item.time}" else item.type
+                infoText.text =
+                    if (item.time.isNotEmpty()) "${item.type}　${item.time}" else item.type
                 infoText.textSize = 16f
                 infoText.setPadding(0, 4, 0, 4)
                 infoContainer.addView(infoText)
             }
 
             view.setOnClickListener {
-                infoContainer.visibility = if (infoContainer.visibility == View.GONE) View.VISIBLE else View.GONE
+                infoContainer.visibility =
+                    if (infoContainer.visibility == View.GONE) View.VISIBLE else View.GONE
             }
 
             viewBinding.calendarLayout.addView(view)
@@ -133,11 +121,30 @@ class CalendarActivity : BaseActivity() {
 
     private fun getImageResourceForCategory(category: String): Int {
         return when (category) {
-            getString(R.string.normal_gomi) -> R.drawable.normal_gomi
-            getString(R.string.recyclable_gomi) -> R.drawable.recyclable_gomi
-            getString(R.string.paper_gomi) -> R.drawable.paper_gomi
-            getString(R.string.plastic) -> R.drawable.plastic
-            else -> R.drawable.default_gomi
+            "普通ごみ" -> R.drawable.normal_gomi
+            "資源ごみ" -> R.drawable.recyclable_gomi
+            "古紙衣類" -> R.drawable.paper_gomi
+            "プラスチック資源" -> R.drawable.plastic
+            else -> {
+                Log.w("CalendarActivity", "Unknown category: $category")
+                R.drawable.default_gomi
+            }
+        }
+    }
+
+    private fun convertToShortDay(fullName: String): String {
+        return when (fullName) {
+            "日曜日" -> "Sun"
+            "月曜日" -> "Mon"
+            "火曜日" -> "Tue"
+            "水曜日" -> "Wed"
+            "木曜日" -> "Thu"
+            "金曜日" -> "Fri"
+            "土曜日" -> "Sat"
+            else -> {
+                Log.w("CalendarActivity", "Unknown day name: $fullName")
+                fullName.take(1)
+            }
         }
     }
 }

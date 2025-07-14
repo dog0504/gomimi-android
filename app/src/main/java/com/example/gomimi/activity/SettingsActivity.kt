@@ -24,6 +24,7 @@ class SettingsActivity: BaseActivity() {
             // ユーザー情報を再取得してUIを更新する
             viewModel.fetchUserProfile()
             Toast.makeText(this, getString(R.string.settingupdete), Toast.LENGTH_SHORT).show()
+            recreate()
         }
     }
 
