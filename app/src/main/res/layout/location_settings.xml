@@ -21,10 +21,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- 主要內容 -->
+
+    <!-- 適用按鈕（置底、在 BottomNavigationView 上方） -->
+
     <LinearLayout
         android:id="@+id/linearLayoutMain"
-        android:layout_width="406dp"
-        android:layout_height="458dp"
+        android:layout_width="409dp"
+        android:layout_height="516dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="12dp"
         android:gravity="center_horizontal"
@@ -34,7 +37,8 @@
         app:layout_constraintBottom_toTopOf="@+id/frameLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/back_button">
+        app:layout_constraintTop_toBottomOf="@id/back_button"
+        app:layout_constraintVertical_bias="0.034">
 
         <TextView
             android:id="@+id/textView12"
@@ -59,6 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:layout_marginBottom="20dp"
             android:textSize="20sp" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -71,6 +76,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/edittext_background"
                 android:hint="@string/zipCode"
@@ -162,7 +168,7 @@
         <Spinner
             android:id="@+id/infSpinner"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_marginTop="15dp"
             android:background="@drawable/edittext_background"
             android:minHeight="48dp"
@@ -171,7 +177,6 @@
 
     </LinearLayout>
 
-    <!-- 適用按鈕（置底、在 BottomNavigationView 上方） -->
     <FrameLayout
         android:id="@+id/frameLayout"
         android:layout_width="153dp"
