@@ -58,118 +58,112 @@ class NotifySettingsActivity: BaseActivity() {
 
         // SharedPreferencesを初期化
         prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-
         // view初期化
         viewModel = ViewModelProvider(this).get(CalendarViewModel::class.java)
 
-        // UIのセットアップ
+        // --- UIのセットアップ ---
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomMenu)
         bottomNav.selectedItemId = R.id.navigation_settings
         setupBottomNav(bottomNav)
 
         val backButton = findViewById<ImageView>(R.id.back_button)
         backButton.setOnClickListener {
-            finish() // 現在のActivityを終了して前の画面に戻る
+            finish()
         }
 
         val spinner: Spinner = findViewById(R.id.timeSetSpinner)
         val notifyOptions = listOf("前日", "1時間前", "30分前", "15分前")
-
-        //  ArrayAdapter で Spinner
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, notifyOptions)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
 
-        //=====================================通知機能設定処理======================================
-
-        // findViewByIdリスト
-        val notifySwitch : Switch = findViewById(R.id.notify_set_switch1) // 通知設定のSwitch
-        val applyBtn: ImageView = findViewById(R.id.applyBtn) // 通知入力の適用ボタン
+        val notifySwitch: Switch = findViewById(R.id.notify_set_switch1)
+        val applyBtn: ImageView = findViewById(R.id.applyBtn)
 
         // 画面作成時に保存された設定を読み込んでUIに反映
         loadSettings(notifySwitch, spinner)
 
-        // ボタンのクリック処理
+        // --- ボタンのクリック処理 ---
         applyBtn.setOnClickListener {
-            // 1. ユーザーの選択内容を取得
-            val selectedPosition = spinner.selectedItemPosition // 位置を取得
+            val selectedPosition = spinner.selectedItemPosition
             val selectedItem = spinner.selectedItem.toString()
             val isNotificationEnabled = notifySwitch.isChecked
 
-            //  設定を適用するタイミングで保存する
+            // ユーザーの設定をまず保存する
             saveSettings(isNotificationEnabled, selectedPosition)
 
-            // スイッチがOFFなら、キャンセル処理をして終了
+            // --- スイッチがOFFの場合 ---
             if (!isNotificationEnabled) {
                 viewModel.binDays.value?.let { result ->
                     if (result is NetworkResult.Success) {
                         result.data.forEach { binDay -> cancelNotification(binDay) }
                     }
                 }
-                Toast.makeText(this, "すべての通知予約をキャンセルしました", Toast.LENGTH_SHORT).show()
+                // キャンセル通知を発行して処理を終了
+                sendConfirmationNotification(false)
                 return@setOnClickListener
             }
 
-            // --- ここからはスイッチがONの場合の処理 ---
+            // --- スイッチがONの場合 ---
 
-            // ごみ収集日のデータがあるか確認
+            // 1. ごみ収集日のデータがあるか確認
             val result = viewModel.binDays.value
             if (result !is NetworkResult.Success) {
                 Toast.makeText(this, "ごみ収集日データを取得中です。しばらく待ってからもう一度お試しください。", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // アラームの権限をチェック
+            // 2. アラームの権限をチェック
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
-                // 権限がなければ設定画面へ誘導して終了
                 Toast.makeText(this, "通知を予約するには、アラームとリマインダーの権限を許可してください", Toast.LENGTH_LONG).show()
                 startActivity(Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
                 return@setOnClickListener
             }
 
-            // すべてのチェックを通過後、全件の通知を予約
+            // 3. すべてのチェックを通過後、全件の通知を予約
             result.data.forEach { binDay ->
                 val nextCollectionDateTime = findNextCollectionDateTime(binDay)
                 val triggerDateTime = calculateTriggerTime(nextCollectionDateTime, selectedItem)
-                Log.d("NotificationDebug", "予約する日時: $triggerDateTime, ゴミの種類: ${binDay.type}")
                 scheduleNotification(triggerDateTime, binDay)
             }
 
-            sendConfirmationNotification(selectedItem)
-//            Toast.makeText(this, "すべての収集日の通知を「${selectedItem}」に予約しました", Toast.LENGTH_LONG).show()
+            // 4. すべての予約が完了した後に、完了通知を一度だけ発行
+            sendConfirmationNotification(true, selectedItem)
         }
+
         // --- データ取得の開始 ---
         viewModel.fetchBinDays()
     }
 
     // 予約完了をお知らせるための通知を発行する関数を新しく作成
-    private fun sendConfirmationNotification(selectedItem: String){
-        // 通知をタップしたときにカレンダー画面を開くIntent
-        val intent = Intent(this, CalendarActivity::class.java).apply{
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+    // ★ 関数を１つに統合
+    private fun sendConfirmationNotification(isSuccess: Boolean, details: String = "") {
+        val title: String
+        val text: String
+
+        if (isSuccess) {
+            title = "通知を予約しました"
+            text = "「${details}」に収集日をお知らせします。"
+        } else {
+            title = "通知の予約をキャンセルしました"
+            text = "今後のゴミ収集日に関する通知は行われません。"
         }
-        val pendingIntent = PendingIntent.getActivity(
-            this, 0, intent, PendingIntent.FLAG_IMMUTABLE
-        )
-        // 通知オブジェクトの作成
+
+        // Builder以降の処理は共通
         val builder = NotificationCompat.Builder(this, MainActivity.CHANNEL_ID_GARBAGE)
             .setSmallIcon(R.drawable.icon)
-            .setContentTitle("通知を予約しました")
-            .setContentText("「${selectedItem}」に収集日をお知らせします。")
+            .setContentTitle(title)
+            .setContentText(text)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(pendingIntent)
             .setAutoCancel(true)
 
-        // 権限をチェックしてから通知を発行
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
             with(NotificationManagerCompat.from(this)) {
-                // ★ 確認通知用のIDで通知
                 notify(CONFIRM_NOTIFICATION_ID, builder.build())
             }
         }
     }
-
     // 設定を保存/読み込みする関数を追加
     private fun saveSettings(switchState: Boolean, spinnerPosition: Int) {
         with(prefs.edit()) {
