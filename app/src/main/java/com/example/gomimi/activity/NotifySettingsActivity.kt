@@ -1,5 +1,6 @@
 package com.example.gomimi.activity
 
+import android.Manifest
 import android.provider.Settings
 import android.annotation.SuppressLint
 import android.app.AlarmManager
@@ -7,6 +8,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences // ★ SharedPreferencesをインポート
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -15,9 +17,13 @@ import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.Switch
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.gomimi.R
 import com.example.gomimi.dataClass.BinDay
+import com.example.gomimi.dataClass.ManualItem
 import com.example.gomimi.receiver.NotificationReceiver
 import com.example.gomimi.retrofit.NetworkResult
 import com.example.gomimi.viewModel.CalendarViewModel
@@ -35,12 +41,14 @@ class NotifySettingsActivity: BaseActivity() {
 
     private lateinit var viewModel: CalendarViewModel
 
-    // ★ 1. SharedPreferencesのプロパティとキーを定義
+    // SharedPreferencesのプロパティとキーを定義
     private lateinit var prefs: SharedPreferences
     companion object {
         private const val PREFS_NAME = "notification_settings_prefs"
         private const val KEY_SWITCH_STATE = "switch_state"
         private const val KEY_SPINNER_POSITION = "spinner_position"
+        // 確認通知用の新しいIDを追加
+        private const val CONFIRM_NOTIFICATION_ID = 12345
     }
 
     @SuppressLint("MissingInflatedId")
@@ -48,7 +56,7 @@ class NotifySettingsActivity: BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.notification_settings)
 
-        // ★ 2. SharedPreferencesを初期化
+        // SharedPreferencesを初期化
         prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
         // view初期化
@@ -78,7 +86,7 @@ class NotifySettingsActivity: BaseActivity() {
         val notifySwitch : Switch = findViewById(R.id.notify_set_switch1) // 通知設定のSwitch
         val applyBtn: ImageView = findViewById(R.id.applyBtn) // 通知入力の適用ボタン
 
-        // ★ 3. 画面作成時に保存された設定を読み込んでUIに反映
+        // 画面作成時に保存された設定を読み込んでUIに反映
         loadSettings(notifySwitch, spinner)
 
         // ボタンのクリック処理
@@ -88,10 +96,10 @@ class NotifySettingsActivity: BaseActivity() {
             val selectedItem = spinner.selectedItem.toString()
             val isNotificationEnabled = notifySwitch.isChecked
 
-            // ★ 4. 設定を適用するタイミングで保存する
+            //  設定を適用するタイミングで保存する
             saveSettings(isNotificationEnabled, selectedPosition)
 
-            // 2. スイッチがOFFなら、キャンセル処理をして終了
+            // スイッチがOFFなら、キャンセル処理をして終了
             if (!isNotificationEnabled) {
                 viewModel.binDays.value?.let { result ->
                     if (result is NetworkResult.Success) {
@@ -104,14 +112,14 @@ class NotifySettingsActivity: BaseActivity() {
 
             // --- ここからはスイッチがONの場合の処理 ---
 
-            // 3. ごみ収集日のデータがあるか確認
+            // ごみ収集日のデータがあるか確認
             val result = viewModel.binDays.value
             if (result !is NetworkResult.Success) {
                 Toast.makeText(this, "ごみ収集日データを取得中です。しばらく待ってからもう一度お試しください。", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            // 4. アラームの権限をチェック
+            // アラームの権限をチェック
             val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
                 // 権限がなければ設定画面へ誘導して終了
@@ -120,7 +128,7 @@ class NotifySettingsActivity: BaseActivity() {
                 return@setOnClickListener
             }
 
-            // 5. すべてのチェックを通過後、全件の通知を予約
+            // すべてのチェックを通過後、全件の通知を予約
             result.data.forEach { binDay ->
                 val nextCollectionDateTime = findNextCollectionDateTime(binDay)
                 val triggerDateTime = calculateTriggerTime(nextCollectionDateTime, selectedItem)
@@ -128,13 +136,41 @@ class NotifySettingsActivity: BaseActivity() {
                 scheduleNotification(triggerDateTime, binDay)
             }
 
-            Toast.makeText(this, "すべての収集日の通知を「${selectedItem}」に予約しました", Toast.LENGTH_LONG).show()
+            sendConfirmationNotification(selectedItem)
+//            Toast.makeText(this, "すべての収集日の通知を「${selectedItem}」に予約しました", Toast.LENGTH_LONG).show()
         }
         // --- データ取得の開始 ---
         viewModel.fetchBinDays()
     }
 
-    // ★ 5. 設定を保存/読み込みする関数を追加
+    // 予約完了をお知らせるための通知を発行する関数を新しく作成
+    private fun sendConfirmationNotification(selectedItem: String){
+        // 通知をタップしたときにカレンダー画面を開くIntent
+        val intent = Intent(this, CalendarActivity::class.java).apply{
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        val pendingIntent = PendingIntent.getActivity(
+            this, 0, intent, PendingIntent.FLAG_IMMUTABLE
+        )
+        // 通知オブジェクトの作成
+        val builder = NotificationCompat.Builder(this, MainActivity.CHANNEL_ID_GARBAGE)
+            .setSmallIcon(R.drawable.icon)
+            .setContentTitle("通知を予約しました")
+            .setContentText("「${selectedItem}」に収集日をお知らせします。")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+
+        // 権限をチェックしてから通知を発行
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+            with(NotificationManagerCompat.from(this)) {
+                // ★ 確認通知用のIDで通知
+                notify(CONFIRM_NOTIFICATION_ID, builder.build())
+            }
+        }
+    }
+
+    // 設定を保存/読み込みする関数を追加
     private fun saveSettings(switchState: Boolean, spinnerPosition: Int) {
         with(prefs.edit()) {
             putBoolean(KEY_SWITCH_STATE, switchState)
@@ -169,13 +205,13 @@ class NotifySettingsActivity: BaseActivity() {
             else -> return LocalDateTime.now() // 不正な曜日の場合は現在時刻を返す
         }
 
-        // ★ 1. 時刻の書式（フォーマット）を定義します
+        // 時刻の書式（フォーマット）を定義します
         // "H" は時間が1桁でも2桁でもOKという意味
         val timeFormatter = DateTimeFormatter.ofPattern("H:mm")
 
         val timeString = binDay.time.split('~')[0].trim()
 
-        // ★ 2. 定義した書式を使って、時刻の文字列を解析します
+        //  定義した書式を使って、時刻の文字列を解析します
         val collectionTime = LocalTime.parse(timeString, timeFormatter)
 
         val now = LocalDateTime.now()
@@ -205,7 +241,7 @@ class NotifySettingsActivity: BaseActivity() {
         val triggerTimeMillis = triggerDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-        // --- ★ ここがアラーム権限のチェックとハンドリング ---
+        // --- ここがアラーム権限のチェックとハンドリング ---
         // Android 12 (API 31) 以降か確認
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             // 正確なアラームをスケジュールする権限があるか確認
