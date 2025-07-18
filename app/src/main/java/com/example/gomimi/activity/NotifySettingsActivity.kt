@@ -6,6 +6,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences // ★ SharedPreferencesをインポート
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -34,10 +35,21 @@ class NotifySettingsActivity: BaseActivity() {
 
     private lateinit var viewModel: CalendarViewModel
 
+    // ★ 1. SharedPreferencesのプロパティとキーを定義
+    private lateinit var prefs: SharedPreferences
+    companion object {
+        private const val PREFS_NAME = "notification_settings_prefs"
+        private const val KEY_SWITCH_STATE = "switch_state"
+        private const val KEY_SPINNER_POSITION = "spinner_position"
+    }
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.notification_settings)
+
+        // ★ 2. SharedPreferencesを初期化
+        prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
         // view初期化
         viewModel = ViewModelProvider(this).get(CalendarViewModel::class.java)
@@ -66,11 +78,18 @@ class NotifySettingsActivity: BaseActivity() {
         val notifySwitch : Switch = findViewById(R.id.notify_set_switch1) // 通知設定のSwitch
         val applyBtn: ImageView = findViewById(R.id.applyBtn) // 通知入力の適用ボタン
 
+        // ★ 3. 画面作成時に保存された設定を読み込んでUIに反映
+        loadSettings(notifySwitch, spinner)
+
         // ボタンのクリック処理
         applyBtn.setOnClickListener {
             // 1. ユーザーの選択内容を取得
+            val selectedPosition = spinner.selectedItemPosition // 位置を取得
             val selectedItem = spinner.selectedItem.toString()
             val isNotificationEnabled = notifySwitch.isChecked
+
+            // ★ 4. 設定を適用するタイミングで保存する
+            saveSettings(isNotificationEnabled, selectedPosition)
 
             // 2. スイッチがOFFなら、キャンセル処理をして終了
             if (!isNotificationEnabled) {
@@ -115,9 +134,26 @@ class NotifySettingsActivity: BaseActivity() {
         viewModel.fetchBinDays()
     }
 
+    // ★ 5. 設定を保存/読み込みする関数を追加
+    private fun saveSettings(switchState: Boolean, spinnerPosition: Int) {
+        with(prefs.edit()) {
+            putBoolean(KEY_SWITCH_STATE, switchState)
+            putInt(KEY_SPINNER_POSITION, spinnerPosition)
+            apply() // 保存を確定
+        }
+    }
+
+    private fun loadSettings(switch: Switch, spinner: Spinner) {
+        val switchState = prefs.getBoolean(KEY_SWITCH_STATE, false) // 保存値がなければfalse
+        val spinnerPosition = prefs.getInt(KEY_SPINNER_POSITION, 0) // 保存値がなければ0番目
+        switch.isChecked = switchState
+        spinner.setSelection(spinnerPosition)
+    }
+
+
     private fun calculateTriggerTime(baseTime: LocalDateTime, offset: String): LocalDateTime {
         return when (offset) {
-            "前日" -> baseTime.minusDays(1)
+            "前日" -> baseTime.minusHours(12)
             "1時間前" -> baseTime.minusHours(1)
             "30分前" -> baseTime.minusMinutes(30)
             "15分前" -> baseTime.minusMinutes(15)
