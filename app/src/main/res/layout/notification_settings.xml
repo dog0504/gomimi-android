@@ -52,7 +52,7 @@
             android:orientation="horizontal">
 
             <Switch
-                android:id="@+id/switch1"
+                android:id="@+id/notify_set_switch1"
                 android:layout_width="109dp"
                 android:layout_height="60dp"
                 android:layout_marginBottom="12dp"
@@ -72,7 +72,7 @@
             android:textSize="24sp" />
 
         <Spinner
-            android:id="@+id/languageSpinner"
+            android:id="@+id/timeSetSpinner"
             android:layout_width="199dp"
             android:layout_height="59dp"
             android:layout_gravity="center"

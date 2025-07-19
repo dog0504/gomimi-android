@@ -1,12 +1,18 @@
 package com.example.gomimi.activity
 
+import androidx.appcompat.app.AlertDialog
+import android.app.NotificationChannel // 通知チャンネル初期設定のためインポート
 import android.Manifest
+import android.annotation.SuppressLint
+import android.app.NotificationManager
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -14,6 +20,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.getSystemService
 import androidx.lifecycle.ViewModelProvider
 import com.example.gomimi.R
 import com.example.gomimi.dataClass.GarbageResult
@@ -31,11 +38,17 @@ class MainActivity : BaseActivity() {
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
 
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         // レイアウトの設定
         setContentView(viewBinding.root)
+
+        //通知チャンネル生成
+        createNotificationChannel()
 
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
 
@@ -47,7 +60,59 @@ class MainActivity : BaseActivity() {
         } else {
             ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
         }
+        requestNotificationPermission()
+        //補足説明：androidのOSのバージョンが13未満の場合は
+        //「デフォルトで有効」になって、別に権限許可設定を別にする必要はない。
+        //但し、以上の場合は「デフォルトで無効」の状態になっているため、権限許可設定が要る。
+
+
     }
+
+    //権限チェック(1/3)
+    private val notificationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()){
+        isGranted: Boolean ->
+        if (isGranted) {
+            // 通知権限が許可された時の処理
+            Log.d("msg", "通知権限が許可されました。")
+        } else {
+            // 通知権限が拒否された時の処理
+            Log.d("msg", "通知権限が許可されませんでした。")
+        }
+    }
+
+    //権限チェック(2/3) - 通知権限をリクエストする関数
+    private fun requestNotificationPermission() {
+        // Android 13以上でのみ実行
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            when {
+                // 権限がすでに許可されている場合
+                ContextCompat.checkSelfPermission(
+                    this, Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    Log.d("msg", "通知権限はすでに許可されています。")
+                }
+
+                // 権限が必要な理由を説明すべき場合 (一度拒否されたなど)
+                shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS) -> {
+                    AlertDialog.Builder(this)
+                        .setTitle("権限に関するお知らせ")
+                        .setMessage("今後のゴミ収集日をお知らせするために、通知の権限が必要です。")
+                        .setPositiveButton("OK") { _, _ ->
+                            // 説明後、再度権限リクエストを行う
+                            notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        }
+                        .setNegativeButton("キャンセル", null)
+                        .show()
+                }
+
+                // それ以外の場合 (初回リクエストなど)
+                else -> {
+                    notificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }
+        }
+    }
+
 
     //権限チェック(2/3)
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
@@ -71,6 +136,28 @@ class MainActivity : BaseActivity() {
 //                finish()
                 Log.d("msg", "権限が取得できませんでした。")
             }
+        }
+    }
+
+    //通知チャンネル
+    @SuppressLint("ObsoleteSdkInt")
+    private fun createNotificationChannel(){
+        // Build.VERSION.SDK_INTは、Android開発における定数で、
+        // デバイスのオペレーティング・システムのAPIレベルを表す。
+        // Build.VERSION_CODES.OはAndroid開発における定数で、
+        // Android 8.0（APIレベル26）を表し、Oreoとしても知られている。
+        // 通知チャネルという仕組みは、Android 8.0で初めて導入されました。
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            val name = "ゴミミちゃん"
+            val descriptionText = "ゴミミちゃんの通知"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(CHANNEL_ID_GARBAGE, name, importance).apply {
+                description = descriptionText
+            }
+            //　チャンネルをシステムに登録
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
         }
     }
 
@@ -221,6 +308,8 @@ class MainActivity : BaseActivity() {
     }
 
     companion object {
+        const val CHANNEL_ID_GARBAGE = "garbage_channel" //通知チャネルID（任意で可能）NotifySettingActivity.ktで使用
+        const val NOTIFY_ID = 54304//通知ID（任意で可能）NotifySettingActivity.ktで使用
         private const val TAG = "CameraXApp"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
         private const val REQUEST_CODE_PERMISSIONS = 10

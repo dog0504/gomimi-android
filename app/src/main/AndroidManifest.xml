@@ -11,6 +11,8 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- 通知の権限のパーミッション宣言 -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" /> <!-- アラームの権限のパーミッション宣言 -->
 
     <uses-permission android:name="android.permission.INTERNET" />
     <application
@@ -52,8 +54,7 @@
             android:name=".activity.HistoryDetailActivity"
             android:exported="false" />
 
-
-
+        <receiver android:name=".receiver.NotificationReceiver" android:enabled="true" />
 
     </application>
 
