@@ -2,25 +2,25 @@
     <item
         android:id="@+id/navigation_manual"
         android:icon="@drawable/manual"
-        android:title="マニュアル" />
+        android:title="@string/manual" />
 
     <item
         android:id="@+id/navigation_calendar"
         android:icon="@drawable/calendar"
-        android:title="カレンダー" />
+        android:title="@string/calendar" />
 
     <item
         android:id="@+id/navigation_camera"
         android:icon="@drawable/camera"
-        android:title="カメラ" />
+        android:title="@string/camera" />
 
     <item
         android:id="@+id/navigation_history"
         android:icon="@drawable/notify"
-        android:title="履歴" />
+        android:title="@string/history" />
 
     <item
         android:id="@+id/navigation_settings"
         android:icon="@drawable/settings"
-        android:title="設定" />
+        android:title="@string/setting" />
 </menu>

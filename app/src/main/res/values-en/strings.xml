@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 🏠 アプリ基本情報 -->
+    <string name="app_name">test</string>
+
+    <!-- 🔐 ユーザー認証・アカウント関連 -->
+    <string name="login">Login</string>
+    <string name="register">Sign Up</string>
+    <string name="toregister">Register</string>
+    <string name="newuser">Don’t have an account?</string>
+    <string name="login_success">Login completed</string>
+    <string name="login_successful">Login successful!</string>
+    <string name="login_error">Login failed</string>
+    <string name="incorrect">Incorrect email or password.</string>
+    <string name="enter">Please enter your email and password.</string>
+    <string name="register_success">Registration completed</string>
+    <string name="register_error">Registration failed</string>
+    <string name="user_not_found">Failed to retrieve user info</string>
+    <string name="logout">Logout</string>
+    <string name="logout_success">Logout completed</string>
+    <string name="logout_error">Logout failed</string>
+
+    <!-- ✉️ メール・パスワード入力 -->
+    <string name="email">Email</string>
+    <string name="input_email">Enter your email</string>
+    <string name="password">Password</string>
+    <string name="input_password">Enter your password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="input_confirm_password">Re-enter your password</string>
+    <string name="noemail">"Please enter a valid email address"</string>
+    <string name="nopassword">"Please enter a password of at least 6 characters"</string>
+    <string name="password_not_match">"Passwords do not match"</string>
+    <string name="Select_language">Please select a language</string>
+    <string name="Select_address">Please complete the address selection</string>
+
+
+
+    <!-- ⚙️ 設定・オプション -->
+    <string name="setting">Settings</string>
+    <string name="notify_setting">Notification Settings</string>
+    <string name="language_setting">Language Settings</string>
+    <string name="address_setting">Location Settings</string>
+    <string name="notify">Notification</string>
+    <string name="notify_time">When to notify?</string>
+    <string name="language">Language</string>
+    <string name="language_setting_error">No language selected</string>
+    <string name="language_error">Failed to get language</string>
+    <string name="settingupdete">Settings updated</string>
+    <string name="setting_not_found">Failed to get settings</string>
+    <string name="update_failed">Update failed</string>
+    <string name="language_loading">Loading language settings...</string>
+
+    <!-- 🏠 所在地・住所関連 -->
+    <string name="address">Address</string>
+    <string name="zipCode">Postal Code (no hyphen)</string>
+    <string name="input_zipCode">Enter postal code</string>
+    <string name="currentAddress">Current location:</string>
+    <string name="ziperror">Please enter 7-digit postal code</string>
+    <string name="address_error">Please complete the address selection</string>
+    <string name="noaddress">Address not found</string>
+    <string name="addressnotfeind">Failed to search address</string>
+    <string name="address_not_found">Failed to retrieve address</string>
+    <string name="chome">Select Chome</string>
+    <string name="street">Select Block</string>
+    <string name="inf">Select Details</string>
+
+    <!-- 📸 カメラ・撮影関連 -->
+    <string name="photo_b">Take Photo</string>
+    <string name="reshoot">Retake</string>
+    <string name="camera">Camera</string>
+
+    <!-- 📑 UI要素・基本機能 -->
+    <string name="tips">Tips</string>
+    <string name="close">Close</string>
+    <string name="category">Category:</string>
+    <string name="account">account:</string>
+    <string name="search">Search</string>
+    <string name="manual">Manual</string>
+    <string name="calendar">Calendar</string>
+    <string name="history">History</string>
+    <string name="back">Back</string>
+    <string name="apply">Apply</string>
+    <string name="dispose">Disposal Method</string>
+    <string name="confirm">Confirm</string>
+    <string name="delete">Delete</string>
+    <string name="delete_confirm">Are you sure you want to delete?</string>
+    <string name="delete_success">Successfully deleted</string>
+
+    <!-- ⏰ 通知タイミング -->
+    <string name="beforeyesterday">The Day Before</string>
+    <string name="hourago">1 Hour Ago</string>
+    <string name="thirtyminago">30 Minutes Ago</string>
+    <string name="fifteenminago">15 Minutes Ago</string>
+
+    <!-- 📅 曜日 -->
+    <string name="Mon">Mon</string>
+    <string name="Tue">Tue</string>
+    <string name="Wed">Wed</string>
+    <string name="Thu">Thu</string>
+    <string name="Fri">Fri</string>
+    <string name="Sat">Sat</string>
+    <string name="Sun">Sun</string>
+
+    <!-- ♻️ ゴミ分類 -->
+    <string name="normal_gomi">Burnable Waste</string>
+    <string name="recyclable_gomi">Recyclables</string>
+    <string name="paper_gomi">Paper/Clothes</string>
+    <string name="plastic">Plastic Recyclables</string>
+
+    <!-- ⚠️ エラーメッセージ・取得失敗 -->
+    <string name="manual_not_found">Manual fetch error:</string>
+    <string name="garbage_not_found">Garbage fetch error:</string>
+    <string name="intelligence_not_found">Failed to fetch information:</string>
+    <string name="calendar_not_found">Calendar fetch error:</string>
+    <string name="history_not_found">History fetch error:</string>
+    <string name="date_not_found">Data fetch error:</string>
+    <string name="noinformation">No detailed information available.</string>
+    <string name="delete_error">Failed to delete</string>
+
+    <!-- 🌐 言語選択肢 -->
+    <string name="japanese">日本語</string>
+    <string name="english">English</string>
+    <string name="chinese">中文</string>
+    <string name="korean">한국어</string>
+
+</resources>

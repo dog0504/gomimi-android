@@ -9,5 +9,5 @@ data class GarbageInfo(
 // UIが表示する各ゴミ収集情報の詳細
 data class GarbageItem(
     val type: String,           // 例: "資源ごみ"
-    val time: String            // 例: "8:30〜10:30"
+    val time: String         // 例: "8:30〜10:30"
 )

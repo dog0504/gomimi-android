@@ -1,8 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">test</string>
+
+    <!-- 🏠 アプリ基本情報 -->
+    <string name="app_name">ゴミミちゃん</string>
+
+    <!-- 🔐 ユーザー認証・アカウント関連 -->
+    <string name="login">ログイン</string>
+    <string name="register">新規登録</string>
+    <string name="toregister">登録</string>
+    <string name="newuser">アカウントをお持ちでない方はこちら</string>
+    <string name="login_success">ログインが完了しました</string>
+    <string name="login_successful">ログイン成功！</string>
+    <string name="login_error">ログインに失敗</string>
+    <string name="incorrect">メールアドレスかパスワードが間違っています。</string>
+    <string name="enter">メールアドレスとパスワードを入力してください。</string>
+    <string name="register_success">登録が完了しました</string>
+    <string name="register_error">登録に失敗</string>
+    <string name="user_not_found">ユーザー情報の取得に失敗しました</string>
+    <string name="logout">ログアウト</string>
+    <string name="logout_success">ログアウトが完了しました</string>
+    <string name="logout_error">ログアウトに失敗</string>
+
+    <!-- ✉️ メール・パスワード入力 -->
+    <string name="email">メールアドレス</string>
+    <string name="input_email">メールアドレスを入力</string>
+    <string name="password">パスワード</string>
+    <string name="input_password">パスワードを入力</string>
+    <string name="confirm_password">パスワード（確認用）</string>
+    <string name="input_confirm_password">パスワードを再度入力</string>
+    <string name="noemail">"有効なメールアドレスを入力してください"</string>
+    <string name="nopassword">"6文字以上のパスワードを入力してください"</string>
+    <string name="password_not_match">"パスワードが一致しません"</string>"
+    <string name="Select_language">言語を選択してください</string>
+    <string name="Select_address">住所を最後まで選択してください</string>
+
+
+    <!-- ⚙️ 設定・オプション -->
+    <string name="setting">設定</string>
+    <string name="notify_setting">通知設定</string>
+    <string name="language_setting">言語設定</string>
+    <string name="address_setting">所在地設定</string>
+    <string name="notify">通知</string>
+    <string name="notify_time">いつ通知する？</string>
+    <string name="language">言語</string>
+    <string name="language_setting_error">言語が選択されていません</string>
+    <string name="language_error">言語の取得に失敗</string>
+    <string name="settingupdete">設定を更新しました</string>
+    <string name="setting_not_found">設定の取得エラー:</string>
+    <string name="update_failed">更新に失敗しました:</string>
+    <string name="language_loading">言語設定の読み込み中...</string>
+
+    <!-- 🏠 所在地・住所関連 -->
+    <string name="address">住所</string>
+    <string name="zipCode">郵便番号(ハイフンなし)</string>
+    <string name="input_zipCode">郵便番号を入力</string>
+    <string name="currentAddress">現在の所在地：</string>
+    <string name="ziperror">郵便番号を7桁で入力してください</string>
+    <string name="address_error">住所を最後まで選択してください</string>
+    <string name="noaddress">住所が見つかりませんでした</string>
+    <string name="addressnotfeind">住所の検索に失敗:</string>
+    <string name="address_not_found">住所の取得エラー:</string>
+    <string name="chome">丁目を選択</string>
+    <string name="street">番地を選択</string>
+    <string name="inf">詳細を選択</string>
+
+    <!-- 📸 カメラ・撮影関連 -->
     <string name="photo_b">撮影</string>
+    <string name="reshoot">再撮影</string>
+    <string name="camera">カメラ</string>
+
+    <!-- 📑 UI要素・基本機能 -->
     <string name="tips">Tips</string>
     <string name="close">閉じる</string>
-    <string name="reshoot">再撮影</string>
+    <string name="category">カテゴリ:</string>
+    <string name="account">アカウント:</string>
+    <string name="search">検索</string>
+    <string name="manual">マニュアル</string>
+    <string name="calendar">カレンダー</string>
+    <string name="history">履歴</string>
+    <string name="back">戻る</string>
+    <string name="apply">適用</string>
+    <string name="dispose">の捨て方</string>
+    <string name="confirm">確認</string>
+    <string name="delete">削除</string>
+    <string name="delete_confirm">本当に削除しますか？</string>
+    <string name="delete_success">削除が完了しました</string>
+
+    <!-- ⏰ 通知タイミング -->
+    <string name="beforeyesterday">前日</string>
+    <string name="hourago">1時間前</string>
+    <string name="thirtyminago">30分前</string>
+    <string name="fifteenminago">15分前</string>
+
+    <!-- 📅 曜日 -->
+    <string name="Mon">月</string>
+    <string name="Tue">火</string>
+    <string name="Wed">水</string>
+    <string name="Thu">木</string>
+    <string name="Fri">金</string>
+    <string name="Sat">土</string>
+    <string name="Sun">日</string>
+
+    <!-- ♻️ ゴミ分類 -->
+    <string name="normal_gomi">普通ごみ</string>
+    <string name="recyclable_gomi">資源ごみ</string>
+    <string name="paper_gomi">古紙衣類</string>
+    <string name="plastic">プラスチック資源</string>
+
+    <!-- ⚠️ エラーメッセージ・取得失敗 -->
+    <string name="manual_not_found">マニュアルの取得エラー:</string>
+    <string name="garbage_not_found">ゴミの取得エラー:</string>
+    <string name="intelligence_not_found">情報の取得に失敗しました:</string>
+    <string name="calendar_not_found">カレンダーの取得エラー:</string>
+    <string name="history_not_found">履歴の取得エラー:</string>
+    <string name="date_not_found">データ取得エラー:</string>
+    <string name="noinformation">詳細情報はありません。</string>
+    <string name="delete_error">削除に失敗</string>
+
+    <!-- 🌐 言語選択肢 -->
+    <string name="japanese">日本語</string>
+    <string name="english">English</string>
+    <string name="chinese">中文</string>
+    <string name="korean">한국어</string>
 
 </resources>

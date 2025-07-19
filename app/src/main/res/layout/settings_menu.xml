@@ -23,7 +23,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:gravity="center"
-            android:text="アカウント"
+            android:text="@string/account"
             android:textSize="34sp" />
 
         <ImageView
@@ -47,7 +47,7 @@
                 android:id="@+id/email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="メールアドレス："
+                android:text="@string/email"
                 android:textSize="24sp"
                 app:layout_constraintBottom_toTopOf="@+id/emailTextView"
                 app:layout_constraintStart_toStartOf="parent"
@@ -69,7 +69,7 @@
                 android:id="@+id/language"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="言語："
+                android:text="@string/language"
                 android:textSize="24sp"
                 app:layout_constraintBottom_toTopOf="@+id/languageTextView"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -89,7 +89,7 @@
                 android:id="@+id/address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="所在地："
+                android:text="@string/address"
                 android:textSize="24sp"
                 app:layout_constraintBottom_toTopOf="@+id/addressTextView"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -118,7 +118,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="20dp"
                 android:layout_marginBottom="10dp"
-                android:contentDescription="設定"
+                android:contentDescription="@string/setting"
                 android:src="@drawable/settingsbtn" />
 
             <TextView
@@ -126,7 +126,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="通知設定"
+                android:text="@string/notify_setting"
                 android:textColor="#5D5042"
                 android:textSize="24sp" />
 
@@ -152,7 +152,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="言語設定"
+                android:text="@string/language_setting"
                 android:textColor="#5D5042"
                 android:textSize="24sp" />
 
@@ -178,7 +178,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="所在地設定"
+                android:text="@string/address_setting"
                 android:textColor="#5D5042"
                 android:textSize="24sp" />
 
@@ -195,7 +195,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="ログアウト"
+                android:text="@string/logout"
                 android:textColor="#EF0808"
                 android:textSize="24sp" />
         </FrameLayout>

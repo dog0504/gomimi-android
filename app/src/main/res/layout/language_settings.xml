@@ -5,8 +5,9 @@
     android:id="@+id/back_button2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFBEF"
-    tools:context=".YourActivity">
+    android:background="#FFFBEF">
+<!--    tools:context=".YourActivity"-->
+
 
     <ImageView
         android:id="@+id/back_button"
@@ -15,7 +16,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/return_b"
-        android:contentDescription="戻る"
+        android:contentDescription="@string/back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -45,14 +46,14 @@
             android:layout_marginBottom="24dp"
             android:gravity="center"
             android:padding="8dp"
-            android:text="言語設定"
+            android:text="@string/language_setting"
             android:textColor="#000000"
             android:textSize="34sp" />
 
         <Spinner
             android:id="@+id/languageSpinner"
-            android:layout_width="300dp"
-            android:layout_height="47dp"
+            android:layout_width="318dp"
+            android:layout_height="62dp"
             android:layout_gravity="center"
             android:layout_marginBottom="12dp"
             android:background="@drawable/edittext_background"
@@ -76,7 +77,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="10dp"
-            android:contentDescription="設定按鈕背景"
+            android:contentDescription="ボダン背景設定"
             android:src="@drawable/settingsbtn" />
 
         <TextView
@@ -84,7 +85,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="適用"
+            android:text="@string/apply"
             android:textColor="#5D5042"
             android:textSize="24sp" />
     </FrameLayout>
