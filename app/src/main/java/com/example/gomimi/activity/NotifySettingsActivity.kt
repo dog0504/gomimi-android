@@ -1,17 +1,16 @@
 package com.example.gomimi.activity
 
 import android.Manifest
-import android.provider.Settings
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences // ★ SharedPreferencesをインポート
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import android.provider.Settings
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.Spinner
@@ -23,14 +22,12 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.gomimi.R
 import com.example.gomimi.dataClass.BinDay
-import com.example.gomimi.dataClass.ManualItem
 import com.example.gomimi.receiver.NotificationReceiver
 import com.example.gomimi.retrofit.NetworkResult
 import com.example.gomimi.viewModel.CalendarViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.time.DayOfWeek
-import java.time.LocalDate
-import java.time.LocalDateTime// 現在の時刻取得するインポート
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -71,8 +68,8 @@ class NotifySettingsActivity: BaseActivity() {
             finish()
         }
 //        val spinner: Spinner = findViewById(R.id.languageSpinner)
-
         val spinner: Spinner = findViewById(R.id.timeSetSpinner)
+
 //        val notifyOptions = listOf("前日", "1時間前", "30分前", "15分前")
         val notifyOptions = listOf(getString(R.string.beforeyesterday), getString(R.string.hourago), getString(R.string.thirtyminago), getString(R.string.fifteenminago))
 
@@ -89,7 +86,7 @@ class NotifySettingsActivity: BaseActivity() {
         // --- ボタンのクリック処理 ---
         applyBtn.setOnClickListener {
             val selectedPosition = spinner.selectedItemPosition
-            val selectedItem = spinner.selectedItem.toString()
+//            val selectedItem = spinner.selectedItem.toString()
             val isNotificationEnabled = notifySwitch.isChecked
 
             // ユーザーの設定をまず保存する
@@ -127,12 +124,14 @@ class NotifySettingsActivity: BaseActivity() {
             // 3. すべてのチェックを通過後、全件の通知を予約
             result.data.forEach { binDay ->
                 val nextCollectionDateTime = findNextCollectionDateTime(binDay)
-                val triggerDateTime = calculateTriggerTime(nextCollectionDateTime, selectedItem)
+//                val triggerDateTime = calculateTriggerTime(nextCollectionDateTime, selectedItem)
+                val triggerDateTime = calculateTriggerTime(nextCollectionDateTime, selectedPosition)
                 scheduleNotification(triggerDateTime, binDay)
             }
 
             // 4. すべての予約が完了した後に、完了通知を一度だけ発行
-            sendConfirmationNotification(true, selectedItem)
+//            sendConfirmationNotification(true, selectedItem)
+            sendConfirmationNotification(true, spinner.selectedItem.toString())
         }
 
         // --- データ取得の開始 ---
@@ -184,15 +183,26 @@ class NotifySettingsActivity: BaseActivity() {
     }
 
 
-    private fun calculateTriggerTime(baseTime: LocalDateTime, offset: String): LocalDateTime {
-        return when (offset) {
-            "前日" -> baseTime.minusHours(12)
-            "1時間前" -> baseTime.minusHours(1)
-            "30分前" -> baseTime.minusMinutes(30)
-            "15分前" -> baseTime.minusMinutes(15)
+    // 引数をStringからIntに変更
+    private fun calculateTriggerTime(baseTime: LocalDateTime, position: Int): LocalDateTime {
+        // 条件を文字列から位置に変更
+        return when (position) {
+            0 -> baseTime.minusDays(1) // 「前日」
+            1 -> baseTime.minusHours(1)   // 「1時間前」
+            2 -> baseTime.minusMinutes(30) // 「30分前」
+            3 -> baseTime.minusMinutes(15) // 「15分前」
             else -> baseTime
         }
     }
+//    private fun calculateTriggerTime(baseTime: LocalDateTime, offset: String): LocalDateTime {
+//        return when (offset) {
+//            "前日" -> baseTime.minusHours(12)
+//            "1時間前" -> baseTime.minusHours(1)
+//            "30分前" -> baseTime.minusMinutes(30)
+//            "15分前" -> baseTime.minusMinutes(15)
+//            else -> baseTime
+//        }
+//    }
 
     private fun findNextCollectionDateTime(binDay: BinDay): LocalDateTime {
         val targetDayOfWeek = when (binDay.dayOfWeek) {
