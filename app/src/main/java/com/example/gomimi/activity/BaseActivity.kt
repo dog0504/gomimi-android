@@ -1,11 +1,20 @@
 package com.example.gomimi.activity
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import com.example.gomimi.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.gomimi.utils.LocaleHelper
 
 open class BaseActivity : AppCompatActivity() {
+
+    override fun attachBaseContext(newBase: Context) {
+        val prefs = newBase.getSharedPreferences("app_settings", Context.MODE_PRIVATE)
+        val langCode = prefs.getString("lang_code", "ja") ?: "ja" //日文
+        val context = LocaleHelper.setAppLocale(newBase, langCode)
+        super.attachBaseContext(context)
+    }
 
     protected fun setupBottomNav(bottomNav: BottomNavigationView) {
         bottomNav.setOnItemSelectedListener { item ->

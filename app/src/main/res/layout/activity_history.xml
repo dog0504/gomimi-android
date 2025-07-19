@@ -19,7 +19,7 @@
             android:layout_height="54dp"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="履歴"
+            android:text="@string/history"
             android:textSize="34sp" />
 
         <androidx.recyclerview.widget.RecyclerView

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 🏠 應用程式基本資訊 -->
+    <string name="app_name">test</string>
+
+    <!-- 🔐 使用者認證・帳號相關 -->
+    <string name="login">登入</string>
+    <string name="register">註冊</string>
+    <string name="toregister">註冊</string>
+    <string name="newuser">還沒有帳號嗎？</string>
+    <string name="login_success">登入完成</string>
+    <string name="login_successful">登入成功！</string>
+    <string name="login_error">登入失敗</string>
+    <string name="incorrect">電子郵件或密碼錯誤。</string>
+    <string name="enter">請輸入您的電子郵件和密碼。</string>
+    <string name="register_success">註冊完成</string>
+    <string name="register_error">註冊失敗</string>
+    <string name="user_not_found">取得使用者資訊失敗</string>
+    <string name="logout">登出</string>
+    <string name="logout_success">登出完成</string>
+    <string name="logout_error">登出失敗</string>
+
+    <!-- ✉️ 電子郵件・密碼輸入 -->
+    <string name="email">電子郵件</string>
+    <string name="input_email">輸入您的電子郵件</string>
+    <string name="password">密碼</string>
+    <string name="input_password">輸入您的密碼</string>
+    <string name="confirm_password">確認密碼</string>
+    <string name="input_confirm_password">再次輸入密碼</string>
+    <string name="noemail">請輸入有效的電子郵件地址</string>
+    <string name="nopassword">請輸入至少6位數的密碼</string>
+    <string name="password_not_match">密碼不匹配</string>
+    <string name="Select_language">請選擇語言</string>
+    <string name="Select_address">請完成地址選擇</string>
+
+    <!-- ⚙️ 設定・選項 -->
+    <string name="setting">設定</string>
+    <string name="notify_setting">通知設定</string>
+    <string name="language_setting">語言設定</string>
+    <string name="address_setting">住址設定</string>
+    <string name="notify">通知</string>
+    <string name="notify_time">什麼時候通知？</string>
+    <string name="language">語言</string>
+    <string name="language_setting_error">未選擇語言</string>
+    <string name="language_error">取得語言失敗</string>
+    <string name="settingupdete">設定已更新</string>
+    <string name="setting_not_found">取得設定失敗</string>
+    <string name="update_failed">更新失敗</string>
+    <string name="language_loading">語言清單加載中...</string>
+
+    <!-- 🏠 所在地・地址相關 -->
+    <string name="address">地址</string>
+    <string name="zipCode">郵遞區號（不含連字號）</string>
+    <string name="input_zipCode">輸入郵遞區號</string>
+    <string name="currentAddress">目前所在地：</string>
+    <string name="ziperror">請輸入7位數郵遞區號</string>
+    <string name="address_error">請完成地址選擇</string>
+    <string name="noaddress">找不到地址</string>
+    <string name="addressnotfeind">地址搜尋失敗</string>
+    <string name="address_not_found">取得地址失敗</string>
+    <string name="chome">選擇丁目</string>
+    <string name="street">選擇番地</string>
+    <string name="inf">選擇詳細地址</string>
+
+    <!-- 📸 相機・拍攝相關 -->
+    <string name="photo_b">拍照</string>
+    <string name="reshoot">重新拍攝</string>
+    <string name="camera">相機</string>
+
+    <!-- 📑 介面元素・基本功能 -->
+    <string name="tips">提示</string>
+    <string name="close">關閉</string>
+    <string name="category">分類：</string>
+    <string name="account">帳號：</string>
+    <string name="search">搜尋</string>
+    <string name="manual">使用手冊</string>
+    <string name="calendar">行事曆</string>
+    <string name="history">履歷</string>
+    <string name="back">返回</string>
+    <string name="apply">套用</string>
+    <string name="dispose">處理方法</string>
+    <string name="confirm">確認</string>
+    <string name="delete">刪除</string>
+    <string name="delete_confirm">確定要刪除嗎？</string>
+    <string name="delete_success">刪除成功</string>
+
+    <!-- ⏰ 通知時間點 -->
+    <string name="beforeyesterday">前天</string>
+    <string name="hourago">1小時前</string>
+    <string name="thirtyminago">30分鐘前</string>
+    <string name="fifteenminago">15分鐘前</string>
+
+    <!-- 📅 星期 -->
+    <string name="Mon">週一</string>
+    <string name="Tue">週二</string>
+    <string name="Wed">週三</string>
+    <string name="Thu">週四</string>
+    <string name="Fri">週五</string>
+    <string name="Sat">週六</string>
+    <string name="Sun">週日</string>
+
+    <!-- ♻️ 垃圾分類 -->
+    <string name="normal_gomi">可燃垃圾</string>
+    <string name="recyclable_gomi">資源回收垃圾</string>
+    <string name="paper_gomi">紙類／衣物</string>
+    <string name="plastic">塑膠回收</string>
+
+    <!-- ⚠️ 錯誤訊息・取得失敗 -->
+    <string name="manual_not_found">取得使用手冊失敗：</string>
+    <string name="garbage_not_found">取得垃圾資料失敗：</string>
+    <string name="intelligence_not_found">取得資訊失敗：</string>
+    <string name="calendar_not_found">取得行事曆失敗：</string>
+    <string name="history_not_found">取得歷史紀錄失敗：</string>
+    <string name="date_not_found">取得資料失敗：</string>
+    <string name="noinformation">沒有詳細資料。</string>
+    <string name="delete_error">刪除失敗</string>
+
+
+    <!-- 🌐 語言選項 -->
+    <string name="japanese">日本語</string>
+    <string name="english">English</string>
+    <string name="chinese">中文</string>
+    <string name="korean">한국어</string>
+
+</resources>

@@ -12,7 +12,7 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:hint="検索"
+        android:hint="@string/search"
         android:imeOptions="actionSearch"
         android:inputType="text"
         android:textSize="24sp"

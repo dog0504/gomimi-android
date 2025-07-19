@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import com.example.gomimi.R
 import com.example.gomimi.dataClass.Address
 import com.example.gomimi.databinding.LocationSettingsBinding
 import com.example.gomimi.retrofit.NetworkResult
@@ -46,7 +47,7 @@ class LocationSettingsActivity : BaseActivity() {
             if (postalCode.length == 7) {
                 viewModel.searchAddress(postalCode)
             } else {
-                Toast.makeText(this, "郵便番号を7桁で入力してください", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.ziperror), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -54,7 +55,7 @@ class LocationSettingsActivity : BaseActivity() {
         binding.locationApplyBtn.setOnClickListener {
             selectedAddressId?.let {
                 viewModel.updateAddress(it)
-            } ?: Toast.makeText(this, "住所を最後まで選択してください", Toast.LENGTH_SHORT).show()
+            } ?: Toast.makeText(this, getString(R.string.address_error), Toast.LENGTH_SHORT).show()
         }
 
         // 初期状態ではスピナー群を非表示にする
@@ -79,11 +80,11 @@ class LocationSettingsActivity : BaseActivity() {
                 if (searchedAddressList.isNotEmpty()) {
                     setupAddressSelection()
                 } else {
-                    Toast.makeText(this, "該当する住所が見つかりませんでした", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.noaddress), Toast.LENGTH_SHORT).show()
                     setAddressFieldsVisibility(View.GONE)
                 }
             } else if (result is NetworkResult.Error) {
-                Toast.makeText(this, "住所の検索に失敗: ${result.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "${getString(R.string.addressnotfeind)} ${result.message}", Toast.LENGTH_LONG).show()
                 setAddressFieldsVisibility(View.GONE)
             }
         }
@@ -117,7 +118,7 @@ class LocationSettingsActivity : BaseActivity() {
 
         // --- 登録画面からコピーした段階的絞り込みロジック ---
         val choms = searchedAddressList.mapNotNull { it.chom }.distinct()
-        setupSpinner(binding.chomSpinner, listOf("丁目を選択") + choms) { chomPos ->
+        setupSpinner(binding.chomSpinner, listOf(getString(R.string.chome)) + choms) { chomPos ->
             val selectedChom = choms.getOrNull(chomPos - 1)
             updateStreetSpinner(selectedChom)
         }
@@ -127,7 +128,7 @@ class LocationSettingsActivity : BaseActivity() {
     private fun updateStreetSpinner(selectedChom: String?) {
         val filtered = searchedAddressList.filter { selectedChom == null || it.chom == selectedChom }
         val streets = filtered.mapNotNull { it.street }.distinct()
-        setupSpinner(binding.streetSpinner, listOf("番地を選択") + streets) { streetPos ->
+        setupSpinner(binding.streetSpinner, listOf(getString(R.string.street)) + streets) { streetPos ->
             val selectedStreet = streets.getOrNull(streetPos - 1)
             updateInfSpinner(selectedChom, selectedStreet)
         }
@@ -140,7 +141,7 @@ class LocationSettingsActivity : BaseActivity() {
                     (selectedStreet == null || it.street == selectedStreet)
         }
         val infs = filtered.mapNotNull { it.inf }.distinct()
-        setupSpinner(binding.infSpinner, listOf("詳細を選択") + infs) { infPos ->
+        setupSpinner(binding.infSpinner, listOf(getString(R.string.inf)) + infs) { infPos ->
             val selectedInf = infs.getOrNull(infPos - 1)
             val finalAddress = filtered.find { it.inf == selectedInf }
             selectedAddressId = finalAddress?.id

@@ -66,7 +66,8 @@ class HistoryActivity : BaseActivity() {
                 }
                 is NetworkResult.Error -> {
                     // エラーメッセージを表示
-                    Toast.makeText(this, "履歴の取得に失敗: ${result.message}", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "${getString(R.string.history_not_found)} ${result.message}", Toast.LENGTH_LONG).show()
+
                 }
                 else -> {} // Loading
             }

@@ -162,12 +162,12 @@ class MainActivity : BaseActivity() {
             if (result is NetworkResult.Success) {
                 val manual = result.data
                 if (manual != null) {
-                    showTips(manual.name, manual.remarks ?: "詳細情報はありません。", manual.category)
+                    showTips(manual.name, manual.remarks ?: getString(R.string.noinformation), manual.category)
                 } else {
-                    Toast.makeText(this, "詳細情報の取得に失敗しました。", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.intelligence_not_found), Toast.LENGTH_SHORT).show()
                 }
             } else if (result is NetworkResult.Error) {
-                Toast.makeText(this, "詳細情報の取得エラー: ${result.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "${getString(R.string.date_not_found)} ${result.message}", Toast.LENGTH_LONG).show()
             }
         }
     }

@@ -41,7 +41,7 @@
             android:layout_marginBottom="24dp"
             android:gravity="center"
             android:padding="8dp"
-            android:text="通知設定"
+            android:text="@string/notify_setting"
             android:textColor="#000000"
             android:textSize="34sp" />
 
@@ -56,7 +56,7 @@
                 android:layout_width="109dp"
                 android:layout_height="60dp"
                 android:layout_marginBottom="12dp"
-                android:text="通知"
+                android:text="@string/notify"
                 android:textSize="24sp" />
         </LinearLayout>
 
@@ -67,7 +67,7 @@
             android:layout_marginBottom="12dp"
             android:gravity="center"
             android:padding="8dp"
-            android:text="いつ通知する？"
+            android:text="@string/notify_time"
             android:textColor="#000000"
             android:textSize="24sp" />
 
@@ -106,7 +106,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="適用"
+            android:text="@string/apply"
             android:textColor="#5D5042"
             android:textSize="24sp" />
     </FrameLayout>

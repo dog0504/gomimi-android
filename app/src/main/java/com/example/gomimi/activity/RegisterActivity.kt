@@ -1,5 +1,6 @@
 package com.example.gomimi.activity
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -8,13 +9,16 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import com.example.gomimi.R
 import com.example.gomimi.dataClass.Address
 import com.example.gomimi.dataClass.AuthResponse
 import com.example.gomimi.dataClass.Language
 import com.example.gomimi.databinding.ActivityRegisterBinding
 import com.example.gomimi.retrofit.NetworkResult
 import com.example.gomimi.retrofit.TokenManager
+import com.example.gomimi.utils.LocaleHelper
 import com.example.gomimi.viewModel.RegisterViewModel
+
 
 class RegisterActivity: BaseActivity() {
     private lateinit var viewBinding: ActivityRegisterBinding
@@ -51,7 +55,7 @@ class RegisterActivity: BaseActivity() {
             if (postalCode.length == 7) {
                 viewModel.searchAddress(postalCode)
             } else {
-                Toast.makeText(this, "郵便番号を7桁で入力してください", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.ziperror), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -67,7 +71,7 @@ class RegisterActivity: BaseActivity() {
                 languageList = result.data
                 setupSpinner(viewBinding.languageSpinner, languageList.map { it.name })
             } else if (result is NetworkResult.Error) {
-                Toast.makeText(this, "言語の取得に失敗", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.language_error), Toast.LENGTH_LONG).show()
             }
         }
 
@@ -80,11 +84,11 @@ class RegisterActivity: BaseActivity() {
                     // ★ 住所特定後のUIセットアップを呼び出す
                     setupAddressSelection()
                 } else {
-                    Toast.makeText(this, "該当する住所が見つかりませんでした", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.noaddress), Toast.LENGTH_SHORT).show()
                     setAddressFieldsVisibility(View.GONE)
                 }
             } else if (result is NetworkResult.Error) {
-                Toast.makeText(this, "該当する住所が見つかりませんでした", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.noaddress), Toast.LENGTH_LONG).show()
                 setAddressFieldsVisibility(View.GONE)
             } else if (result is NetworkResult.Loading) {
                 // 検索中は住所フィールドを隠す
@@ -97,7 +101,7 @@ class RegisterActivity: BaseActivity() {
             viewBinding.registerBtn.isEnabled = result !is NetworkResult.Loading
 
             if (result is NetworkResult.Success) {
-                Toast.makeText(this, "登録成功！", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.register_success), Toast.LENGTH_LONG).show()
                 val token = (result.data as? AuthResponse)?.accessToken
                 if (token != null) TokenManager.saveToken(token)
 
@@ -106,7 +110,7 @@ class RegisterActivity: BaseActivity() {
                 })
                 finish()
             } else if (result is NetworkResult.Error) {
-                Toast.makeText(this, "登録エラー", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.register_error), Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -126,7 +130,7 @@ class RegisterActivity: BaseActivity() {
 
         // 1.「丁目」スピナーのセットアップ
         val choms = addressList.mapNotNull { it.chom }.distinct()
-        setupSpinner(viewBinding.chomSpinner, listOf("丁目を選択") + choms) { chomPos ->
+        setupSpinner(viewBinding.chomSpinner, listOf(getString(R.string.chome)) + choms) { chomPos ->
             val selectedChom = choms.getOrNull(chomPos - 1)
             // 丁目が選択されたら、それに基づいて番地の選択肢を更新
             updateStreetSpinner(selectedChom)
@@ -140,7 +144,7 @@ class RegisterActivity: BaseActivity() {
         val filteredByChom = addressList.filter { selectedChom == null || it.chom == selectedChom }
         val streets = filteredByChom.mapNotNull { it.street }.distinct()
 
-        setupSpinner(viewBinding.streetSpinner, listOf("番地を選択") + streets) { streetPos ->
+        setupSpinner(viewBinding.streetSpinner, listOf(getString(R.string.street)) + streets) { streetPos ->
             val selectedStreet = streets.getOrNull(streetPos - 1)
             // 番地が選択されたら、それに基づいて詳細の選択肢を更新
             updateInfSpinner(selectedChom, selectedStreet)
@@ -154,7 +158,7 @@ class RegisterActivity: BaseActivity() {
         val filtered = addressList.filter { (selectedChom == null || it.chom == selectedChom) && (selectedStreet == null || it.street == selectedStreet) }
         val infs = filtered.mapNotNull { it.inf }.distinct()
 
-        setupSpinner(viewBinding.infSpinner, listOf("詳細を選択") + infs) { infPos ->
+        setupSpinner(viewBinding.infSpinner, listOf(getString(R.string.inf)) + infs) { infPos ->
             val selectedInf = infs.getOrNull(infPos - 1)
             // 全ての条件で絞り込んだ結果、候補が1つに確定すればIDを保存
             val finalAddress = filtered.find { it.inf == selectedInf }
@@ -164,27 +168,52 @@ class RegisterActivity: BaseActivity() {
 
     // 登録処理の実行
     private fun performRegistration() {
-        // ... (このメソッドの中身は前回のままでOK)
         val email = viewBinding.emailInput.text.toString().trim()
         val password = viewBinding.passwordInput.text.toString().trim()
         val confirmPassword = viewBinding.confirmPasswordInput.text.toString().trim()
         val selectedLangPosition = viewBinding.languageSpinner.selectedItemPosition
-        val selectedLanguageId = if (languageList.isNotEmpty()) languageList.getOrNull(selectedLangPosition)?.id else null
 
+        val selectedLanguage = languageList.getOrNull(selectedLangPosition)
+        val selectedLanguageId = selectedLanguage?.id
+        val selectedLangCode = selectedLanguage?.code
+
+        //  Email
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(this, "有効なメールアドレスを入力してください", Toast.LENGTH_SHORT).show(); return
+            Toast.makeText(this, getString(R.string.noemail), Toast.LENGTH_SHORT).show()
+            return
         }
-        if (password.length < 6 || password != confirmPassword) {
-            Toast.makeText(this, "6文字以上のパスワードを入力し、確認用と一致させてください", Toast.LENGTH_SHORT).show(); return
+
+        // pw
+        if (password.length < 6) {
+            Toast.makeText(this, getString(R.string.nopassword), Toast.LENGTH_SHORT).show()
+            return
         }
-        if (selectedLanguageId == null) {
-            Toast.makeText(this, "言語を選択してください", Toast.LENGTH_SHORT).show(); return
+        if (password != confirmPassword) {
+            Toast.makeText(this, getString(R.string.password_not_match), Toast.LENGTH_SHORT).show()
+            return
         }
+
+        // languages
+        if (selectedLanguageId == null || selectedLangCode.isNullOrBlank()) {
+            Toast.makeText(this, getString(R.string.Select_language), Toast.LENGTH_SHORT).show()
+            return
+        }
+
+
         if (selectedAddressId == null) {
-            Toast.makeText(this, "住所を最後まで選択してください", Toast.LENGTH_SHORT).show(); return
+            Toast.makeText(this, getString(R.string.Select_address), Toast.LENGTH_SHORT).show()
+            return
         }
+
+
+        val prefs = getSharedPreferences("app_settings", Context.MODE_PRIVATE)
+        prefs.edit().putString("lang_code", selectedLangCode).apply()
+        LocaleHelper.setAppLocale(this, selectedLangCode)
+
+
         viewModel.registerUser(email, password, selectedLanguageId, selectedAddressId!!)
     }
+
 
     private fun setAddressFieldsVisibility(visibility: Int) {
         viewBinding.addressContaint.visibility = visibility

@@ -68,7 +68,7 @@ class ManualActivity : BaseActivity() {
             if (result is NetworkResult.Success) {
                 manualAdapter.updateData(result.data)
             } else if (result is NetworkResult.Error) {
-                Toast.makeText(this, "マニュアルの取得エラー: ${result.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "${getString(R.string.manual_not_found)} ${result.message}", Toast.LENGTH_LONG).show()
             }
         }
     }
