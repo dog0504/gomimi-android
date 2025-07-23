@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.gomimi.dataClass.AuthResponse
 import com.example.gomimi.dataClass.Language
 import com.example.gomimi.dataClass.UpdateRequestBody
 import com.example.gomimi.dataClass.UserResponseBody
@@ -25,6 +26,9 @@ class LanguageSettingsViewModel(private val repository: UserRepository = UserRep
     private val _updateResult = MutableLiveData<NetworkResult<UserResponseBody>>()
     val updateResult: LiveData<NetworkResult<UserResponseBody>> = _updateResult
 
+    private val _refreshTokenResult = MutableLiveData<NetworkResult<AuthResponse>>()
+    val refreshTokenResult: LiveData<NetworkResult<AuthResponse>> = _refreshTokenResult
+
     // 画面表示に必要な情報をまとめて取得
     fun fetchInitialData() {
         viewModelScope.launch {
@@ -37,11 +41,33 @@ class LanguageSettingsViewModel(private val repository: UserRepository = UserRep
     }
 
     // 言語設定を更新
+//    fun updateLanguage(languageId: Int) {
+//        viewModelScope.launch {
+//            _updateResult.value = NetworkResult.Loading
+//            val requestBody = UpdateRequestBody(languageId = languageId)
+//            _updateResult.value = repository.updateUserProfile(requestBody)
+//        }
+//    }
     fun updateLanguage(languageId: Int) {
         viewModelScope.launch {
             _updateResult.value = NetworkResult.Loading
             val requestBody = UpdateRequestBody(languageId = languageId)
-            _updateResult.value = repository.updateUserProfile(requestBody)
+
+            // repositoryの結果を一度変数で受け取る
+            val result = repository.updateUserProfile(requestBody)
+            _updateResult.value = result
+
+            // 結果が成功（Success）だった場合、refreshToken()を呼び出す
+            if (result is NetworkResult.Success) {
+                refreshToken()
+            }
+        }
+    }
+
+    private fun refreshToken() {
+        viewModelScope.launch {
+            _refreshTokenResult.value = NetworkResult.Loading
+            _refreshTokenResult.value = repository.refreshToken()
         }
     }
 }
