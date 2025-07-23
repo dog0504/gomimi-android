@@ -50,6 +50,17 @@ class UserRepository(private val userService: ApiService = RetrofitClient.instan
         }
     }
 
+    suspend fun refreshToken(): NetworkResult<AuthResponse> {
+        val result = safeApiCall { userService.refreshToken() }
+
+        if (result is NetworkResult.Success) {
+            val newToken = result.data.accessToken
+            TokenManager.saveToken(newToken)
+        }
+
+        return result
+    }
+
     suspend fun getUser(id: String): NetworkResult<User> {
         return safeApiCall { userService.getUser(id) }
     }
@@ -67,6 +78,10 @@ class UserRepository(private val userService: ApiService = RetrofitClient.instan
     // 新しい完全一致検索のメソッドを追加
     suspend fun searchManualExact(name: String): NetworkResult<Manual> { // List<>を外す
         return safeApiCall { userService.searchManualExact(name) }
+    }
+
+    suspend fun getManualById(id: Int): NetworkResult<Manual> {
+        return safeApiCall { userService.getManualById(id) }
     }
 
     suspend fun getLanguages(): NetworkResult<List<Language>> {
