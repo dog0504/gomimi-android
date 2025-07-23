@@ -1,11 +1,11 @@
 package com.example.gomimi.activity
 
-import androidx.appcompat.app.AlertDialog
-import android.app.NotificationChannel // 通知チャンネル初期設定のためインポート
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -20,14 +21,17 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.getSystemService
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.example.gomimi.R
 import com.example.gomimi.dataClass.GarbageResult
 import com.example.gomimi.databinding.ActivityMainBinding
 import com.example.gomimi.retrofit.NetworkResult
+import com.example.gomimi.retrofit.TokenManager
+import com.example.gomimi.retrofit.UserRepository
 import com.example.gomimi.viewModel.MainViewModel
 import com.google.android.material.chip.Chip
+import kotlinx.coroutines.launch
 import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -47,24 +51,49 @@ class MainActivity : BaseActivity() {
         // レイアウトの設定
         setContentView(viewBinding.root)
 
-        //通知チャンネル生成
-        createNotificationChannel()
+        // 通常の初期化処理
+//        createNotificationChannel()
+//        viewModel = ViewModelProvider(this@MainActivity).get(MainViewModel::class.java)
+//        setupUI()
+//        observeViewModel()
+//        if (allPermissionsGranted()) {
+//            startPreview()
+//        } else {
+//            ActivityCompat.requestPermissions(this@MainActivity, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+//        }
+//        requestNotificationPermission()
 
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        // トークン更新チェックも含めて初期化処理を行う
 
-        setupUI()
-        observeViewModel()
-
-        if (allPermissionsGranted()) {
-            startPreview()
-        } else {
-            ActivityCompat.requestPermissions(this, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+        // トークン未所持ならログイン画面へ
+        val token = TokenManager.getToken()
+        if (token.isNullOrEmpty()) {
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            return
         }
-        requestNotificationPermission()
-        //補足説明：androidのOSのバージョンが13未満の場合は
-        //「デフォルトで有効」になって、別に権限許可設定を別にする必要はない。
-        //但し、以上の場合は「デフォルトで無効」の状態になっているため、権限許可設定が要る。
 
+        lifecycleScope.launch {
+            val result = UserRepository().refreshToken()
+            if (result is NetworkResult.Error) {
+                val intent = Intent(this@MainActivity, LoginActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                return@launch
+            }
+            // 通常の初期化処理
+            createNotificationChannel()
+            viewModel = ViewModelProvider(this@MainActivity).get(MainViewModel::class.java)
+            setupUI()
+            observeViewModel()
+            if (allPermissionsGranted()) {
+                startPreview()
+            } else {
+                ActivityCompat.requestPermissions(this@MainActivity, REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+            }
+            requestNotificationPermission()
+        }
 
     }
 
