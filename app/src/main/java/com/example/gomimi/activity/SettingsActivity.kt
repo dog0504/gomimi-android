@@ -56,7 +56,9 @@ class SettingsActivity: BaseActivity() {
                 binding.emailTextView.text = result.data.email
                 binding.languageTextView.text = result.data.language.name
                 binding.addressTextView.text = result.data.address?.let {
-                    "${it.zip}\n${it.city}${it.ward}${it.town ?: ""}${it.chom ?: ""}${it.street ?: ""}${it.inf ?: ""}"
+                    // "上記以外"を""に変換する拡張関数
+                    fun String?.displayValue(): String = if (this == "上記以外") "" else this ?: ""
+                    "${it.zip}\n${it.city}${it.ward}${it.town ?: ""}${it.chom?.displayValue()}${it.street?.displayValue()}${it.inf?.displayValue()}"
                 } ?: "未設定"
             } else if (result is NetworkResult.Error) {
                 Toast.makeText(this, getString(R.string.user_not_found), Toast.LENGTH_SHORT).show()

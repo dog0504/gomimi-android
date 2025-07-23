@@ -67,7 +67,9 @@ class LocationSettingsActivity : BaseActivity() {
         viewModel.userProfile.observe(this) { result ->
             if (result is NetworkResult.Success) {
                 val addr = result.data.address
-                binding.currentAddressTextView.text = "${addr.zip}\n${addr.city}${addr.ward}${addr.town ?: ""}${addr.chom ?: ""}${addr.street ?: ""}${addr.inf ?: ""}"
+                // "上記以外"を""に変換する拡張関数
+                fun String?.displayValue(): String = if (this == "" || this == "上記以外") "" else this ?: ""
+                binding.currentAddressTextView.text = "${addr.zip}\n${addr.city}${addr.ward}${addr.town ?: ""}${addr.chom?.displayValue()}${addr.street?.displayValue()}${addr.inf?.displayValue()}"
             }
         }
 
@@ -107,6 +109,9 @@ class LocationSettingsActivity : BaseActivity() {
     /**
      * 郵便番号検索後、特定された住所を表示し、それ以降の絞り込みスピナーをセットアップする
      */
+    // "上記以外"を"なし"に変換する拡張関数
+    private fun String?.displayValue(): String = if (this == "上記以外") "選択肢なし" else this ?: "選択肢なし"
+
     private fun setupAddressSelection() {
         setAddressFieldsVisibility(View.VISIBLE)
         selectedAddressId = null
@@ -117,7 +122,7 @@ class LocationSettingsActivity : BaseActivity() {
         binding.townTextView.text = firstAddress.town
 
         // --- 登録画面からコピーした段階的絞り込みロジック ---
-        val choms = searchedAddressList.mapNotNull { it.chom }.distinct()
+        val choms = searchedAddressList.mapNotNull { it.chom?.displayValue() }.distinct()
         setupSpinner(binding.chomSpinner, listOf(getString(R.string.chome)) + choms) { chomPos ->
             val selectedChom = choms.getOrNull(chomPos - 1)
             updateStreetSpinner(selectedChom)
@@ -127,7 +132,7 @@ class LocationSettingsActivity : BaseActivity() {
 
     private fun updateStreetSpinner(selectedChom: String?) {
         val filtered = searchedAddressList.filter { selectedChom == null || it.chom == selectedChom }
-        val streets = filtered.mapNotNull { it.street }.distinct()
+        val streets = filtered.mapNotNull { it.street?.displayValue() }.distinct()
         setupSpinner(binding.streetSpinner, listOf(getString(R.string.street)) + streets) { streetPos ->
             val selectedStreet = streets.getOrNull(streetPos - 1)
             updateInfSpinner(selectedChom, selectedStreet)
@@ -140,7 +145,7 @@ class LocationSettingsActivity : BaseActivity() {
             (selectedChom == null || it.chom == selectedChom) &&
                     (selectedStreet == null || it.street == selectedStreet)
         }
-        val infs = filtered.mapNotNull { it.inf }.distinct()
+        val infs = filtered.mapNotNull { it.inf?.displayValue() }.distinct()
         setupSpinner(binding.infSpinner, listOf(getString(R.string.inf)) + infs) { infPos ->
             val selectedInf = infs.getOrNull(infPos - 1)
             val finalAddress = filtered.find { it.inf == selectedInf }
