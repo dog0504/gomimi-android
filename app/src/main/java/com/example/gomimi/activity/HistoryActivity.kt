@@ -45,7 +45,8 @@ class HistoryActivity : BaseActivity() {
     private fun setupRecyclerView() {
         historyAdapter = HistoryAdapter(emptyList()) { historyItem ->
             val intent = Intent(this, HistoryDetailActivity::class.java).apply {
-                putExtra(HistoryDetailActivity.EXTRA_GARBAGE_NAME, historyItem.name)
+//                putExtra(HistoryDetailActivity.EXTRA_GARBAGE_NAME, historyItem.name)
+                putExtra(HistoryDetailActivity.EXTRA_GARBAGE_ID, historyItem.id) // IDを渡すように変更
             }
             startActivity(intent)
         }
