@@ -121,10 +121,10 @@ class CalendarActivity : BaseActivity() {
 
     private fun getImageResourceForCategory(category: String): Int {
         return when (category) {
-            "普通ごみ" -> R.drawable.normal_gomi
-            "資源ごみ" -> R.drawable.recyclable_gomi
-            "古紙衣類" -> R.drawable.paper_gomi
-            "プラスチック資源" -> R.drawable.plastic
+            getString(R.string.normal_gomi) -> R.drawable.normal_gomi
+            getString(R.string.recyclable_gomi) -> R.drawable.recyclable_gomi
+            getString(R.string.paper_gomi) -> R.drawable.paper_gomi
+            getString(R.string.plastic) -> R.drawable.plastic
             else -> {
                 Log.w("CalendarActivity", "Unknown category: $category")
                 R.drawable.default_gomi

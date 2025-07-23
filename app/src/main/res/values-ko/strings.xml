@@ -101,10 +101,15 @@
     <string name="Sun">일</string>
 
     <!-- ♻️ 쓰레기 분류 -->
-    <string name="normal_gomi">일반 쓰레기</string>
-    <string name="recyclable_gomi">재활용</string>
-    <string name="paper_gomi">종이/의류</string>
-    <string name="plastic">플라스틱 재활용</string>
+<!--    <string name="normal_gomi">일반 쓰레기</string>-->
+<!--    <string name="recyclable_gomi">재활용</string>-->
+<!--    <string name="paper_gomi">종이/의류</string>-->
+<!--    <string name="plastic">플라스틱 재활용</string>-->
+<!--    TODO : 英語から直すこと-->
+    <string name="normal_gomi">Ordinary Waste</string>
+    <string name="recyclable_gomi">Recyclable Waste</string>
+    <string name="paper_gomi">Used Paper &amp; Clothing</string>
+    <string name="plastic">Plastic Resources</string>
 
     <!-- ⚠️ 오류 메시지 -->
     <string name="manual_not_found">매뉴얼 로드 오류:</string>
