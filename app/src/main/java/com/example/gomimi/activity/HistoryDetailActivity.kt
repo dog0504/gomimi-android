@@ -27,15 +27,27 @@ class HistoryDetailActivity : AppCompatActivity() {
         // ★ ViewModelの取得を変更
         viewModel = ViewModelProvider(this).get(HistoryDetailViewModel::class.java)
 
-        val garbageName = intent.getStringExtra(EXTRA_GARBAGE_NAME)
+//        val garbageName = intent.getStringExtra(EXTRA_GARBAGE_NAME)
+        // ★ IDを渡すための定数を使用
+        val garbageId = intent.getIntExtra(EXTRA_GARBAGE_ID, -1)
 
-        if (garbageName == null) {
+//        if (garbageName == null) {
+//            Toast.makeText(this, getString(R.string.intelligence_not_found), Toast.LENGTH_SHORT).show()
+//            finish()
+//            return
+//        }
+//
+//        viewModel.fetchManualDetail(garbageName)
+
+        if (garbageId == -1) {
             Toast.makeText(this, getString(R.string.intelligence_not_found), Toast.LENGTH_SHORT).show()
             finish()
             return
         }
 
-        viewModel.fetchManualDetail(garbageName)
+        // ★ IDを使って詳細情報を取得
+        viewModel.fetchManualDetailById(garbageId)
+
         observeManualDetail()
 
         binding.backButton.setOnClickListener {
@@ -59,5 +71,6 @@ class HistoryDetailActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_GARBAGE_NAME = "EXTRA_GARBAGE_NAME"
+        const val EXTRA_GARBAGE_ID = "EXTRA_GARBAGE_ID" // IDを渡すための定数
     }
 }
