@@ -16,7 +16,7 @@ data class AuthResponse(
 
 // ゴミ識別APIのレスポンスデータ
 data class GarbageIdentificationResponse(
-    val query_text: String,
+    val query: String,
     val results: List<GarbageResult>
 )
 
