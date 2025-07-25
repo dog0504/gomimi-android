@@ -264,7 +264,7 @@ class MainActivity : BaseActivity() {
             viewBinding.progressBar.visibility = if (result is NetworkResult.Loading) View.VISIBLE else View.GONE
 
             when (result) {
-                is NetworkResult.Success -> showResultList(result.data.query_text, result.data.results) // 画像認識結果を表示
+                is NetworkResult.Success -> showResultList(result.data.query, result.data.results) // 画像認識結果を表示
                 is NetworkResult.Error -> {
                     Toast.makeText(this, "解析失敗: ${result.message}", Toast.LENGTH_LONG).show()
                     resetToInitialState()
@@ -290,7 +290,9 @@ class MainActivity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        cameraExecutor.shutdown()
+        if (::cameraExecutor.isInitialized) {
+            cameraExecutor.shutdown()
+        }
     }
 
     private fun resetToInitialState() {
