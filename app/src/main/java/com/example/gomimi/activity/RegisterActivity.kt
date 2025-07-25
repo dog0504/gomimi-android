@@ -132,7 +132,7 @@ class RegisterActivity: BaseActivity() {
         viewBinding.townTextView.text = firstAddress.town
 
         // 1.「丁目」スピナーのセットアップ
-        val choms = addressList.mapNotNull { it.chom?.displayValue() }.distinct()
+        val choms = addressList.mapNotNull { it.chom }.distinct()
         setupSpinner(viewBinding.chomSpinner, listOf(getString(R.string.chome)) + choms) { chomPos ->
             val selectedChom = choms.getOrNull(chomPos - 1)
             // 丁目が選択されたら、それに基づいて番地の選択肢を更新
@@ -145,7 +145,7 @@ class RegisterActivity: BaseActivity() {
     /** 丁目の選択に応じて「番地」スピナーを更新する */
     private fun updateStreetSpinner(selectedChom: String?) {
         val filteredByChom = addressList.filter { selectedChom == null || it.chom == selectedChom }
-        val streets = filteredByChom.mapNotNull { it.street?.displayValue() }.distinct()
+        val streets = filteredByChom.mapNotNull { it.street }.distinct()
 
         setupSpinner(viewBinding.streetSpinner, listOf(getString(R.string.street)) + streets) { streetPos ->
             val selectedStreet = streets.getOrNull(streetPos - 1)
@@ -159,7 +159,7 @@ class RegisterActivity: BaseActivity() {
     /** 丁目・番地の選択に応じて「詳細」スピナーを更新する */
     private fun updateInfSpinner(selectedChom: String?, selectedStreet: String?) {
         val filtered = addressList.filter { (selectedChom == null || it.chom == selectedChom) && (selectedStreet == null || it.street == selectedStreet) }
-        val infs = filtered.mapNotNull { it.inf?.displayValue() }.distinct()
+        val infs = filtered.mapNotNull { it.inf }.distinct()
 
         setupSpinner(viewBinding.infSpinner, listOf(getString(R.string.inf)) + infs) { infPos ->
             val selectedInf = infs.getOrNull(infPos - 1)
