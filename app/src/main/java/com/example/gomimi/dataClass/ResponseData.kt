@@ -23,7 +23,8 @@ data class GarbageIdentificationResponse(
 // ゴミ識別結果のデータクラス
 data class GarbageResult(
     val rank: Int,
-    val name: String
+    val name: String,
+    val manualId: Int
 )
 
 // API仕様 /manuals/{manualId} や /manuals/search のレスポンスに対応

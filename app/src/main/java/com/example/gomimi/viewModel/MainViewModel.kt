@@ -48,4 +48,12 @@ class MainViewModel(private val repository: UserRepository = UserRepository()) :
             _manualDetail.value = repository.searchManualExact(name) // searchManualExactを呼び出す
         }
     }
+
+    // マニュアルをIDで取得するメソッド
+    fun fetchManualById(manualId: Int) {
+        viewModelScope.launch {
+            _manualDetail.value = NetworkResult.Loading
+            _manualDetail.value = repository.getManualById(manualId)
+        }
+    }
 }

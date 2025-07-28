@@ -319,7 +319,8 @@ class MainActivity : BaseActivity() {
                     isClickable = true
                     setOnClickListener {
                         // チップがクリックされたら、その名前で詳細情報を検索
-                        viewModel.fetchManualDetail(garbageItem.name)
+//                        viewModel.fetchManualDetail(garbageItem.name)
+                        viewModel.fetchManualById(garbageItem.manualId) // ごみのIDでマニュアルを取得
                     }
                 }
                 viewBinding.descChipGroup.addView(chip)
