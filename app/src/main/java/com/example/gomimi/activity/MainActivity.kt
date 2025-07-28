@@ -262,6 +262,7 @@ class MainActivity : BaseActivity() {
         // 画像認識APIの結果を監視
         viewModel.identificationResult.observe(this) { result ->
             viewBinding.progressBar.visibility = if (result is NetworkResult.Loading) View.VISIBLE else View.GONE
+            viewBinding.progressOverlay.visibility = if (result is NetworkResult.Loading) View.VISIBLE else View.GONE
 
             when (result) {
                 is NetworkResult.Success -> showResultList(result.data.query, result.data.results) // 画像認識結果を表示
