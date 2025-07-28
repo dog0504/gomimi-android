@@ -85,6 +85,7 @@
     <string name="delete">削除</string>
     <string name="delete_confirm">本当に削除しますか？</string>
     <string name="delete_success">削除が完了しました</string>
+    <string name="classification">分別区分：</string>
 
     <!-- ⏰ 通知タイミング -->
     <string name="beforeyesterday">前日</string>
