@@ -248,7 +248,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:backgroundTint="#FFFAE6"
-            android:text="再撮影"
+            android:text="@string/reshoot"
             android:textColor="#7F6B59"
             android:textSize="20sp" />
     </RelativeLayout>
