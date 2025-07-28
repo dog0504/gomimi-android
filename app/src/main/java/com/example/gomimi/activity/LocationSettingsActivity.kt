@@ -65,11 +65,24 @@ class LocationSettingsActivity : BaseActivity() {
     private fun observeViewModel() {
         // 現在のユーザー情報の監視
         viewModel.userProfile.observe(this) { result ->
+//            if (result is NetworkResult.Success) {
+//                val addr = result.data.address
+//                // "上記以外"を""に変換する拡張関数
+//                fun String?.displayValue(): String = if (this == "" || this == "上記以外") "" else this ?: ""
+//                binding.currentAddressTextView.text = "${addr.zip}\n${addr.city}${addr.ward}${addr.town}${addr.chom?.displayValue()}${addr.street?.displayValue()}${addr.inf?.displayValue()}"
+//            }
             if (result is NetworkResult.Success) {
                 val addr = result.data.address
-                // "上記以外"を""に変換する拡張関数
                 fun String?.displayValue(): String = if (this == "" || this == "上記以外") "" else this ?: ""
-                binding.currentAddressTextView.text = "${addr.zip}\n${addr.city}${addr.ward}${addr.town ?: ""}${addr.chom?.displayValue()}${addr.street?.displayValue()}${addr.inf?.displayValue()}"
+                val addressParts = listOf(
+                    addr.city,
+                    addr.ward,
+                    addr.town,
+                    addr.chom.displayValue(),
+                    addr.street.displayValue(),
+                    addr.inf.displayValue()
+                )
+                binding.currentAddressTextView.text = "${addr.zip ?: ""}\n${addressParts.joinToString(separator = "") { it ?: "" }}"
             }
         }
 
