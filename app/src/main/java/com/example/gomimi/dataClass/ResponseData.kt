@@ -16,14 +16,15 @@ data class AuthResponse(
 
 // ゴミ識別APIのレスポンスデータ
 data class GarbageIdentificationResponse(
-    val query_text: String,
+    val query: String,
     val results: List<GarbageResult>
 )
 
 // ゴミ識別結果のデータクラス
 data class GarbageResult(
     val rank: Int,
-    val name: String
+    val name: String,
+    val manualId: Int
 )
 
 // API仕様 /manuals/{manualId} や /manuals/search のレスポンスに対応

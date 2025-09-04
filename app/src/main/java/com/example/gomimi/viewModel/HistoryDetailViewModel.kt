@@ -20,4 +20,11 @@ class HistoryDetailViewModel(private val repository: UserRepository = UserReposi
             _manualDetail.value = repository.searchManualExact(name)
         }
     }
+
+    fun fetchManualDetailById(id: Int) {
+        viewModelScope.launch {
+            _manualDetail.value = NetworkResult.Loading
+            _manualDetail.value = repository.getManualById(id)
+        }
+    }
 }

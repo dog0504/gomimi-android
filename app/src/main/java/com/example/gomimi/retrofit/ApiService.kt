@@ -35,6 +35,9 @@ interface ApiService {
     @POST("auth/login")
     suspend fun login(@Body requestBody: LoginRequestBody): Response<AuthResponse>
 
+    @POST("auth/token")
+    suspend fun refreshToken(): Response<AuthResponse>
+
     // テスト用ゴミ識別APIのエンドポイント
     @Multipart
     @POST("garbage/identify")
@@ -46,6 +49,9 @@ interface ApiService {
     // 新しい完全一致検索APIの定義を追加
     @GET("manuals/search/exact")
     suspend fun searchManualExact(@Query("name") name: String): Response<Manual> // List<>を外し、単一のManualオブジェクトを受け取る
+
+    @GET("manuals/{id}")
+    suspend fun getManualById(@Path("id") id: Int): Response<Manual>
 
     @GET("languages")
     suspend fun getLanguages(): Response<List<Language>>

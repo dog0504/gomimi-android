@@ -86,6 +86,7 @@
     <string name="delete">Delete</string>
     <string name="delete_confirm">Are you sure you want to delete?</string>
     <string name="delete_success">Successfully deleted</string>
+    <string name="classification">Classification:</string>
 
     <!-- ⏰ 通知タイミング -->
     <string name="beforeyesterday">The Day Before</string>
@@ -103,10 +104,10 @@
     <string name="Sun">Sun</string>
 
     <!-- ♻️ ゴミ分類 -->
-    <string name="normal_gomi">Burnable Waste</string>
-    <string name="recyclable_gomi">Recyclables</string>
-    <string name="paper_gomi">Paper/Clothes</string>
-    <string name="plastic">Plastic Recyclables</string>
+    <string name="normal_gomi">Ordinary Waste</string>
+    <string name="recyclable_gomi">Recyclable Waste</string>
+    <string name="paper_gomi">Used Paper &amp; Clothing</string>
+    <string name="plastic">Plastic Resources</string>
 
     <!-- ⚠️ エラーメッセージ・取得失敗 -->
     <string name="manual_not_found">Manual fetch error:</string>

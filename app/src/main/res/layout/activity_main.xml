@@ -98,7 +98,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="分別区分："
+                android:text="@string/classification"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -248,7 +248,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:backgroundTint="#FFFAE6"
-            android:text="再撮影"
+            android:text="@string/reshoot"
             android:textColor="#7F6B59"
             android:textSize="20sp" />
     </RelativeLayout>
@@ -264,6 +264,19 @@
         app:layout_constraintEnd_toEndOf="@+id/preview"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/preview"
+        tools:visibility="visible" />
+
+    <View
+        android:id="@+id/progressOverlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="#80000000"
+        android:clickable="true"
         tools:visibility="visible" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

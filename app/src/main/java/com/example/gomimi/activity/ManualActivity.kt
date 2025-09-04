@@ -41,7 +41,8 @@ class ManualActivity : BaseActivity() {
         manualAdapter = ManualAdapter(emptyList()) { manualInfo ->
             // アイテムクリックで詳細画面へ
             val intent = Intent(this, HistoryDetailActivity::class.java).apply {
-                putExtra(HistoryDetailActivity.EXTRA_GARBAGE_NAME, manualInfo.name)
+//                putExtra(HistoryDetailActivity.EXTRA_GARBAGE_NAME, manualInfo.name)
+                putExtra(HistoryDetailActivity.EXTRA_GARBAGE_ID, manualInfo.id) // IDを渡すように変更
             }
             startActivity(intent)
         }

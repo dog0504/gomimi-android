@@ -118,6 +118,9 @@ class RegisterActivity: BaseActivity() {
     /**
      * 郵便番号検索後、特定された住所を表示し、それ以降の絞り込みスピナーをセットアップする
      */
+    // "上記以外"を"なし"に変換する拡張関数
+    private fun String?.displayValue(): String = if (this == "上記以外") "選択肢なし" else this ?: "選択肢なし"
+
     private fun setupAddressSelection() {
         setAddressFieldsVisibility(View.VISIBLE)
         selectedAddressId = null
@@ -129,7 +132,7 @@ class RegisterActivity: BaseActivity() {
         viewBinding.townTextView.text = firstAddress.town
 
         // 1.「丁目」スピナーのセットアップ
-        val choms = addressList.mapNotNull { it.chom }.distinct()
+        val choms = addressList.mapNotNull { it.chom.displayValue() }.distinct()
         setupSpinner(viewBinding.chomSpinner, listOf(getString(R.string.chome)) + choms) { chomPos ->
             val selectedChom = choms.getOrNull(chomPos - 1)
             // 丁目が選択されたら、それに基づいて番地の選択肢を更新
@@ -141,8 +144,8 @@ class RegisterActivity: BaseActivity() {
 
     /** 丁目の選択に応じて「番地」スピナーを更新する */
     private fun updateStreetSpinner(selectedChom: String?) {
-        val filteredByChom = addressList.filter { selectedChom == null || it.chom == selectedChom }
-        val streets = filteredByChom.mapNotNull { it.street }.distinct()
+        val filteredByChom = addressList.filter { selectedChom == null || it.chom.displayValue() == selectedChom }
+        val streets = filteredByChom.mapNotNull { it.street.displayValue() }.distinct()
 
         setupSpinner(viewBinding.streetSpinner, listOf(getString(R.string.street)) + streets) { streetPos ->
             val selectedStreet = streets.getOrNull(streetPos - 1)
@@ -155,13 +158,13 @@ class RegisterActivity: BaseActivity() {
 
     /** 丁目・番地の選択に応じて「詳細」スピナーを更新する */
     private fun updateInfSpinner(selectedChom: String?, selectedStreet: String?) {
-        val filtered = addressList.filter { (selectedChom == null || it.chom == selectedChom) && (selectedStreet == null || it.street == selectedStreet) }
-        val infs = filtered.mapNotNull { it.inf }.distinct()
+        val filtered = addressList.filter { (selectedChom == null || it.chom.displayValue() == selectedChom) && (selectedStreet == null || it.street.displayValue() == selectedStreet) }
+        val infs = filtered.mapNotNull { it.inf.displayValue() }.distinct()
 
         setupSpinner(viewBinding.infSpinner, listOf(getString(R.string.inf)) + infs) { infPos ->
             val selectedInf = infs.getOrNull(infPos - 1)
             // 全ての条件で絞り込んだ結果、候補が1つに確定すればIDを保存
-            val finalAddress = filtered.find { it.inf == selectedInf }
+            val finalAddress = filtered.find { it.inf.displayValue() == selectedInf }
             selectedAddressId = finalAddress?.id
         }
     }
